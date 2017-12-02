@@ -15,6 +15,7 @@ namespace SFS_BattleTank.Bases
         protected Vector2 _position;
         // rotation in degrees
         protected int _rotation;
+        
         public GameObject(float x,float y,string essental)
         {
             _essental = essental;
@@ -44,5 +45,12 @@ namespace SFS_BattleTank.Bases
         }
         public Vector2 GetPosition() { return _position; }
         public void SetRotation(int degrees) { _rotation = degrees; }
+        public int GetRotation() { return _rotation; }
+        public void SetVariable(float x,float y,int rotation)
+        {
+            _position.X = x;
+            _position.Y = y;
+            _rotation = rotation;
+        }
     }
 }

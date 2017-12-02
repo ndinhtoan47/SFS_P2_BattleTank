@@ -24,9 +24,9 @@ namespace SFS_BattleTank.Bases
             x = 0;
             y = 0;
         }
-        public virtual void UpdateData(User user) { }
+        public virtual void UpdateData(User user, SFSObject data) { }
         public virtual void UpdateData(SFSObject data) { }
-        public virtual void Add(User user) { }
+        public virtual void Add(User user, SFSObject data) { }
         public virtual void Add(SFSObject data) { }
         public virtual void Remove(User user) { }
         public virtual void Remove(SFSObject data) { }

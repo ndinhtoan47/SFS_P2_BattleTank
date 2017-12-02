@@ -6,6 +6,7 @@ using SFS_BattleTank.Bases;
 using SFS_BattleTank.Constants;
 using SFS_BattleTank.GameObjCtrl;
 using SFS_BattleTank.GameScenes;
+using SFS_BattleTank.InputControl;
 using SFS_BattleTank.Managers;
 using SFS_BattleTank.Network;
 using Sfs2X.Entities.Data;
@@ -43,8 +44,8 @@ namespace SFS_BattleTank
         {
             // TODO: Add your initialization logic here
             contents = Content;
-            network.Init();
-            network.Connect();
+            //network.Init();
+            //network.Connect();
 
             sceneManager = new SceneManager(contents);
             sceneManager.Init();
@@ -83,9 +84,10 @@ namespace SFS_BattleTank
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Input.Update();
+            network.Update(elapsedTime);
             // TODO: Add your update logic here
             sceneManager.Update(elapsedTime);
-            network.Update(elapsedTime);
             base.Update(gameTime);
         }
 

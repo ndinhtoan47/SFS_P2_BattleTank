@@ -25,19 +25,18 @@ namespace SFS_BattleTank.Network
         protected bool isLoadConfig = false;
 
         protected Dictionary<string,Controller> _controllers;
-        // test
-        protected long count = 0;
-        protected double time = 0.0f;
         public Connection()
         {
             sfs = new SmartFox();
             sfs.ThreadSafeMode = true;
             _controllers = new Dictionary<string,Controller>();
+
+            Init();
+            Connect();
         }
         ~Connection()
         {
             RemoveListener();
-            sfs.Disconnect();
         }
         public void Init()
         {
@@ -47,8 +46,6 @@ namespace SFS_BattleTank.Network
         {
             if (sfs != null)
                 sfs.ProcessEvents();
-            //time += deltaTime;
-            //Debug.Write("F = : " + (count / time).ToString() + "\n DeltaTime : " + deltaTime + "\n");
             UpdateControler(deltaTime);
         }
         public void Connect()
@@ -70,15 +67,17 @@ namespace SFS_BattleTank.Network
         }
         public void Login(string userName, string password = "")
         {
-            sfs.Send(new LoginRequest(userName, password, sfs.Config.Zone));
+            sfs.Send(new LoginRequest(userName, password,ZONE));
         }
         public void JoinRoom(string roomName = "The Lobby", string password = "")
         {
-            sfs.Send(new JoinRoomRequest(roomName, password));
+            if (roomName != ROOM)
+                ROOM = roomName;
+            sfs.Send(new JoinRoomRequest(ROOM, password));
         }
         public SmartFox GetInstance() { return sfs; }
         public Room GetCurRoom() { return curRoom; }
-        public void CreateRoom(MMORoomSettings settings)
+        public void CreateRoom(RoomSettings settings)
         {
             sfs.Send(new CreateRoomRequest(settings, true));
         }
@@ -92,14 +91,15 @@ namespace SFS_BattleTank.Network
             sfs.AddEventListener(SFSEvent.CONNECTION, OnConnection);
             sfs.AddEventListener(SFSEvent.CONFIG_LOAD_FAILURE, OnLoadConfigFail);
             sfs.AddEventListener(SFSEvent.CONFIG_LOAD_SUCCESS, OnLoadConfigSuccess);
+
             sfs.AddEventListener(SFSEvent.LOGIN, OnLogin);
             sfs.AddEventListener(SFSEvent.LOGIN_ERROR, OnLoginError);
             sfs.AddEventListener(SFSEvent.ROOM_JOIN, OnJoinRoom);
             sfs.AddEventListener(SFSEvent.ROOM_JOIN_ERROR, OnJoinRoomError);
             sfs.AddEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtensionResponse);
+
             sfs.AddEventListener(SFSEvent.ROOM_ADD, OnRoomAdded);
             sfs.AddEventListener(SFSEvent.ROOM_CREATION_ERROR, OnRoomCreateError);
-            sfs.AddEventListener(SFSEvent.PROXIMITY_LIST_UPDATE, OnProximityListUpdate);
         }
         public void RemoveListener()
         {
@@ -113,7 +113,7 @@ namespace SFS_BattleTank.Network
             if (success)
             {
                 Debug.WriteLine("Connected !");
-                Login("default name");
+                Login("name 1");
             }
             else
             {
@@ -132,22 +132,27 @@ namespace SFS_BattleTank.Network
         private void OnLogin(BaseEvent e)
         {
             SFSObject data = (SFSObject)e.Params["data"];
-            int x = data.GetInt(Consts.X);
-            int y = data.GetInt(Consts.Y);
             Debug.WriteLine("Login success ! User info : " + e.Params["user"]);
-            Debug.WriteLine("x = " + x + " y = " + y);
             JoinRoom();
         }
         private void OnLoginError(BaseEvent e)
         {
             Debug.WriteLine("Login error !");
-            Login("name2");
+            Login("name 2");
         }
         private void OnJoinRoom(BaseEvent e)
         {
             Debug.WriteLine("Join room success: room info - " + e.Params["room"]);
             Debug.WriteLine(sfs.MySelf.PlayerId.ToString());
             curRoom = (Room)e.Params["room"];
+            foreach(Controller ctrl in _controllers.Values)
+            {
+                ctrl.Init();
+            }
+
+            // test
+            SFSObject data = new SFSObject();
+            sfs.Send(new ExtensionRequest("add", data,sfs.LastJoinedRoom));
         }
         private void OnJoinRoomError(BaseEvent e)
         {
@@ -156,10 +161,29 @@ namespace SFS_BattleTank.Network
         private void OnExtensionResponse(BaseEvent e)
         {
             SFSObject receive = (SFSObject)e.Params["params"];
-            count++;
             string cmd = (string)e.Params["cmd"];
+            Room room = (Room)e.Params["room"];
+            User sender = room.GetUserById((int)(receive.GetDouble("ID")));
+            
 
-        }
+            if(cmd == Consts.CMD_UPDATE_DATA)
+            {
+                string type = receive.GetUtfString(Consts.TYPE);
+                if(type == Consts.TYPE_TANK)
+                {
+                    _controllers[Consts.CTRL_TANK].UpdateData(sender, receive);
+                }
+            }
+            if(cmd == Consts.CMD_ADD)
+            {
+                string type = receive.GetUtfString(Consts.TYPE);
+                if (type == Consts.TYPE_TANK)
+                {
+                    _controllers[Consts.CTRL_TANK].Add(sender,receive);
+                }
+            }
+
+        }   
         private void OnRoomAdded(BaseEvent e)
         {
             curRoom = (Room)e.Params["room"];
@@ -169,23 +193,10 @@ namespace SFS_BattleTank.Network
         {
             Debug.WriteLine("Create room error - " + e.Params["errorMessage"] + "\n errorCode : " + e.Params["errorCode"]);
         }
-        private void OnProximityListUpdate(BaseEvent e)
-        {
-            List<User> addedList = (List<User>)e.Params["addedUsers"];
-             List<User> removedList = (List<User>)e.Params["removedUsers"];
-             foreach (User added in addedList)
-             {
-                 _controllers[Consts.CTRL_TANK].Add(added);
-             }
-            foreach (User removed in removedList)
-            {
-                _controllers[Consts.CTRL_TANK].Remove(removed);
-            }
-        }
 
-        public MMORoomSettings GetRoomSetting(string roomName)
+        public RoomSettings GetRoomSetting(string roomName)
         {
-            MMORoomSettings settings = new MMORoomSettings(roomName);
+            RoomSettings settings = new MMORoomSettings(roomName);
             settings.IsGame = true;
             settings.MaxUsers = 8;
             settings.Name = roomName;
@@ -201,8 +212,6 @@ namespace SFS_BattleTank.Network
             events.AllowUserCountChange = true;
             events.AllowUserVariablesUpdate = true;
             settings.Events = events;
-
-            settings.DefaultAOI = new Vec3D(500, 500, 0);
             settings.Extension = new RoomExtension(Consts.EXTS_ROOM, Consts.EXTS_ROOM_MAINCLASS);
 
             return settings;

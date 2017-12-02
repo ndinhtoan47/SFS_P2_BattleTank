@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using SFS_BattleTank.Bases;
 using SFS_BattleTank.Constants;
 using SFS_BattleTank.GameScenes;
+using SFS_BattleTank.InputControl;
 using System.Collections.Generic;
 namespace SFS_BattleTank.Managers
 {

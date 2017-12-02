@@ -2,9 +2,11 @@
 
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using SFS_BattleTank.Bases;
 using SFS_BattleTank.Constants;
 using SFS_BattleTank.GameObjCtrl;
+using SFS_BattleTank.InputControl;
 using Sfs2X.Entities.Data;
 using System.Collections.Generic;
 
@@ -33,7 +35,10 @@ namespace SFS_BattleTank.GameScenes
         }
         public override void Update(float deltaTime)
         {
-            _network.UpdateControler(deltaTime);
+            if(Input.IsKeyDown(Keys.Enter))
+            {
+                _network.Login("ndinhtoan");
+            }
             base.Update(deltaTime);
         }
         public override void Draw(SpriteBatch sp)

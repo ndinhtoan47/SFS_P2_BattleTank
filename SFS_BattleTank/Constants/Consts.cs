@@ -21,6 +21,7 @@ namespace SFS_BattleTank.Constants
         public static readonly string VY = "vy";
         public static readonly string XDIR = "xdir";
         public static readonly string YDIR = "ydir";
+        public static readonly string ROTATION = "rotation";
 
 
         public static readonly string ES_TANK = "tank";
@@ -29,7 +30,7 @@ namespace SFS_BattleTank.Constants
         // request from server
         public static readonly string CMD_ADD = "add";
         public static readonly string CMD_REMOVE = "remove";
-        public static readonly string CMD_UPDATE_DATA = "updateData";
+        public static readonly string CMD_UPDATE_DATA = "updatedata";
 
         // request from client
         public static readonly string CRQ_MOVE = "move";
@@ -43,5 +44,10 @@ namespace SFS_BattleTank.Constants
         // controller's name
         public static readonly string CTRL_TANK = "tankcontroller";
         public static readonly string CTRL_BULLET = "bulletcontroller";
+
+        // type
+        public static readonly string TYPE = "type";
+        public static readonly string TYPE_TANK = "tanktype";
+        public static readonly string TYPE_BULLET = "bullettype";
     }
 }
