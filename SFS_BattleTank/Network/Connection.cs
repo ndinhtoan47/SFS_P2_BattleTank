@@ -24,12 +24,12 @@ namespace SFS_BattleTank.Network
         protected Room curRoom;
         protected bool isLoadConfig = false;
 
-        protected Dictionary<string,Controller> _controllers;
+        protected Dictionary<string, Controller> _controllers;
         public Connection()
         {
             sfs = new SmartFox();
             sfs.ThreadSafeMode = true;
-            _controllers = new Dictionary<string,Controller>();
+            _controllers = new Dictionary<string, Controller>();
 
             Init();
             Connect();
@@ -67,7 +67,7 @@ namespace SFS_BattleTank.Network
         }
         public void Login(string userName, string password = "")
         {
-            sfs.Send(new LoginRequest(userName, password,ZONE));
+            sfs.Send(new LoginRequest(userName, password, ZONE));
         }
         public void JoinRoom(string roomName = "The Lobby", string password = "")
         {
@@ -118,6 +118,7 @@ namespace SFS_BattleTank.Network
             else
             {
                 Debug.WriteLine("Connection fail !");
+                Debug.WriteLine((string)e.Params["reason"]);
             }
         }
         private void OnLoadConfigFail(BaseEvent e)
@@ -145,14 +146,14 @@ namespace SFS_BattleTank.Network
             Debug.WriteLine("Join room success: room info - " + e.Params["room"]);
             Debug.WriteLine(sfs.MySelf.PlayerId.ToString());
             curRoom = (Room)e.Params["room"];
-            foreach(Controller ctrl in _controllers.Values)
+            foreach (Controller ctrl in _controllers.Values)
             {
                 ctrl.Init();
             }
 
             // test
             SFSObject data = new SFSObject();
-            sfs.Send(new ExtensionRequest("add", data,sfs.LastJoinedRoom));
+            sfs.Send(new ExtensionRequest("add", data, curRoom));
         }
         private void OnJoinRoomError(BaseEvent e)
         {
@@ -164,26 +165,47 @@ namespace SFS_BattleTank.Network
             string cmd = (string)e.Params["cmd"];
             Room room = (Room)e.Params["room"];
             User sender = room.GetUserById((int)(receive.GetDouble("ID")));
-            
 
-            if(cmd == Consts.CMD_UPDATE_DATA)
-            {
-                string type = receive.GetUtfString(Consts.TYPE);
-                if(type == Consts.TYPE_TANK)
-                {
-                    _controllers[Consts.CTRL_TANK].UpdateData(sender, receive);
-                }
-            }
-            if(cmd == Consts.CMD_ADD)
+            // update data
+            if (cmd == Consts.CMD_UPDATE_DATA)
             {
                 string type = receive.GetUtfString(Consts.TYPE);
                 if (type == Consts.TYPE_TANK)
                 {
-                    _controllers[Consts.CTRL_TANK].Add(sender,receive);
+                    _controllers[Consts.CTRL_TANK].UpdateData(sender, receive);
+                }
+                if (type == Consts.TYPE_BULLET)
+                {
+                    _controllers[Consts.CTRL_BULLET].UpdateData(sender, receive);
                 }
             }
-
-        }   
+            // add new object
+            if (cmd == Consts.CMD_ADD)
+            {
+                string type = receive.GetUtfString(Consts.TYPE);
+                if (type == Consts.TYPE_TANK)
+                {
+                    _controllers[Consts.CTRL_TANK].Add(sender, receive);
+                }
+                if (type == Consts.TYPE_BULLET)
+                {
+                    _controllers[Consts.CTRL_BULLET].Add(sender, receive);
+                }
+            }
+            // remove object
+            if (cmd == Consts.CMD_REMOVE)
+            {
+                string type = receive.GetUtfString(Consts.TYPE);
+                if (type == Consts.TYPE_TANK)
+                {
+                    _controllers[Consts.CTRL_TANK].Remove(sender,receive);
+                }
+                if(type == Consts.TYPE_BULLET)
+                {
+                    _controllers[Consts.CTRL_BULLET].Remove(sender, receive);
+                }
+            }
+        }
         private void OnRoomAdded(BaseEvent e)
         {
             curRoom = (Room)e.Params["room"];
@@ -196,7 +218,7 @@ namespace SFS_BattleTank.Network
 
         public RoomSettings GetRoomSetting(string roomName)
         {
-            RoomSettings settings = new MMORoomSettings(roomName);
+            RoomSettings settings = new RoomSettings(roomName);
             settings.IsGame = true;
             settings.MaxUsers = 8;
             settings.Name = roomName;
@@ -217,18 +239,18 @@ namespace SFS_BattleTank.Network
             return settings;
 
         }
-        public Dictionary<string,Controller> GetControllers()
+        public Dictionary<string, Controller> GetControllers()
         {
             return _controllers;
         }
-        public void AddController(string name,Controller ctrl)
+        public void AddController(string name, Controller ctrl)
         {
             if (ctrl != null)
-                _controllers.Add(name,ctrl);
+                _controllers.Add(name, ctrl);
         }
         public void UpdateControler(float deltaTime)
         {
-            foreach(Controller ctrl in _controllers.Values)
+            foreach (Controller ctrl in _controllers.Values)
             {
                 ctrl.Update(deltaTime);
             }

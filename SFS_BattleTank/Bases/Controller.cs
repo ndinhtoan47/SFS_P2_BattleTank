@@ -11,7 +11,7 @@ namespace SFS_BattleTank.Bases
     {
         protected Connection _network;
         protected ContentManager _contents;
-        protected int _myId;
+        protected int _mySelf;
         public Controller(ContentManager contents)
         {
             _network = Game1.network;
@@ -19,31 +19,20 @@ namespace SFS_BattleTank.Bases
         }
 
         public virtual void Update(float deltaTime) { }
-        public virtual void GetDirection(out int x, out int y)
-        {
-            x = 0;
-            y = 0;
-        }
         public virtual void UpdateData(User user, SFSObject data) { }
-        public virtual void UpdateData(SFSObject data) { }
         public virtual void Add(User user, SFSObject data) { }
-        public virtual void Add(SFSObject data) { }
-        public virtual void Remove(User user) { }
-        public virtual void Remove(SFSObject data) { }
+        public virtual void Remove(User user, SFSObject data = null) { }
         public virtual void Behaviour(string cmd, int id, SFSObject data) { }
         public virtual Dictionary<int, GameObject> GetAllGameObject() { return null; }
         public virtual void Init() { }
 
-        public int GetMyId()
+        public int GetMySefl()
         {
-            User me = _network.GetInstance().MySelf;
-
-            if (me != null)
-            {
-                _myId = me.Id;
-                return _myId;
-            }
-            return -1;
+            int me = _network.GetInstance().MySelf.Id;
+            if (_network.GetInstance().MySelf != null)
+                _mySelf = me;
+            else _mySelf = -1;
+            return me;
         }
     }
 }

@@ -44,6 +44,7 @@
     <Compile Include="Camera\Camera2D.cs" />
     <Compile Include="Constants\Consts.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="GameObjCtrl\BulletController.cs" />
     <Compile Include="GameObjCtrl\TankController.cs" />
     <Compile Include="GameObjects\Bullet.cs" />
     <Compile Include="GameObjects\Tank.cs" />

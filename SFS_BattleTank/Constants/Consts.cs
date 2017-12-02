@@ -22,6 +22,7 @@ namespace SFS_BattleTank.Constants
         public static readonly string XDIR = "xdir";
         public static readonly string YDIR = "ydir";
         public static readonly string ROTATION = "rotation";
+        public static readonly string GO_ID = "objectid";
 
 
         public static readonly string ES_TANK = "tank";

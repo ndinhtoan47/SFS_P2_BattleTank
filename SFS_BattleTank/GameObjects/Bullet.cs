@@ -10,13 +10,14 @@ namespace SFS_BattleTank.GameObjects
     public class Bullet : GameObject
     {
         protected Texture2D _sprite;
-        protected const string BULLET_PATH = "";
+        protected const string BULLET_PATH = "gameBullet";
         protected Rectangle _desRect;
 
-        public Bullet(float x, float y)
+        public Bullet(float x, float y,ulong id)
             : base(x, y, Consts.ES_BULLET)
         {
-            _desRect = new Rectangle();
+            _desRect = new Rectangle(0,0,10,10);
+            _id = id;
         }
 
         public override bool Init()
@@ -35,7 +36,7 @@ namespace SFS_BattleTank.GameObjects
                 sp.Draw(
                     texture: _sprite,
                     destinationRectangle: new Rectangle((int)_position.X, (int)_position.Y, (int)_desRect.Width, (int)_desRect.Height),
-                    color: Color.White);
+                    color: Color.Green);
             }
             base.Draw(sp);
         }

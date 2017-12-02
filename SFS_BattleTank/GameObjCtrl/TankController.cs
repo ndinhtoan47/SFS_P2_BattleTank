@@ -47,16 +47,144 @@ namespace SFS_BattleTank.GameObjCtrl
             }
             base.Add(user,data);
         }
-        public override void Remove(User user)
+        public override void Remove(User user,SFSObject data)
         {
             if (!_tanks.ContainsKey(user.Id))
             {
                 return;
             }
             _tanks.Remove(user.Id);
-            base.Remove(user);
+            base.Remove(user,data);
         }
-        public override void GetDirection(out int x, out int y)
+        
+        public override void UpdateData(User user, SFSObject data)
+        {
+            User me = _network.GetInstance().MySelf;
+            if (user != me)
+            {
+                if (_tanks.ContainsKey(user.Id))
+                {
+                    if (data.ContainsKey(Consts.X) && data.ContainsKey(Consts.Y) && data.ContainsKey(Consts.ROTATION))
+                    {
+                        _tanks[user.Id].SetVariable((float)data.GetDouble(Consts.X),
+                                                                  (float)data.GetDouble(Consts.Y),
+                                                                  (int)data.GetDouble(Consts.ROTATION));
+                    }
+                }
+            }
+            base.UpdateData(user,data);
+        }
+        public override void Behaviour(string cmd, int id, SFSObject data)
+        {
+            base.Behaviour(cmd, id, data);
+        }
+        public override void Update(float deltaTime)
+        {
+            int x, y;
+            this.GetDirection(out x, out y);
+            if (x != 0 || y != 0)
+                Move(deltaTime, x, y);
+            if(CheckFire(deltaTime))
+            {
+                Fire(_lastXDir, _lastYDir);
+            }
+            SetDir(x, y);
+            base.Update(deltaTime);
+        }
+        public override Dictionary<int, GameObject> GetAllGameObject()
+        {
+            return _tanks;
+        }
+        public override void Init()
+        {
+            GetMySefl();
+            base.Init();
+        }
+        // myseft active
+        protected void Move(float deltaTime, int xDir, int yDir)
+        {
+            float vx, vy;
+            vx = vy = 0;
+            if (xDir != 0) vx = xDir * deltaTime * TANK_SPEED;
+            if (yDir != 0) vy = yDir * deltaTime * TANK_SPEED;
+
+            if (_tanks.Count <= 0) return;
+            Vector2 curPosition = _tanks[_mySelf].GetPosition();
+            SmartFox sfs = _network.GetInstance();
+            // set mysefl rotation
+            #region
+            if (sfs.MySelf != null)
+            {
+                _tanks[_mySelf].SetPosition(new Vector2(curPosition.X + vx, curPosition.Y + vy));
+
+                if (xDir != 0)
+                {
+                    if (xDir == 1)
+                        _tanks[_mySelf].SetRotation(0);
+                    else _tanks[_mySelf].SetRotation(180);
+                }
+                if (yDir != 0)
+                {
+                    if (yDir == 1)
+                        _tanks[_mySelf].SetRotation(90);
+                    else _tanks[_mySelf].SetRotation(-90);
+                }
+            }
+            #endregion
+            else
+            {
+                _tanks[_mySelf].SetPosition(new Vector2(curPosition.X + vx, curPosition.Y + vy));
+            }
+
+            // send new update to server
+            if (_network.GetInstance().IsConnected)
+            {
+                curPosition = _tanks[_mySelf].GetPosition();
+                SFSObject data = new SFSObject();
+                data.PutDouble(Consts.X, curPosition.X);
+                data.PutDouble(Consts.Y, curPosition.Y);
+                data.PutDouble(Consts.XDIR, xDir);
+                data.PutDouble(Consts.YDIR, yDir);
+                data.PutDouble(Consts.VX, vx);
+                data.PutDouble(Consts.VY, vy);
+                data.PutDouble(Consts.ROTATION, _tanks[_mySelf].GetRotation());
+                data.PutUtfString(Consts.TYPE, Consts.TYPE_TANK);
+
+                sfs.Send(new ExtensionRequest(Consts.CRQ_MOVE, data,_network.GetInstance().LastJoinedRoom));
+            }
+        }
+        protected bool CheckFire(float deltaTime)
+        {
+            if (Input.IsKeyDown(Keys.Space))
+            {
+                if (_delayFire <= _totalFireTime)
+                {
+                    _totalFireTime = 0;
+                    return true;
+                } 
+            }
+            _totalFireTime += deltaTime;
+            return false;
+        }
+        protected void Fire(int xDir,int yDir)
+        {
+            SFSObject data = new SFSObject();
+            data.PutDouble(Consts.XDIR, xDir);
+            data.PutDouble(Consts.YDIR, yDir);
+            data.PutDouble(Consts.X, _tanks[_mySelf].GetPosition().X);
+            data.PutDouble(Consts.Y, _tanks[_mySelf].GetPosition().Y);
+
+            _network.GetInstance().Send( new ExtensionRequest(Consts.CRQ_FIRE, data,_network.GetCurRoom()));
+        }
+        protected void SetDir(int x,int y)
+        {
+            if(x != 0 || y != 0)
+            {
+                _lastXDir = x;
+                _lastYDir = y;
+            }
+        }
+        public void GetDirection(out int x, out int y)
         {
             KeyboardState state = Keyboard.GetState();
             Keys[] keys = state.GetPressedKeys();
@@ -99,131 +227,6 @@ namespace SFS_BattleTank.GameObjCtrl
                     }
             }
             return;
-            base.GetDirection(out x, out y);
-        }
-        public override void UpdateData(User user, SFSObject data)
-        {
-            int me = _network.GetInstance().MySelf.Id;
-            if (user.Id != me)
-            {
-                if (_tanks.ContainsKey(user.Id))
-                {
-                    if (data.ContainsKey(Consts.X) && data.ContainsKey(Consts.Y) && data.ContainsKey(Consts.ROTATION))
-                    {
-                        _tanks[user.Id].SetVariable((float)data.GetDouble(Consts.X),
-                                                                  (float)data.GetDouble(Consts.Y),
-                                                                  (int)data.GetDouble(Consts.ROTATION));
-                    }
-                }
-            }
-            base.UpdateData(user,data);
-        }
-        public override void Behaviour(string cmd, int id, SFSObject data)
-        {
-            base.Behaviour(cmd, id, data);
-        }
-        public override void Update(float deltaTime)
-        {
-            int x, y;
-            this.GetDirection(out x, out y);
-            if (x != 0 || y != 0)
-                Move(deltaTime, x, y);
-            if(CheckFire(deltaTime))
-            {
-                Fire(_lastXDir, _lastYDir);
-            }
-            SetDir(x, y);
-            base.Update(deltaTime);
-        }
-        public override Dictionary<int, GameObject> GetAllGameObject()
-        {
-            return _tanks;
-        }
-        public override void Init()
-        {
-            GetMyId();
-            base.Init();
-        }
-        // myseft active
-        public void Move(float deltaTime, int xDir, int yDir)
-        {
-            float vx, vy;
-            vx = vy = 0;
-            if (xDir != 0) vx = xDir * deltaTime * TANK_SPEED;
-            if (yDir != 0) vy = yDir * deltaTime * TANK_SPEED;
-
-            if (_tanks.Count <= 0) return;
-            Vector2 curPosition = _tanks[_myId].GetPosition();
-            SmartFox sfs = _network.GetInstance();
-            // set mysefl rotation
-            #region
-            if (sfs.MySelf != null)
-            {
-                _tanks[_myId].SetPosition(new Vector2(curPosition.X + vx, curPosition.Y + vy));
-
-                if (xDir != 0)
-                {
-                    if (xDir == 1)
-                        _tanks[_myId].SetRotation(0);
-                    else _tanks[_myId].SetRotation(180);
-                }
-                if (yDir != 0)
-                {
-                    if (yDir == 1)
-                        _tanks[_myId].SetRotation(90);
-                    else _tanks[_myId].SetRotation(-90);
-                }
-            }
-            #endregion
-            else
-            {
-                _tanks[_myId].SetPosition(new Vector2(curPosition.X + vx, curPosition.Y + vy));
-            }
-
-            // send new update to server
-            if (_network.GetInstance().IsConnected)
-            {
-                curPosition = _tanks[_myId].GetPosition();
-                SFSObject data = new SFSObject();
-                data.PutDouble(Consts.X, curPosition.X);
-                data.PutDouble(Consts.Y, curPosition.Y);
-                //data.PutDouble(Consts.XDIR, xDir);
-                //data.PutDouble(Consts.YDIR, yDir);
-                data.PutDouble(Consts.VX, vx);
-                data.PutDouble(Consts.VY, vy);
-                data.PutDouble(Consts.ROTATION, _tanks[_myId].GetRotation());
-                data.PutUtfString(Consts.TYPE, Consts.TYPE_TANK);
-
-                sfs.Send(new ExtensionRequest(Consts.CRQ_MOVE, data,_network.GetInstance().LastJoinedRoom));
-            }
-        }
-        public bool CheckFire(float deltaTime)
-        {
-            if (Input.IsKeyDown(Keys.Space))
-            {
-                if (_delayFire <= _totalFireTime)
-                {
-                    _totalFireTime = 0;
-                    return true;
-                } 
-            }
-            _totalFireTime += deltaTime;
-            return false;
-        }
-        public void Fire(int xDir,int yDir)
-        {
-            SFSObject data = new SFSObject();
-            data.PutInt(Consts.XDIR, xDir);
-            data.PutInt(Consts.YDIR, yDir);
-            _network.GetInstance().Send( new ExtensionRequest(Consts.CRQ_FIRE, data));
-        }
-        protected void SetDir(int x,int y)
-        {
-            if(x != 0 || y != 0)
-            {
-                _lastXDir = x;
-                _lastYDir = y;
-            }
         }
     }
 }

@@ -7,6 +7,7 @@ using SFS_BattleTank.Bases;
 using SFS_BattleTank.Constants;
 using SFS_BattleTank.GameObjCtrl;
 using SFS_BattleTank.InputControl;
+using Sfs2X.Entities;
 using Sfs2X.Entities.Data;
 using System.Collections.Generic;
 
@@ -23,6 +24,7 @@ namespace SFS_BattleTank.GameScenes
         public override bool Init()
         {
             _network.AddController(Consts.CTRL_TANK, new TankController(_contents));
+            _network.AddController(Consts.CTRL_BULLET, new BulletController(_contents));
             return base.Init();
         }
         public override bool LoadContents()
