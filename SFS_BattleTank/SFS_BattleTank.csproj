@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="Bases\Controller.cs" />
     <Compile Include="Bases\GameObject.cs" />
+    <Compile Include="Bases\GameUI.cs" />
     <Compile Include="Bases\Scene.cs" />
     <Compile Include="Camera\Camera2D.cs" />
     <Compile Include="Constants\Consts.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="Network\Connection.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\InputField.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

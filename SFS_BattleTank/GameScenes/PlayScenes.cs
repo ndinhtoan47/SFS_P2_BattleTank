@@ -1,5 +1,6 @@
 ﻿
 
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -7,6 +8,7 @@ using SFS_BattleTank.Bases;
 using SFS_BattleTank.Constants;
 using SFS_BattleTank.GameObjCtrl;
 using SFS_BattleTank.InputControl;
+using SFS_BattleTank.UI;
 using Sfs2X.Entities;
 using Sfs2X.Entities.Data;
 using System.Collections.Generic;
@@ -15,10 +17,11 @@ namespace SFS_BattleTank.GameScenes
 {
     public class PlayScenes : Scene
     {
+        protected InputField _input;
         public PlayScenes(ContentManager contents)
             : base(Consts.SCENE_PLAY, contents)
         {
-
+            _input = new InputField(Vector2.Zero, new Rectangle());
         }
 
         public override bool Init()
@@ -29,6 +32,7 @@ namespace SFS_BattleTank.GameScenes
         }
         public override bool LoadContents()
         {
+            _input.LoadContents(_contents);
             return base.LoadContents();
         }
         public override void Shutdown()
@@ -41,6 +45,7 @@ namespace SFS_BattleTank.GameScenes
             {
                 _network.Login("ndinhtoan");
             }
+            _input.Update(deltaTime);
             base.Update(deltaTime);
         }
         public override void Draw(SpriteBatch sp)
@@ -60,6 +65,7 @@ namespace SFS_BattleTank.GameScenes
                     ii.Draw(sp);
                 }
             }
+            _input.Draw(sp);
         }
     }
 }

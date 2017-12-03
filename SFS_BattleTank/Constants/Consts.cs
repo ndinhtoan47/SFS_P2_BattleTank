@@ -50,5 +50,11 @@ namespace SFS_BattleTank.Constants
         public static readonly string TYPE = "type";
         public static readonly string TYPE_TANK = "tanktype";
         public static readonly string TYPE_BULLET = "bullettype";
+
+        // game ui type
+        public static readonly string UI_INPUT_FIELD = "inputField";
+        public static readonly string UI_BUTTON = "button";
+        public static readonly string UI_DISPLAY_FIELD = "displayField";
+
     }
 }

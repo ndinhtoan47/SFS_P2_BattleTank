@@ -6,5 +6,7 @@
   <SourceFiles>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/tanks.png</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/gameBullet.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/font.spritefont</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/cursor.png</File>
   </SourceFiles>
 </SourceFileCollection>

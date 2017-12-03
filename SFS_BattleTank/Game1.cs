@@ -85,7 +85,7 @@ namespace SFS_BattleTank
                 Exit();
             float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             Input.Update();
-            network.Update(elapsedTime);
+           // network.Update(elapsedTime);
             // TODO: Add your update logic here
             sceneManager.Update(elapsedTime);
             base.Update(gameTime);
