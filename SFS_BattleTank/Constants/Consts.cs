@@ -14,6 +14,7 @@ namespace SFS_BattleTank.Constants
         public static readonly string SMARTFOX_CONFIG = @"../../../../sfs_config.xml";
         // game scene's name
         public static readonly string SCENE_PLAY = "playScene";
+        public static readonly string SCENE_LOGIN = "loginScene";
         // client proterties
         public static readonly string X = "x";
         public static readonly string Y = "y";
@@ -55,6 +56,17 @@ namespace SFS_BattleTank.Constants
         public static readonly string UI_INPUT_FIELD = "inputField";
         public static readonly string UI_BUTTON = "button";
         public static readonly string UI_DISPLAY_FIELD = "displayField";
+        
+        // ui cmd
+        public static readonly string UI_CMD_INVERSE_USE_BACKGROUND = "inverseUseBackground";
+        public static readonly string UI_CMD_CHANGE_TO_LOGIN_BUTTON = "changeToLoginButton";
+        public static readonly string UI_CMD_CHANGE_TO_EXIT_BUTTON = "changeToExitButton";
+        public static readonly string UI_CMD_DISABLE = "disable";
+        public static readonly string UI_CMD_ENABLE = "enable";
+        // ui background
+        public static readonly string UIS_ID = "";
+        public static readonly string UIS_PASS = "";
+        public static readonly string UIS_INPUT_FIELD = "textInput";
 
     }
 }

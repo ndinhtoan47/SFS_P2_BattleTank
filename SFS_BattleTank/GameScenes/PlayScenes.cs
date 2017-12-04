@@ -17,11 +17,9 @@ namespace SFS_BattleTank.GameScenes
 {
     public class PlayScenes : Scene
     {
-        protected InputField _input;
         public PlayScenes(ContentManager contents)
             : base(Consts.SCENE_PLAY, contents)
         {
-            _input = new InputField(Vector2.Zero, new Rectangle());
         }
 
         public override bool Init()
@@ -32,7 +30,6 @@ namespace SFS_BattleTank.GameScenes
         }
         public override bool LoadContents()
         {
-            _input.LoadContents(_contents);
             return base.LoadContents();
         }
         public override void Shutdown()
@@ -41,11 +38,10 @@ namespace SFS_BattleTank.GameScenes
         }
         public override void Update(float deltaTime)
         {
-            if(Input.IsKeyDown(Keys.Enter))
+            if (Input.IsKeyDown(Keys.Enter))
             {
                 _network.Login("ndinhtoan");
             }
-            _input.Update(deltaTime);
             base.Update(deltaTime);
         }
         public override void Draw(SpriteBatch sp)
@@ -65,7 +61,6 @@ namespace SFS_BattleTank.GameScenes
                     ii.Draw(sp);
                 }
             }
-            _input.Draw(sp);
         }
     }
 }

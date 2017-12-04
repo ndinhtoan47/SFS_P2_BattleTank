@@ -12,8 +12,12 @@ namespace SFS_BattleTank.UI
     {
         protected const string FONT_PATH = "font";
         protected const string CURSOR_PATH = "cursor";
+
+        protected ContentManager _contents;
+        protected Texture2D _background;
+        protected bool _useBackground;
         protected string _inputText;
-        protected KeyboardState _lastKeyState;
+        protected string _drawText;
         protected float _delayInput;
         protected float _totalInput;
 
@@ -25,10 +29,12 @@ namespace SFS_BattleTank.UI
         protected SpriteFont _font;
         protected float _textScale;
 
-        public InputField(Vector2 position, Rectangle bounding)
+        public InputField(Vector2 position, Rectangle bounding, float textScale)
             : base(Consts.UI_INPUT_FIELD, position, bounding)
         {
+            _textScale = textScale;
             Init();
+            InitBoundingBox(_textScale);
         }
         public override void Init()
         {
@@ -37,14 +43,15 @@ namespace SFS_BattleTank.UI
             _totalInput = 0.0f;
             _delayCursor = 0.5f;
             _totalCusor = 0.0f;
-
-            _textScale = 0.5f;
+            _useBackground = true;
             base.Init();
         }
         public override void LoadContents(ContentManager contents)
         {
+            _contents = contents;
             _font = contents.Load<SpriteFont>(FONT_PATH);
             _cursor = contents.Load<Texture2D>(CURSOR_PATH);
+            _background = contents.Load<Texture2D>(Consts.UIS_INPUT_FIELD);
             base.LoadContents(contents);
         }
         public override void Update(float deltaTime)
@@ -55,32 +62,58 @@ namespace SFS_BattleTank.UI
         }
         public override void Draw(SpriteBatch sp)
         {
+            // draw background
+            if (_background != null && _useBackground)
+            {
+                sp.Draw(_background,
+                    new Rectangle((int)_position.X, (int)_position.Y, (int)_bounding.Width, (int)_bounding.Height),
+                    Color.White);
+            }
+            // draw text
+            _drawText = CheckInputTextMaxSize(_font, _bounding.Width, _inputText, _textScale);
             sp.DrawString(
                 spriteFont: _font,
-                text: _inputText,
-                position: Vector2.Zero,
+                text: _drawText,
+                position: _position,
                 scale: _textScale,
                 rotation: 0.0f,
                 effects: SpriteEffects.None,
                 origin: Vector2.Zero,
                 layerDepth: 0.0f,
                 color: Color.Red);
-            // draw text and cursor
+            // draw cursor
             Vector2 size = new Vector2(0, _font.MeasureString("0").Y);
-            if (_inputText != "") size = _font.MeasureString(_inputText) * _textScale;
+            if (_inputText != "") size = _font.MeasureString(_drawText) * _textScale;
             if (_drawCursor && _cursor != null)
-                if (size.X > 0)
-                    sp.Draw(_cursor, new Rectangle((int)size.X - 5, (int)0, (int)(15), (int)((size.Y - 2 * _textScale))), Color.Red);
-                else
-                    sp.Draw(_cursor, new Rectangle((int)size.X, (int)0, (int)(15 * _textScale), (int)((size.Y - 2) * _textScale)), Color.Red);
+                sp.Draw(_cursor,
+                    new Rectangle((int)(_position.X + size.X - 4), (int)_position.Y, (int)(14), (int)((size.Y * _textScale))),
+                    Color.Red);
             base.Draw(sp);
         }
-
+        public override void CMD(string cmd)
+        {
+            if(cmd == Consts.UI_CMD_INVERSE_USE_BACKGROUND)
+            {
+                _useBackground = !_useBackground;
+            }
+            base.CMD(cmd);
+        }
+        public override void ChangeBackground(string name)
+        {
+            _background = _contents.Load<Texture2D>(name);
+            base.ChangeBackground(name);
+        }
+        protected override void InitBoundingBox(float textScale)
+        {
+            int heightPerUnit = 20;
+            // textScale = 1 => height = 20px
+            _bounding.Height = (int)((float)heightPerUnit * textScale);
+            base.InitBoundingBox(textScale);
+        }
         protected string GetInputText(float deltaTime)
         {
             string result = _inputText;
             Keys[] curPressKeys = Input.GetKeyDowns();
-
             if (_totalInput >= _delayInput)
             {
                 // if has key press
@@ -137,7 +170,12 @@ namespace SFS_BattleTank.UI
                                         #endregion
                                         else
                                         {
-                                            result += k.ToString();
+                                            if (!(IsContaintKeys(curPressKeys, Keys.LeftShift) || IsContaintKeys(curPressKeys, Keys.RightShift)))
+                                                result += k.ToString().ToLower();
+                                            else
+                                            {
+                                                result += k.ToString();
+                                            }
                                         }
                                         break;
                                     }
@@ -158,6 +196,28 @@ namespace SFS_BattleTank.UI
                 return;
             }
             _totalCusor += deltaTime;
+        }
+        protected bool IsContaintKeys(Keys[] allKeys, Keys k)
+        {
+            foreach (Keys i in allKeys)
+                if (i == k)
+                {
+                    return true;
+                }
+            return false;
+        }
+        protected string CheckInputTextMaxSize(SpriteFont font, int maxWidth, string inputText, float textScale)
+        {
+            string result = inputText;
+            Vector2 size = font.MeasureString(inputText) * textScale;
+            int count = 1;
+            while (size.X > maxWidth && count < inputText.Length)
+            {
+                result = inputText.Substring(count, inputText.Length - count);
+                size = font.MeasureString(result) * textScale;
+                count++;
+            }
+            return result;
         }
     }
 }

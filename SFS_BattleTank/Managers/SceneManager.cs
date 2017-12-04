@@ -16,9 +16,11 @@ namespace SFS_BattleTank.Managers
         private Scene _activeScene;
         private Scene _preScene;
         private bool _isStarted;
+        private Game1 _game;
 
-        public SceneManager(ContentManager contents)
+        public SceneManager(ContentManager contents, Game1 game)
         {
+            _game = game;
             _allScenes = new List<Scene>();
             _contents = contents;
             _activeScene = null;
@@ -92,6 +94,10 @@ namespace SFS_BattleTank.Managers
             if (_isStarted)
                 if (_activeScene != null)
                     _activeScene.Draw(sp);
+        }
+        public void StopGame()
+        {
+            _game.Exit();
         }
     }
 }

@@ -28,3 +28,4 @@ D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\tanks
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\gameBullet.xnb
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\font.xnb
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\cursor.xnb
+D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\textInput.xnb

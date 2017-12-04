@@ -47,7 +47,7 @@ namespace SFS_BattleTank
             //network.Init();
             //network.Connect();
 
-            sceneManager = new SceneManager(contents);
+            sceneManager = new SceneManager(contents,this);
             sceneManager.Init();
             sceneManager.GotoScene(Consts.SCENE_PLAY);
 
