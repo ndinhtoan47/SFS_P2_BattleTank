@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SourceFile>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/sounds/s_menu_BG.mp3</SourceFile>
+  <SourceTime>2017-08-13T09:45:28.4138392+07:00</SourceTime>
+  <DestFile>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/bin/Windows/sounds/s_menu_BG.xnb</DestFile>
+  <DestTime>2017-12-07T15:22:57.2406744+07:00</DestTime>
+  <Importer>Mp3Importer</Importer>
+  <ImporterTime>2016-03-30T13:36:08+07:00</ImporterTime>
+  <Processor>SongProcessor</Processor>
+  <ProcessorTime>2016-03-30T13:36:08+07:00</ProcessorTime>
+  <Parameters>
+    <Key>Quality</Key>
+    <Value>Best</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput>
+    <string>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/bin/Windows/sounds/s_menu_BG.wma</string>
+  </BuildOutput>
+</PipelineBuildEvent>

@@ -8,13 +8,14 @@ namespace SFS_BattleTank.Constants
         public static readonly byte MOUSEBUTTON_RIGHT = 2;
         public static readonly byte MOUSEBUTTON_MIDDLE = 3;
         // game settings
-        public static int VIEWPORT_WIDTH = 0;
-        public static int VIEWPORT_HEIGHT = 0;
+        public static int VIEWPORT_WIDTH = 800;
+        public static int VIEWPORT_HEIGHT = 600;
         // config path
         public static readonly string SMARTFOX_CONFIG = @"../../../../sfs_config.xml";
         // game scene's name
         public static readonly string SCENE_PLAY = "playScene";
         public static readonly string SCENE_LOGIN = "loginScene";
+        public static readonly string SCENE_MENU = "menuScene";
         // client proterties
         public static readonly string X = "x";
         public static readonly string Y = "y";
@@ -61,12 +62,20 @@ namespace SFS_BattleTank.Constants
         public static readonly string UI_CMD_INVERSE_USE_BACKGROUND = "inverseUseBackground";
         public static readonly string UI_CMD_CHANGE_TO_LOGIN_BUTTON = "changeToLoginButton";
         public static readonly string UI_CMD_CHANGE_TO_EXIT_BUTTON = "changeToExitButton";
+        public static readonly string UI_CMD_CHANGE_TO_SOLO_BUTTON = "changeToSoloButton";
+        public static readonly string UI_CMD_CHANGE_TO_CUSTUME_BATTLE_BUTTON = "changeToCustumeBattleButton";
         public static readonly string UI_CMD_DISABLE = "disable";
         public static readonly string UI_CMD_ENABLE = "enable";
         // ui background
-        public static readonly string UIS_ID = "";
+        public static readonly string UIS_ID = @"ID";
         public static readonly string UIS_PASS = "";
         public static readonly string UIS_INPUT_FIELD = "textInput";
+        public static readonly string UIS_EXIT_BUTTON = @"icon\exit";
+        public static readonly string UIS_MENU_BUTTON = "menuBT";
+        public static readonly string UIS_SOLO_BUTTON = "SoloButton";
+        public static readonly string UIS_CUSTUME_BATTLE_BUTTON = "CustumeBattle";
+        public static readonly string UIS_SOUND_ENABLE_BUTTON = @"icon\sound_enable";
+        public static readonly string UIS_SOUND_DISABLE_BUTTON = @"icon\sound_disable";
 
     }
 }

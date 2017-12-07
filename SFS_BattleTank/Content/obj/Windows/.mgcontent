@@ -9,5 +9,23 @@
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/font.spritefont</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/cursor.png</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/textInput.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/button.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/loginBG.jpg</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/menuBG.jpg</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/CustumeBattle.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/menuBT.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/SoloButton.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/icon/about.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/icon/cancel.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/icon/exit.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/icon/ok.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/icon/pause.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/icon/play.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/icon/sound_disable.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/icon/sound_enable.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/sounds/s_buttonHover.wav</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/sounds/s_menu_BG.mp3</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/sounds/s_login_BG.mp3</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/ID.png</File>
   </SourceFiles>
 </SourceFileCollection>

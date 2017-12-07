@@ -29,9 +29,13 @@ namespace SFS_BattleTank
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferWidth = Consts.VIEWPORT_WIDTH;
+            graphics.PreferredBackBufferHeight = Consts.VIEWPORT_HEIGHT;            
             Content.RootDirectory = "Content";
+            this.IsMouseVisible = true;
+            graphics.IsFullScreen = false;
+           
             network = new Connection();
-
         }
 
         /// <summary>
@@ -44,12 +48,12 @@ namespace SFS_BattleTank
         {
             // TODO: Add your initialization logic here
             contents = Content;
-            //network.Init();
-            //network.Connect();
+            network.Init();
+            network.Connect();
 
             sceneManager = new SceneManager(contents,this);
             sceneManager.Init();
-            sceneManager.GotoScene(Consts.SCENE_PLAY);
+            sceneManager.GotoScene(Consts.SCENE_LOGIN);
 
             base.Initialize();
         }
@@ -63,6 +67,11 @@ namespace SFS_BattleTank
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             // TODO: use this.Content to load your game content here
+            if (graphics.IsFullScreen)
+            {
+                Consts.VIEWPORT_WIDTH = graphics.GraphicsDevice.Viewport.Width;
+                Consts.VIEWPORT_HEIGHT = graphics.GraphicsDevice.Viewport.Height;
+            }
         }
 
         /// <summary>
@@ -85,7 +94,7 @@ namespace SFS_BattleTank
                 Exit();
             float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             Input.Update();
-           // network.Update(elapsedTime);
+            network.Update(elapsedTime);
             // TODO: Add your update logic here
             sceneManager.Update(elapsedTime);
             base.Update(gameTime);

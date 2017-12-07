@@ -34,7 +34,6 @@ namespace SFS_BattleTank.UI
         {
             _textScale = textScale;
             Init();
-            InitBoundingBox(_textScale);
         }
         public override void Init()
         {
@@ -44,6 +43,7 @@ namespace SFS_BattleTank.UI
             _delayCursor = 0.5f;
             _totalCusor = 0.0f;
             _useBackground = true;
+            InitBoundingBox(_textScale);
             base.Init();
         }
         public override void LoadContents(ContentManager contents)
@@ -69,30 +69,14 @@ namespace SFS_BattleTank.UI
                     new Rectangle((int)_position.X, (int)_position.Y, (int)_bounding.Width, (int)_bounding.Height),
                     Color.White);
             }
-            // draw text
-            _drawText = CheckInputTextMaxSize(_font, _bounding.Width, _inputText, _textScale);
-            sp.DrawString(
-                spriteFont: _font,
-                text: _drawText,
-                position: _position,
-                scale: _textScale,
-                rotation: 0.0f,
-                effects: SpriteEffects.None,
-                origin: Vector2.Zero,
-                layerDepth: 0.0f,
-                color: Color.Red);
-            // draw cursor
-            Vector2 size = new Vector2(0, _font.MeasureString("0").Y);
-            if (_inputText != "") size = _font.MeasureString(_drawText) * _textScale;
-            if (_drawCursor && _cursor != null)
-                sp.Draw(_cursor,
-                    new Rectangle((int)(_position.X + size.X - 4), (int)_position.Y, (int)(14), (int)((size.Y * _textScale))),
-                    Color.Red);
+
+            DrawCursorAndText_DefaultType(sp);
+            DrawCursorAndText_IDType(sp);
             base.Draw(sp);
         }
         public override void CMD(string cmd)
         {
-            if(cmd == Consts.UI_CMD_INVERSE_USE_BACKGROUND)
+            if (cmd == Consts.UI_CMD_INVERSE_USE_BACKGROUND)
             {
                 _useBackground = !_useBackground;
             }
@@ -100,9 +84,12 @@ namespace SFS_BattleTank.UI
         }
         public override void ChangeBackground(string name)
         {
-            _background = _contents.Load<Texture2D>(name);
+            if (name != "")
+                _background = _contents.Load<Texture2D>(name);
             base.ChangeBackground(name);
         }
+        public string GetInputText() { return _inputText; }
+
         protected override void InitBoundingBox(float textScale)
         {
             int heightPerUnit = 20;
@@ -218,6 +205,60 @@ namespace SFS_BattleTank.UI
                 count++;
             }
             return result;
+        }
+
+        private void DrawCursorAndText_DefaultType(SpriteBatch sp)
+        {
+            // draw text
+            // default background
+            if (_background.Name == Consts.UIS_INPUT_FIELD)
+            {
+                _drawText = CheckInputTextMaxSize(_font,(int) (_bounding.Width * 0.95f), _inputText, _textScale);
+                sp.DrawString(
+                    spriteFont: _font,
+                    text: _drawText,
+                    position: _position,
+                    scale: _textScale,
+                    rotation: 0.0f,
+                    effects: SpriteEffects.None,
+                    origin: Vector2.Zero,
+                    layerDepth: 0.0f,
+                    color: Color.Gray);
+            }
+            // draw cursor
+            // use default background
+            Vector2 size = new Vector2(0, _font.MeasureString("0").Y) * _textScale;
+            if (_inputText != "") size = _font.MeasureString(_drawText) * _textScale;
+            if (_drawCursor && _cursor != null && _background.Name == Consts.UIS_INPUT_FIELD)
+                sp.Draw(_cursor,
+                    new Rectangle((int)(_position.X + size.X - 4), (int)_position.Y, (int)(14), (int)((size.Y))),
+                    new Color(255, 255, 255, 200));
+        }
+        private void DrawCursorAndText_IDType(SpriteBatch sp)
+        {
+            // id bacground
+            if (_background.Name == Consts.UIS_ID)
+            {
+                _drawText = CheckInputTextMaxSize(_font, (int)(_bounding.Width * 0.8f), _inputText, _textScale);
+                sp.DrawString(
+                    spriteFont: _font,
+                    text: _drawText,
+                    position: _position + new Vector2(_bounding.Width * 0.15f, 0.0f),
+                    scale: _textScale,
+                    rotation: 0.0f,
+                    effects: SpriteEffects.None,
+                    origin: Vector2.Zero,
+                    layerDepth: 0.0f,
+                    color: Color.Gray);
+            }
+            // draw cursor
+            // use id background
+            Vector2 size = new Vector2(0, _font.MeasureString("0").Y) * _textScale;
+            if (_inputText != "") size = _font.MeasureString(_drawText) * _textScale;
+            if (_drawCursor && _cursor != null && _background.Name == Consts.UIS_ID)
+                sp.Draw(_cursor,
+                    new Rectangle((int)(_position.X + size.X + _bounding.Width * 0.15f), (int)_position.Y, (int)(14), (int)((size.Y))),
+                    new Color(255, 255, 255, 200));
         }
     }
 }

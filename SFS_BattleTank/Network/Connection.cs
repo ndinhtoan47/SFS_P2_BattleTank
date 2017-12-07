@@ -11,6 +11,7 @@ using SFS_BattleTank.Bases;
 using SFS_BattleTank.GameObjCtrl;
 using Sfs2X.Entities.Variables;
 using Sfs2X.Requests.MMO;
+using SFS_BattleTank.GameScenes;
 
 namespace SFS_BattleTank.Network
 {
@@ -23,16 +24,16 @@ namespace SFS_BattleTank.Network
         protected string ROOM = "The Lobby";
         protected Room curRoom;
         protected bool isLoadConfig = false;
-
+        protected bool logined;
         protected Dictionary<string, Controller> _controllers;
         public Connection()
         {
+            LoginScene.SetNotice("Connecting ...");
             sfs = new SmartFox();
             sfs.ThreadSafeMode = true;
             _controllers = new Dictionary<string, Controller>();
 
             Init();
-            Connect();
         }
         ~Connection()
         {
@@ -40,6 +41,7 @@ namespace SFS_BattleTank.Network
         }
         public void Init()
         {
+            logined = false;
             this.AddListener();
         }
         public void Update(float deltaTime)
@@ -67,7 +69,11 @@ namespace SFS_BattleTank.Network
         }
         public void Login(string userName, string password = "")
         {
-            sfs.Send(new LoginRequest(userName, password, ZONE));
+            LoginScene.SetNotice("Loginning ...");
+            if (!logined)
+                sfs.Send(new LoginRequest(userName, password, ZONE));
+            if(!sfs.IsConnected)
+                LoginScene.SetNotice("Connection fail !");
         }
         public void JoinRoom(string roomName = "The Lobby", string password = "")
         {
@@ -112,34 +118,60 @@ namespace SFS_BattleTank.Network
             bool success = (bool)e.Params["success"];
             if (success)
             {
+                LoginScene.SetNotice("Input your name !");
                 Debug.WriteLine("Connected !");
-                Login("name 1");
             }
             else
             {
+                string reason = (string)e.Params["errorMessage"];
+                LoginScene.SetNotice("Connection fail !");
                 Debug.WriteLine("Connection fail !");
-                Debug.WriteLine((string)e.Params["reason"]);
+                Debug.WriteLine(reason);
             }
         }
         private void OnLoadConfigFail(BaseEvent e)
         {
+            LoginScene.SetNotice("Load config fail !");
             Debug.WriteLine("Load config fail !");
         }
         private void OnLoadConfigSuccess(BaseEvent e)
         {
+            LoginScene.SetNotice("Load config success !");
             Debug.WriteLine("Load config success !");
             sfs.Connect(sfs.Config);
         }
         private void OnLogin(BaseEvent e)
         {
+            LoginScene.SetNotice("Login success !");
             SFSObject data = (SFSObject)e.Params["data"];
             Debug.WriteLine("Login success ! User info : " + e.Params["user"]);
-            JoinRoom();
+            logined = true;
+            // goto menu scene after login success
+            Game1.sceneManager.GotoScene(Consts.SCENE_MENU);
         }
         private void OnLoginError(BaseEvent e)
         {
+            short errorCode = (short)e.Params["errorCode"];
+            LoginScene.SetNotice("Login error !\nCode: " + errorCode.ToString());           
+            switch(errorCode)
+            {
+                case 10:
+                    {
+                        LoginScene.SetNotice("Name empty !\nCode: " + errorCode.ToString());      
+                        break;
+                    }
+                case 2:
+                    {
+                        LoginScene.SetNotice("Name existed !\nCode: " + errorCode.ToString());
+                        break;
+                    }
+                default:
+                    {
+                        LoginScene.SetNotice("Login error !\nCode: " + errorCode.ToString());      
+                        break;
+                    }
+            }
             Debug.WriteLine("Login error !");
-            Login("name 2");
         }
         private void OnJoinRoom(BaseEvent e)
         {
@@ -198,9 +230,9 @@ namespace SFS_BattleTank.Network
                 string type = receive.GetUtfString(Consts.TYPE);
                 if (type == Consts.TYPE_TANK)
                 {
-                    _controllers[Consts.CTRL_TANK].Remove(sender,receive);
+                    _controllers[Consts.CTRL_TANK].Remove(sender, receive);
                 }
-                if(type == Consts.TYPE_BULLET)
+                if (type == Consts.TYPE_BULLET)
                 {
                     _controllers[Consts.CTRL_BULLET].Remove(sender, receive);
                 }

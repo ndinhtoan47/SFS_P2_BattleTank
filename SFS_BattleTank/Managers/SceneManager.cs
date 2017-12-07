@@ -31,8 +31,9 @@ namespace SFS_BattleTank.Managers
         public bool Init()
         {
             // add scenes
-            this.Add(new PlayScenes(_contents));
-
+            this.Add(new PlayScene(_contents));
+            this.Add(new LoginScene(_contents));
+            this.Add(new MenuScene(_contents));
 
             _isStarted = true;
             if (_activeScene == null)

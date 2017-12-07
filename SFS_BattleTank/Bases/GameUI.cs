@@ -24,7 +24,14 @@ namespace SFS_BattleTank.Bases
         public virtual void CMD(string cmd) { }
         public virtual void ChangeBackground(string name) { }
         protected virtual void InitBoundingBox(float textScale) { }
-        
+        //
+        public void CenterAlignment(Rectangle box)
+        {
+            int x = box.X + (box.Width - _bounding.Width) / 2;
+            int y = box.Y + (box.Height - _bounding.Height) / 2;
+            _position.X = x;
+            _position.Y = y;
+        }
         // properties
         public Vector2 GetPosition() { return _position; }
         public void SetPosition(Vector2 value) { _position = value; }

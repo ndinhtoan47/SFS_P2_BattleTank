@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <SourceFile>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/textInput.png</SourceFile>
-  <SourceTime>2017-12-04T22:20:53.523809+07:00</SourceTime>
+  <SourceTime>2017-12-06T00:59:58.5394873+07:00</SourceTime>
   <DestFile>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/bin/Windows/textInput.xnb</DestFile>
-  <DestTime>2017-12-04T22:33:59.6398003+07:00</DestTime>
+  <DestTime>2017-12-06T01:00:06.7105513+07:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2016-03-30T13:36:08+07:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

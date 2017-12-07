@@ -49,12 +49,16 @@
     <Compile Include="GameObjCtrl\TankController.cs" />
     <Compile Include="GameObjects\Bullet.cs" />
     <Compile Include="GameObjects\Tank.cs" />
-    <Compile Include="GameScenes\PlayScenes.cs" />
+    <Compile Include="GameScenes\LoginScene.cs" />
+    <Compile Include="GameScenes\MenuScene.cs" />
+    <Compile Include="GameScenes\PlayScene.cs" />
     <Compile Include="InputControl\Input.cs" />
     <Compile Include="Managers\SceneManager.cs" />
     <Compile Include="Network\Connection.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sounds\SBackground.cs" />
+    <Compile Include="Sounds\SEffect.cs" />
     <Compile Include="UI\Button.cs" />
     <Compile Include="UI\InputField.cs" />
   </ItemGroup>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SourceFile>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/sounds/s_buttonHover.wav</SourceFile>
+  <SourceTime>2017-08-13T09:45:28.4751072+07:00</SourceTime>
+  <DestFile>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/bin/Windows/sounds/s_buttonHover.xnb</DestFile>
+  <DestTime>2017-12-07T15:03:11.6551174+07:00</DestTime>
+  <Importer>WavImporter</Importer>
+  <ImporterTime>2016-03-30T13:36:08+07:00</ImporterTime>
+  <Processor>SoundEffectProcessor</Processor>
+  <ProcessorTime>2016-03-30T13:36:08+07:00</ProcessorTime>
+  <Parameters>
+    <Key>Quality</Key>
+    <Value>Best</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
