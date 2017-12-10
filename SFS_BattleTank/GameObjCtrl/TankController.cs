@@ -30,37 +30,42 @@ namespace SFS_BattleTank.GameObjCtrl
         {
             _tanks = new Dictionary<int, GameObject>();
             _totalFireTime = 0;
-            _delayFire = 0.75f;
+            _delayFire = 0.888f;
             _lastXDir = 1;
             _lastYDir = 0;
         }
 
-        public override void Add(User user,SFSObject data)
+        public override void Add(User user, SFSObject data)
         {
-            if (data.ContainsKey(Consts.X) && data.ContainsKey(Consts.Y))
+            if (user != null)
+            {
+                if (data.ContainsKey(Consts.X) && data.ContainsKey(Consts.Y))
+                {
+                    if (!_tanks.ContainsKey(user.Id))
+                    {
+                        _tanks.Add(user.Id, new Tank(user.Id, (float)data.GetDouble(Consts.X), (float)data.GetDouble(Consts.Y)));
+                        _tanks[user.Id].LoadContents(_contents);
+                    }
+                }
+            }
+            base.Add(user, data);
+        }
+        public override void Remove(User user, SFSObject data)
+        {
+            if (user != null)
             {
                 if (!_tanks.ContainsKey(user.Id))
                 {
-                    _tanks.Add(user.Id, new Tank(user.Id, (float)data.GetDouble(Consts.X),(float)data.GetDouble(Consts.Y)));
-                    _tanks[user.Id].LoadContents(_contents);
+                    return;
                 }
+                _tanks.Remove(user.Id);
             }
-            base.Add(user,data);
+            base.Remove(user, data);
         }
-        public override void Remove(User user,SFSObject data)
-        {
-            if (!_tanks.ContainsKey(user.Id))
-            {
-                return;
-            }
-            _tanks.Remove(user.Id);
-            base.Remove(user,data);
-        }
-        
         public override void UpdateData(User user, SFSObject data)
         {
             User me = _network.GetInstance().MySelf;
-            if (user != me)
+            if (user != me && user != null)
             {
                 if (_tanks.ContainsKey(user.Id))
                 {
@@ -72,8 +77,9 @@ namespace SFS_BattleTank.GameObjCtrl
                     }
                 }
             }
-            base.UpdateData(user,data);
+            base.UpdateData(user, data);
         }
+
         public override void Behaviour(string cmd, int id, SFSObject data)
         {
             base.Behaviour(cmd, id, data);
@@ -84,7 +90,7 @@ namespace SFS_BattleTank.GameObjCtrl
             this.GetDirection(out x, out y);
             if (x != 0 || y != 0)
                 Move(deltaTime, x, y);
-            if(CheckFire(deltaTime))
+            if (CheckFire(deltaTime))
             {
                 Fire(_lastXDir, _lastYDir);
             }
@@ -97,7 +103,7 @@ namespace SFS_BattleTank.GameObjCtrl
         }
         public override void Init()
         {
-            GetMySefl();
+            _mySelf =  GetMySefl();
             base.Init();
         }
         // myseft active
@@ -150,7 +156,7 @@ namespace SFS_BattleTank.GameObjCtrl
                 data.PutDouble(Consts.ROTATION, _tanks[_mySelf].GetRotation());
                 data.PutUtfString(Consts.TYPE, Consts.TYPE_TANK);
 
-                sfs.Send(new ExtensionRequest(Consts.CRQ_MOVE, data,_network.GetInstance().LastJoinedRoom));
+                sfs.Send(new ExtensionRequest(Consts.CRQ_MOVE, data, _network.GetInstance().LastJoinedRoom));
             }
         }
         protected bool CheckFire(float deltaTime)
@@ -161,12 +167,12 @@ namespace SFS_BattleTank.GameObjCtrl
                 {
                     _totalFireTime = 0;
                     return true;
-                } 
+                }
             }
             _totalFireTime += deltaTime;
             return false;
         }
-        protected void Fire(int xDir,int yDir)
+        protected void Fire(int xDir, int yDir)
         {
             SFSObject data = new SFSObject();
             data.PutDouble(Consts.XDIR, xDir);
@@ -174,11 +180,11 @@ namespace SFS_BattleTank.GameObjCtrl
             data.PutDouble(Consts.X, _tanks[_mySelf].GetPosition().X);
             data.PutDouble(Consts.Y, _tanks[_mySelf].GetPosition().Y);
 
-            _network.GetInstance().Send( new ExtensionRequest(Consts.CRQ_FIRE, data,_network.GetCurRoom()));
+            _network.GetInstance().Send(new ExtensionRequest(Consts.CRQ_FIRE, data, _network.GetCurRoom()));
         }
-        protected void SetDir(int x,int y)
+        protected void SetDir(int x, int y)
         {
-            if(x != 0 || y != 0)
+            if (x != 0 || y != 0)
             {
                 _lastXDir = x;
                 _lastYDir = y;

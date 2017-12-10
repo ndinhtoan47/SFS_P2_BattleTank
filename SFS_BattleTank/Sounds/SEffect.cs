@@ -31,8 +31,13 @@ namespace SFS_BattleTank.Sounds
             Init();
         }
 
+        public void Re_CreateInstance()
+        {
+            _instance = _sound.CreateInstance();
+        }
         public void Dispose()
         {
+            Stop(true);
             _instance.Dispose();
             _sound.Dispose();
         }

@@ -8,6 +8,7 @@ using SFS_BattleTank.Bases;
 using SFS_BattleTank.Constants;
 using SFS_BattleTank.GameObjCtrl;
 using SFS_BattleTank.InputControl;
+using SFS_BattleTank.Managers;
 using SFS_BattleTank.UI;
 using Sfs2X.Entities;
 using Sfs2X.Entities.Data;
@@ -17,6 +18,7 @@ namespace SFS_BattleTank.GameScenes
 {
     public class PlayScene : Scene
     {
+        protected ParticleManager _parManager;
         public PlayScene(ContentManager contents)
             : base(Consts.SCENE_PLAY, contents)
         {
@@ -24,12 +26,14 @@ namespace SFS_BattleTank.GameScenes
 
         public override bool Init()
         {
+            _parManager = new ParticleManager();
             _network.AddController(Consts.CTRL_TANK, new TankController(_contents));
             _network.AddController(Consts.CTRL_BULLET, new BulletController(_contents));
             return base.Init();
         }
         public override bool LoadContents()
         {
+            _parManager.LoadContents(_contents);
             return base.LoadContents();
         }
         public override void Shutdown()
@@ -38,15 +42,12 @@ namespace SFS_BattleTank.GameScenes
         }
         public override void Update(float deltaTime)
         {
-            if (Input.IsKeyDown(Keys.Enter))
-            {
-                _network.Login("ndinhtoan");
-            }
             base.Update(deltaTime);
         }
         public override void Draw(SpriteBatch sp)
         {
             DrawObj(sp);
+            _parManager.Draw(sp);
             base.Draw(sp);
         }
 
@@ -60,7 +61,7 @@ namespace SFS_BattleTank.GameScenes
                 {
                     ii.Draw(sp);
                 }
-            }
+            }           
         }
     }
 }

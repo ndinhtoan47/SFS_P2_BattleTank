@@ -215,6 +215,7 @@ namespace SFS_BattleTank.UI
                 case 4: // custume ballte
                     {
                         Game1.sceneManager.GotoScene(Consts.SCENE_PLAY);
+                        Game1.network.JoinRoom();
                         break;
                     }
             }

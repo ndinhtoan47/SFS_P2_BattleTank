@@ -81,8 +81,7 @@ namespace SFS_BattleTank.Network
                 ROOM = roomName;
             sfs.Send(new JoinRoomRequest(ROOM, password));
         }
-        public SmartFox GetInstance() { return sfs; }
-        public Room GetCurRoom() { return curRoom; }
+        
         public void CreateRoom(RoomSettings settings)
         {
             sfs.Send(new CreateRoomRequest(settings, true));
@@ -92,6 +91,8 @@ namespace SFS_BattleTank.Network
             CreateRoom(GetRoomSetting(roomName));
         }
 
+        public SmartFox GetInstance() { return sfs; }
+        public Room GetCurRoom() { return curRoom; }
         private void AddListener()
         {
             sfs.AddEventListener(SFSEvent.CONNECTION, OnConnection);
@@ -192,15 +193,20 @@ namespace SFS_BattleTank.Network
             Debug.WriteLine(e.Params["errorMessage"] + " - Error code :" + e.Params["errorCode"].ToString());
         }
         private void OnExtensionResponse(BaseEvent e)
-        {
+         {
             SFSObject receive = (SFSObject)e.Params["params"];
             string cmd = (string)e.Params["cmd"];
             Room room = (Room)e.Params["room"];
             User sender = room.GetUserById((int)(receive.GetDouble("ID")));
-
+            List<User> list = room.UserList;  // test
             // update data
             if (cmd == Consts.CMD_UPDATE_DATA)
             {
+                if(sender == null)
+                {
+                    Debug.WriteLine("Sender = null");
+                    return;
+                }
                 string type = receive.GetUtfString(Consts.TYPE);
                 if (type == Consts.TYPE_TANK)
                 {
@@ -220,6 +226,12 @@ namespace SFS_BattleTank.Network
                     _controllers[Consts.CTRL_TANK].Add(sender, receive);
                 }
                 if (type == Consts.TYPE_BULLET)
+                {
+                    _controllers[Consts.CTRL_BULLET].Add(sender, receive);
+                }
+
+                // test
+                if (type == "bulletType")
                 {
                     _controllers[Consts.CTRL_BULLET].Add(sender, receive);
                 }

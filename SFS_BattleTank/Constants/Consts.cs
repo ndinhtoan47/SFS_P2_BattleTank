@@ -8,8 +8,8 @@ namespace SFS_BattleTank.Constants
         public static readonly byte MOUSEBUTTON_RIGHT = 2;
         public static readonly byte MOUSEBUTTON_MIDDLE = 3;
         // game settings
-        public static int VIEWPORT_WIDTH = 800;
-        public static int VIEWPORT_HEIGHT = 600;
+        public static int VIEWPORT_WIDTH = 1366;
+        public static int VIEWPORT_HEIGHT = 768;
         // config path
         public static readonly string SMARTFOX_CONFIG = @"../../../../sfs_config.xml";
         // game scene's name
@@ -52,7 +52,8 @@ namespace SFS_BattleTank.Constants
         public static readonly string TYPE = "type";
         public static readonly string TYPE_TANK = "tanktype";
         public static readonly string TYPE_BULLET = "bullettype";
-
+        public static readonly string TYPE_PAR_EXPLOSION = "explosionpar";
+        public static readonly string TYPE_PAR_FIRE = "firepar";
         // game ui type
         public static readonly string UI_INPUT_FIELD = "inputField";
         public static readonly string UI_BUTTON = "button";

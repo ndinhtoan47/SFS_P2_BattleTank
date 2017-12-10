@@ -6,6 +6,7 @@ using SFS_BattleTank.Constants;
 using SFS_BattleTank.Sounds;
 using SFS_BattleTank.UI;
 using System;
+using System.Diagnostics;
 
 namespace SFS_BattleTank.GameScenes
 {
@@ -36,7 +37,7 @@ namespace SFS_BattleTank.GameScenes
         public override bool Init()
         {
             _inputName = new InputField(Vector2.Zero, new Rectangle(0, 0, 200, 0), 2f);
-            _inputName.CenterAlignment(new Rectangle(0, 0, 800, 600));
+            _inputName.CenterAlignment(new Rectangle(0, 0, Consts.VIEWPORT_WIDTH, Consts.VIEWPORT_HEIGHT));
 
             Vector2 inputPosition = _inputName.GetPosition();
             Rectangle inputRect = _inputName.GetBoundingBox();

@@ -7,6 +7,7 @@ using SFS_BattleTank.Constants;
 using SFS_BattleTank.GameObjects;
 using SFS_BattleTank.InputControl;
 using SFS_BattleTank.Managers;
+using SFS_BattleTank.Sounds;
 using Sfs2X.Entities;
 using Sfs2X.Entities.Data;
 using System;
@@ -16,10 +17,16 @@ namespace SFS_BattleTank.GameObjCtrl
     public class BulletController : Controller
     {
         protected Dictionary<int, GameObject> _bullets;
+
+        protected const string SOUND_FIRE = @"sounds\s_fire";
+        protected SEffect _s_fire;
         public BulletController(ContentManager contents)
             : base(contents)
         {
             _bullets = new Dictionary<int, GameObject>();
+
+            _s_fire = new SEffect();
+            _s_fire.LoadContents(contents, SOUND_FIRE);
         }
 
         public override void Add(Sfs2X.Entities.User user, SFSObject data)
@@ -28,17 +35,28 @@ namespace SFS_BattleTank.GameObjCtrl
             {
                 if (data.ContainsKey(Consts.X) && (data.ContainsKey(Consts.Y) && data.ContainsKey(Consts.GO_ID)))
                 {
-                    if (!_bullets.ContainsKey((int)data.GetDouble(Consts.GO_ID)))
+                    int objectId = (int)data.GetDouble(Consts.GO_ID);
+                    if (!_bullets.ContainsKey(objectId))
+                    {
                         _bullets.Add((int)data.GetDouble(Consts.GO_ID), new Bullet((float)data.GetDouble(Consts.X),
                                                         (float)data.GetDouble(Consts.Y),
-                                                        (ulong)data.GetDouble(Consts.GO_ID)));
-                    _bullets[(int)data.GetDouble(Consts.GO_ID)].LoadContents(_contents);
+                                                        (ulong)objectId));
+                        _bullets[objectId].LoadContents(_contents);
+                        _s_fire.Play();
+                    }
                 }
             }
             base.Add(user, data);
         }
-        public override void Remove(User user, SFSObject data = null)
+        public override void Remove(User user, SFSObject data)
         {
+            if (!data.ContainsKey(Consts.GO_ID)) return;
+            else
+            {
+                int objectId = (int)data.GetDouble(Consts.GO_ID);
+                if (_bullets.ContainsKey(objectId))
+                    _bullets.Remove(objectId);
+            }
             base.Remove(user, data);
         }
         public override void Init()
@@ -70,7 +88,7 @@ namespace SFS_BattleTank.GameObjCtrl
 
 
         public override void Update(float deltaTime)
-        {          
+        {
             base.Update(deltaTime);
         }
     }

@@ -11,6 +11,7 @@ using SFS_BattleTank.Managers;
 using SFS_BattleTank.Network;
 using Sfs2X.Entities.Data;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace SFS_BattleTank
 {
@@ -29,12 +30,9 @@ namespace SFS_BattleTank
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferWidth = Consts.VIEWPORT_WIDTH;
-            graphics.PreferredBackBufferHeight = Consts.VIEWPORT_HEIGHT;            
+            graphics.IsFullScreen = true;
             Content.RootDirectory = "Content";
             this.IsMouseVisible = true;
-            graphics.IsFullScreen = false;
-           
             network = new Connection();
         }
 
@@ -54,8 +52,24 @@ namespace SFS_BattleTank
             sceneManager = new SceneManager(contents,this);
             sceneManager.Init();
             sceneManager.GotoScene(Consts.SCENE_LOGIN);
-
+            if (graphics.IsFullScreen)
+            {
+                graphics.PreferredBackBufferWidth = graphics.GraphicsDevice.DisplayMode.Width;
+                graphics.PreferredBackBufferHeight = graphics.GraphicsDevice.DisplayMode.Height;
+                Consts.VIEWPORT_WIDTH = graphics.GraphicsDevice.DisplayMode.Width;
+                Consts.VIEWPORT_HEIGHT = graphics.GraphicsDevice.DisplayMode.Height;
+                graphics.GraphicsDevice.Viewport = new Viewport(0, 0, Consts.VIEWPORT_WIDTH, Consts.VIEWPORT_HEIGHT);
+                graphics.ApplyChanges();
+            }     
+            else
+            {
+                graphics.PreferredBackBufferWidth = Consts.VIEWPORT_WIDTH;
+                graphics.PreferredBackBufferHeight = Consts.VIEWPORT_HEIGHT;
+                graphics.GraphicsDevice.Viewport = new Viewport(0, 0, Consts.VIEWPORT_WIDTH, Consts.VIEWPORT_HEIGHT);
+                graphics.ApplyChanges();
+            }
             base.Initialize();
+
         }
 
         /// <summary>
@@ -64,14 +78,10 @@ namespace SFS_BattleTank
         /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
+            
+                // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             // TODO: use this.Content to load your game content here
-            if (graphics.IsFullScreen)
-            {
-                Consts.VIEWPORT_WIDTH = graphics.GraphicsDevice.Viewport.Width;
-                Consts.VIEWPORT_HEIGHT = graphics.GraphicsDevice.Viewport.Height;
-            }
         }
 
         /// <summary>
@@ -106,10 +116,9 @@ namespace SFS_BattleTank
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-            
+            GraphicsDevice.Clear(Color.CornflowerBlue);            
             // TODO: Add your drawing code here
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, null);
             sceneManager.Draw(spriteBatch);
             spriteBatch.End();
             base.Draw(gameTime);

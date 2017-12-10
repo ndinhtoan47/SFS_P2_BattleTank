@@ -28,10 +28,9 @@ namespace SFS_BattleTank.Bases
 
         public int GetMySefl()
         {
-            int me = _network.GetInstance().MySelf.Id;
+            int me = -1;
             if (_network.GetInstance().MySelf != null)
-                _mySelf = me;
-            else _mySelf = -1;
+                me = _network.GetInstance().MySelf.Id;
             return me;
         }
     }

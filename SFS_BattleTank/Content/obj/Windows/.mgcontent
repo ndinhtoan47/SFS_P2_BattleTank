@@ -27,5 +27,15 @@
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/sounds/s_menu_BG.mp3</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/sounds/s_login_BG.mp3</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/ID.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/sounds/s_fire.wav</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/particles/fire/0.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/particles/fire/1.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/particles/fire/2.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/particles/fire/3.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/particles/explosion/0.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/particles/explosion/1.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/particles/explosion/2.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/particles/explosion/3.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/particles/explosion/4.png</File>
   </SourceFiles>
 </SourceFileCollection>
