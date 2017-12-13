@@ -45,7 +45,7 @@ namespace SFS_BattleTank.GameObjCtrl
                     {
                         _tanks.Add(user.Id, new Tank(user.Id, (float)data.GetDouble(Consts.X), (float)data.GetDouble(Consts.Y)));
                         _tanks[user.Id].LoadContents(_contents);
-                       // AddOtherPlayer(data);
+                        AddOtherPlayer(data);
                     }
                 }
             }
@@ -244,16 +244,17 @@ namespace SFS_BattleTank.GameObjCtrl
                 data.ContainsKey(Consts.R_ARRAY))
             {
                 double[] x = data.GetDoubleArray(Consts.X_ARRAY);
-                double[] y = data.GetDoubleArray(Consts.X_ARRAY);
-                double[] r = data.GetDoubleArray(Consts.X_ARRAY);
-                double[] id = data.GetDoubleArray(Consts.X_ARRAY);
+                double[] y = data.GetDoubleArray(Consts.Y_ARRAY);
+                double[] r = data.GetDoubleArray(Consts.R_ARRAY);
+                double[] id = data.GetDoubleArray(Consts.ID_ARRAY);
                 if (!(x.Length == y.Length && y.Length == r.Length && r.Length == id.Length)) return;
                 for (int i = 0; i < x.Length; i++)
                 {
                     if (!_tanks.ContainsKey((int)id[i]))
                     {
                         _tanks.Add((int)id[i], new Tank((int)id[i], (float)x[i], (float)y[i]));
-                        _tanks[_tanks.Count - 1].SetRotation((int)r[i]);
+                        _tanks[(int)id[i]].SetRotation((int)r[i]);
+                        _tanks[(int)id[i]].LoadContents(_contents);
                     }
                 }
             }

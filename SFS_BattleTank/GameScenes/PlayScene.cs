@@ -55,7 +55,6 @@ namespace SFS_BattleTank.GameScenes
         public override void Update(float deltaTime)
         {
             _parManager.Update(deltaTime);
-            TestTank();
             GameObject tank = _network.GetMainTank();
             if (tank != null)
                 _camera.Update(deltaTime, tank.GetPosition());
