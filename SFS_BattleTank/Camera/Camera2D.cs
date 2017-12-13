@@ -12,14 +12,18 @@ namespace SFS_BattleTank.Camera
         private float _zoom;
         private float _rotation;
 
-        public Camera2D()
+        private int _mapWidth;
+        private int _mapHeight;
+        public Camera2D(int mapWidth,int mapHeight)
         {
             _viewportWidth = Consts.VIEWPORT_WIDTH;
             _viewportHeight = Consts.VIEWPORT_HEIGHT;
-            _follow = false;
+            _follow = true;
             _zoom = 1.0f;
             _rotation = 0.0f;
             _followPos = Vector2.Zero;
+            _mapWidth = mapWidth;
+            _mapHeight = mapHeight;
         }
 
         public void Update(float deltaTime, Vector2 follow)
@@ -28,8 +32,9 @@ namespace SFS_BattleTank.Camera
                 _followPos = follow;
             if (follow.X <= _viewportWidth / 2) _followPos.X = _viewportWidth / 2;
             if (follow.Y <= _viewportHeight / 2) _followPos.Y = _viewportHeight / 2;
-            if (follow.X + 800 / 2 >= 1000) _followPos.X = 600;
-            if (follow.Y + 400 / 2 >= 1000) _followPos.Y = 800;
+
+            if (follow.X > _mapWidth - _viewportWidth / 2) _followPos.X = _mapHeight - _viewportWidth / 2;
+            if (follow.Y > _mapHeight - _viewportHeight / 2) _followPos.Y = _mapWidth - _viewportHeight / 2;
 
 
         }

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using SFS_BattleTank.Constants;
 using SFS_BattleTank.Effects.Particles;
 using SFS_BattleTank.Effects.ParticleSys;
+using SFS_BattleTank.Sounds;
 using System.Collections.Generic;
 
 
@@ -11,11 +12,14 @@ namespace SFS_BattleTank.Managers
 {
     public class ParticleManager
     {
+        protected const string EXPLOSION_PATH = @"sounds\s_explode";
         protected List<ParticleSystem> _particles;
         protected ContentManager _contents;
+        protected SEffect _explosion;
 
         public ParticleManager()
         {
+            _explosion = new SEffect();
             Init();
         }
         protected void Init()
@@ -36,6 +40,7 @@ namespace SFS_BattleTank.Managers
         public void LoadContents(ContentManager contents)
         {
             _contents = contents;
+            _explosion.LoadContents(_contents, EXPLOSION_PATH);
         }
         public void Update(float deltaTime)
         {
@@ -50,6 +55,7 @@ namespace SFS_BattleTank.Managers
             if(type == Consts.TYPE_PAR_EXPLOSION)
             {
                 _particles.Add(new ExplosionPar(boundingBox,1.0f));
+                _explosion.Play();
             }
             if(type == Consts.TYPE_PAR_FIRE)
             {

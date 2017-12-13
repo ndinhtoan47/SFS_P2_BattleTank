@@ -8,6 +8,7 @@ using SFS_BattleTank.GameObjCtrl;
 using SFS_BattleTank.GameScenes;
 using SFS_BattleTank.InputControl;
 using SFS_BattleTank.Managers;
+using SFS_BattleTank.Maps;
 using SFS_BattleTank.Network;
 using Sfs2X.Entities.Data;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ namespace SFS_BattleTank
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            graphics.IsFullScreen = true;
+            graphics.IsFullScreen = false;
             Content.RootDirectory = "Content";
             this.IsMouseVisible = true;
             network = new Connection();
@@ -58,7 +59,10 @@ namespace SFS_BattleTank
                 graphics.PreferredBackBufferHeight = graphics.GraphicsDevice.DisplayMode.Height;
                 Consts.VIEWPORT_WIDTH = graphics.GraphicsDevice.DisplayMode.Width;
                 Consts.VIEWPORT_HEIGHT = graphics.GraphicsDevice.DisplayMode.Height;
+                Consts.VIEWPORT_SCALE_RATE_WIDTH = (float)graphics.GraphicsDevice.DisplayMode.Width / (float)Consts.VIEWPORT_WIDTH;
+                Consts.VIEWPORT_SCALE_RATE_HEIGHT = (float)graphics.GraphicsDevice.DisplayMode.Height / (float)Consts.VIEWPORT_HEIGHT;
                 graphics.GraphicsDevice.Viewport = new Viewport(0, 0, Consts.VIEWPORT_WIDTH, Consts.VIEWPORT_HEIGHT);
+
                 graphics.ApplyChanges();
             }     
             else
@@ -117,10 +121,8 @@ namespace SFS_BattleTank
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);            
-            // TODO: Add your drawing code here
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, null);
+            // TODO: Add your drawing code here           
             sceneManager.Draw(spriteBatch);
-            spriteBatch.End();
             base.Draw(gameTime);
         }
       

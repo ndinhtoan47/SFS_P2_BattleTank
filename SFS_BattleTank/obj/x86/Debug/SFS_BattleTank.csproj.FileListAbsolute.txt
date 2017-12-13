@@ -60,3 +60,12 @@ D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\parti
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\particles\explosion\2.xnb
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\particles\explosion\3.xnb
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\particles\explosion\4.xnb
+D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\item\hp.xnb
+D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\item\powerup.xnb
+D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\sounds\s_explode.xnb
+D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\map\background.xnb
+D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\map\metalBox.xnb
+D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\map\tree.xnb
+D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\map\water.xnb
+D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\map\woodBox.xnb
+D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\map\empty.xnb

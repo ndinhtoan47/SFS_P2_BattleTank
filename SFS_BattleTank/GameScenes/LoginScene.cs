@@ -99,6 +99,7 @@ namespace SFS_BattleTank.GameScenes
         }
         public override void Draw(SpriteBatch sp)
         {
+            sp.Begin();
             if (_background != null)
             {
                 sp.Draw(_background,
@@ -113,6 +114,7 @@ namespace SFS_BattleTank.GameScenes
                 sp.DrawString(_font, _notice,
                     new Vector2(_inputName.GetPosition().X, _inputName.GetBoundingBox().Height + _inputName.GetPosition().Y),
                     Color.Red);
+            sp.End();
             base.Draw(sp);
         }
 

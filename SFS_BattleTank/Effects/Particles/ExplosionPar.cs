@@ -2,11 +2,6 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using SFS_BattleTank.Effects.ParticleSys;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SFS_BattleTank.Effects.Particles
 {
@@ -30,7 +25,6 @@ namespace SFS_BattleTank.Effects.Particles
         {
             for (int i = 0; i + 0 < 5; i++)
                 _textures.Add(contents.Load<Texture2D>(@"particles\explosion\" + i.ToString()));
-
             base.LoadContents(contents);
         }
         public override void AddPar()

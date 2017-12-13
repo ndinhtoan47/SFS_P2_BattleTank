@@ -16,6 +16,7 @@ namespace SFS_BattleTank.Bases
         // rotation in degrees
         protected int _rotation;
         
+        
         public GameObject(float x,float y,string essental)
         {
             _essental = essental;

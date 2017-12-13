@@ -53,8 +53,10 @@
     <Compile Include="Effects\Particles\FirePar.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameObjCtrl\BulletController.cs" />
+    <Compile Include="GameObjCtrl\ItemController.cs" />
     <Compile Include="GameObjCtrl\TankController.cs" />
     <Compile Include="GameObjects\Bullet.cs" />
+    <Compile Include="GameObjects\Item.cs" />
     <Compile Include="GameObjects\Tank.cs" />
     <Compile Include="GameScenes\LoginScene.cs" />
     <Compile Include="GameScenes\MenuScene.cs" />
@@ -62,6 +64,10 @@
     <Compile Include="InputControl\Input.cs" />
     <Compile Include="Managers\ParticleManager.cs" />
     <Compile Include="Managers\SceneManager.cs" />
+    <Compile Include="Maps\Map.cs" />
+    <Compile Include="Maps\Map1.cs" />
+    <Compile Include="Maps\MapHelper.cs" />
+    <Compile Include="Maps\Tile.cs" />
     <Compile Include="Network\Connection.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

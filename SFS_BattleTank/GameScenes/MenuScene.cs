@@ -98,6 +98,7 @@ namespace SFS_BattleTank.GameScenes
         }
         public override void Draw(SpriteBatch sp)
         {
+            sp.Begin();
             if (_background != null)
                 sp.Draw(_background, new Rectangle(0, 0, Consts.VIEWPORT_WIDTH, Consts.VIEWPORT_HEIGHT), Color.White);
 
@@ -109,6 +110,7 @@ namespace SFS_BattleTank.GameScenes
             }
             _menuBt.Draw(sp);
             _sOptionalButton.Draw(sp);
+            sp.End();
             base.Draw(sp);
         }
 

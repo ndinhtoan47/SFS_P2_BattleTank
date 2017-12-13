@@ -72,7 +72,7 @@ namespace SFS_BattleTank.Network
             LoginScene.SetNotice("Loginning ...");
             if (!logined)
                 sfs.Send(new LoginRequest(userName, password, ZONE));
-            if(!sfs.IsConnected)
+            if (!sfs.IsConnected)
                 LoginScene.SetNotice("Connection fail !");
         }
         public void JoinRoom(string roomName = "The Lobby", string password = "")
@@ -81,7 +81,7 @@ namespace SFS_BattleTank.Network
                 ROOM = roomName;
             sfs.Send(new JoinRoomRequest(ROOM, password));
         }
-        
+
         public void CreateRoom(RoomSettings settings)
         {
             sfs.Send(new CreateRoomRequest(settings, true));
@@ -153,12 +153,12 @@ namespace SFS_BattleTank.Network
         private void OnLoginError(BaseEvent e)
         {
             short errorCode = (short)e.Params["errorCode"];
-            LoginScene.SetNotice("Login error !\nCode: " + errorCode.ToString());           
-            switch(errorCode)
+            LoginScene.SetNotice("Login error !\nCode: " + errorCode.ToString());
+            switch (errorCode)
             {
                 case 10:
                     {
-                        LoginScene.SetNotice("Name empty !\nCode: " + errorCode.ToString());      
+                        LoginScene.SetNotice("Name empty !\nCode: " + errorCode.ToString());
                         break;
                     }
                 case 2:
@@ -168,7 +168,7 @@ namespace SFS_BattleTank.Network
                     }
                 default:
                     {
-                        LoginScene.SetNotice("Login error !\nCode: " + errorCode.ToString());      
+                        LoginScene.SetNotice("Login error !\nCode: " + errorCode.ToString());
                         break;
                     }
             }
@@ -193,7 +193,7 @@ namespace SFS_BattleTank.Network
             Debug.WriteLine(e.Params["errorMessage"] + " - Error code :" + e.Params["errorCode"].ToString());
         }
         private void OnExtensionResponse(BaseEvent e)
-         {
+        {
             SFSObject receive = (SFSObject)e.Params["params"];
             string cmd = (string)e.Params["cmd"];
             Room room = (Room)e.Params["room"];
@@ -202,7 +202,7 @@ namespace SFS_BattleTank.Network
             // update data
             if (cmd == Consts.CMD_UPDATE_DATA)
             {
-                if(sender == null)
+                if (sender == null)
                 {
                     Debug.WriteLine("Sender = null");
                     return;
@@ -226,12 +226,6 @@ namespace SFS_BattleTank.Network
                     _controllers[Consts.CTRL_TANK].Add(sender, receive);
                 }
                 if (type == Consts.TYPE_BULLET)
-                {
-                    _controllers[Consts.CTRL_BULLET].Add(sender, receive);
-                }
-
-                // test
-                if (type == "bulletType")
                 {
                     _controllers[Consts.CTRL_BULLET].Add(sender, receive);
                 }
@@ -298,6 +292,13 @@ namespace SFS_BattleTank.Network
             {
                 ctrl.Update(deltaTime);
             }
+        }
+        public GameObject GetMainTank()
+        {
+            Dictionary<int, GameObject> _tanks = _controllers[Consts.CTRL_TANK].GetAllGameObject();
+            if (_tanks.ContainsKey(_controllers[Consts.CTRL_TANK].GetMySefl()))
+                return _tanks[_controllers[Consts.CTRL_TANK].GetMySefl()];
+            return null;
         }
     }
 }

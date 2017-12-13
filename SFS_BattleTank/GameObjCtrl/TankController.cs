@@ -45,6 +45,7 @@ namespace SFS_BattleTank.GameObjCtrl
                     {
                         _tanks.Add(user.Id, new Tank(user.Id, (float)data.GetDouble(Consts.X), (float)data.GetDouble(Consts.Y)));
                         _tanks[user.Id].LoadContents(_contents);
+                       // AddOtherPlayer(data);
                     }
                 }
             }
@@ -103,8 +104,53 @@ namespace SFS_BattleTank.GameObjCtrl
         }
         public override void Init()
         {
-            _mySelf =  GetMySefl();
+            _mySelf = GetMySefl();
             base.Init();
+        }
+
+        public void GetDirection(out int x, out int y)
+        {
+            KeyboardState state = Keyboard.GetState();
+            Keys[] keys = state.GetPressedKeys();
+
+            Keys dir = Keys.None;
+            foreach (Keys i in keys)
+            {
+                if (i == Keys.Left || i == Keys.Right || i == Keys.Up || i == Keys.Down)
+                {
+                    dir = i;
+                    break;
+                }
+            }
+            switch (dir)
+            {
+                case Keys.Left:
+                    {
+                        x = -1; y = 0;
+                        break;
+                    }
+                case Keys.Right:
+                    {
+                        x = 1; y = 0;
+                        break;
+                    }
+                case Keys.Up:
+                    {
+                        x = 0; y = -1;
+                        break;
+                    }
+                case Keys.Down:
+                    {
+                        x = 0; y = 1;
+                        break;
+                    }
+                default:
+                    {
+                        x = 0; y = 0;
+                        break;
+                    }
+            }
+            return;
         }
         // myseft active
         protected void Move(float deltaTime, int xDir, int yDir)
@@ -190,49 +236,28 @@ namespace SFS_BattleTank.GameObjCtrl
                 _lastYDir = y;
             }
         }
-        public void GetDirection(out int x, out int y)
+        protected void AddOtherPlayer(SFSObject data)
         {
-            KeyboardState state = Keyboard.GetState();
-            Keys[] keys = state.GetPressedKeys();
-
-            Keys dir = Keys.None;
-            foreach (Keys i in keys)
+            if (data.ContainsKey(Consts.X_ARRAY) &&
+                data.ContainsKey(Consts.Y_ARRAY) &&
+                data.ContainsKey(Consts.ID_ARRAY) &&
+                data.ContainsKey(Consts.R_ARRAY))
             {
-                if (i == Keys.Left || i == Keys.Right || i == Keys.Up || i == Keys.Down)
+                double[] x = data.GetDoubleArray(Consts.X_ARRAY);
+                double[] y = data.GetDoubleArray(Consts.X_ARRAY);
+                double[] r = data.GetDoubleArray(Consts.X_ARRAY);
+                double[] id = data.GetDoubleArray(Consts.X_ARRAY);
+                if (!(x.Length == y.Length && y.Length == r.Length && r.Length == id.Length)) return;
+                for (int i = 0; i < x.Length; i++)
                 {
-                    dir = i;
-                    break;
+                    if (!_tanks.ContainsKey((int)id[i]))
+                    {
+                        _tanks.Add((int)id[i], new Tank((int)id[i], (float)x[i], (float)y[i]));
+                        _tanks[_tanks.Count - 1].SetRotation((int)r[i]);
+                    }
                 }
             }
-            switch (dir)
-            {
-                case Keys.Left:
-                    {
-                        x = -1; y = 0;
-                        break;
-                    }
-                case Keys.Right:
-                    {
-                        x = 1; y = 0;
-                        break;
-                    }
-                case Keys.Up:
-                    {
-                        x = 0; y = -1;
-                        break;
-                    }
-                case Keys.Down:
-                    {
-                        x = 0; y = 1;
-                        break;
-                    }
-                default:
-                    {
-                        x = 0; y = 0;
-                        break;
-                    }
-            }
-            return;
         }
+
     }
 }

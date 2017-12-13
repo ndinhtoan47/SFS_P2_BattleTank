@@ -37,5 +37,14 @@
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/particles/explosion/2.png</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/particles/explosion/3.png</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/particles/explosion/4.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/item/hp.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/item/powerup.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/sounds/s_explode.wav</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/map/background.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/map/metalBox.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/map/tree.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/map/water.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/map/woodBox.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/map/empty.png</File>
   </SourceFiles>
 </SourceFileCollection>
