@@ -18,19 +18,18 @@ namespace SFS_BattleTank.Constants
         public static readonly string SCENE_PLAY = "playScene";
         public static readonly string SCENE_LOGIN = "loginScene";
         public static readonly string SCENE_MENU = "menuScene";
+        public static readonly string SCENE_ROOM = "roomScene";
         // client proterties
         public static readonly string X = "x";
         public static readonly string Y = "y";
         public static readonly string VX = "vx";
         public static readonly string VY = "vy";
-        public static readonly string XDIR = "xdir";
-        public static readonly string YDIR = "ydir";
         public static readonly string ROTATION = "rotation";
         public static readonly string GO_ID = "objectid";
+        public static readonly string PRIMARY = "primary";
+        public static readonly string MESSAGE = "message";
+        public static readonly string CAN_PLAY = "canplay";
         // data properties
-        public static readonly string X_ARRAY = "xarray";
-        public static readonly string Y_ARRAY = "yarray";
-        public static readonly string R_ARRAY = "rarray";
         public static readonly string ID_ARRAY = "idarray";
         // essental
         public static readonly string ES_TANK = "tank";
@@ -41,12 +40,14 @@ namespace SFS_BattleTank.Constants
         public static readonly string ES_TILE_WOOD_BOX = "tilewoodbox";
         public static readonly string ES_TILE_TREE = "tiletree";
         // request from server
-        public static readonly string CMD_ADD = "add";
         public static readonly string CMD_REMOVE = "remove";
-        public static readonly string CMD_UPDATE_DATA = "updatedata";
+        public static readonly string CMD_IS_PRIMARY = "isprimary";
+        public static readonly string CMD_USER_READY = "userready";
+        public static readonly string CMD_CAN_PLAY = "canplay";
         // request from client
-        public static readonly string CRQ_MOVE = "move";
         public static readonly string CRQ_FIRE = "fire";
+        public static readonly string CRQ_READY = "ready";
+        public static readonly string CRQ_PLAY = "play";
         // extension path
         public static readonly string EXTS_ZONE = "ZoneExtension.jar";
         public static readonly string EXTS_ROOM = "RoomExtension.jar";
@@ -57,23 +58,14 @@ namespace SFS_BattleTank.Constants
         public static readonly string CTRL_BULLET = "bulletcontroller";
         public static readonly string CTRL_ITEM = "itemcontroller";
         // type
-        public static readonly string TYPE = "type";
-        public static readonly string TYPE_TANK = "tanktype";
-        public static readonly string TYPE_BULLET = "bullettype";
         public static readonly string TYPE_PAR_EXPLOSION = "explosionpar";
         public static readonly string TYPE_PAR_FIRE = "firepar";
-        public static readonly string TYPE_ITEM = "itemtype";
-        public static readonly string TYPE_KIND_OF_ITEM = "kindofitem";
         // game ui type
         public static readonly string UI_INPUT_FIELD = "inputField";
         public static readonly string UI_BUTTON = "button";
         public static readonly string UI_DISPLAY_FIELD = "displayField";        
         // ui cmd
         public static readonly string UI_CMD_INVERSE_USE_BACKGROUND = "inverseUseBackground";
-        public static readonly string UI_CMD_CHANGE_TO_LOGIN_BUTTON = "changeToLoginButton";
-        public static readonly string UI_CMD_CHANGE_TO_EXIT_BUTTON = "changeToExitButton";
-        public static readonly string UI_CMD_CHANGE_TO_SOLO_BUTTON = "changeToSoloButton";
-        public static readonly string UI_CMD_CHANGE_TO_CUSTUME_BATTLE_BUTTON = "changeToCustumeBattleButton";
         public static readonly string UI_CMD_DISABLE = "disable";
         public static readonly string UI_CMD_ENABLE = "enable";
         // ui background

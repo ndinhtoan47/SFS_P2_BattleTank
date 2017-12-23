@@ -61,6 +61,7 @@
     <Compile Include="GameScenes\LoginScene.cs" />
     <Compile Include="GameScenes\MenuScene.cs" />
     <Compile Include="GameScenes\PlayScene.cs" />
+    <Compile Include="GameScenes\RoomScene.cs" />
     <Compile Include="InputControl\Input.cs" />
     <Compile Include="Managers\ParticleManager.cs" />
     <Compile Include="Managers\SceneManager.cs" />

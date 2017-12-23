@@ -16,14 +16,13 @@ namespace SFS_BattleTank.UI
 
         protected ContentManager _contents;
         protected string _label;
-        protected bool _isEnable;
         protected SpriteFont _font;
         protected float _textScale;
         protected int _behaviorType;
         protected Texture2D _backgroud;
         protected Color _bgColor;
         protected Color _labelColor;
-        protected bool _clicked;
+        protected bool _lastState;
 
         protected bool _hoverCanPlay;
         protected bool _hoverBlockPlay;
@@ -39,8 +38,8 @@ namespace SFS_BattleTank.UI
         public override void Init()
         {
             _isEnable = true;
-            _clicked = false;
-            
+            _lastState = false;
+
             _behaviorType = 0;
             InitBoundingBox(_textScale);
             if (_label != "")
@@ -67,19 +66,14 @@ namespace SFS_BattleTank.UI
             if (_isEnable)
             {
                 Hover(_position, _bounding);
-                if (CheckInsideButton(_position, _bounding))
+                if (CheckInsideUI(_position, _bounding))
                 {
                     _hoverCanPlay = true;
                     if (Input.Clicked(Consts.MOUSEBUTTON_LEFT))
-                    {
-                        _clicked = true;
-                        Behavior();
-                    }
-                    else _clicked = false;
+                        _lastState = !_lastState;
                 }
                 else
                 {
-                    _clicked = false;
                     _hoverCanPlay = false;
                     _hoverBlockPlay = false;
                 }
@@ -103,34 +97,6 @@ namespace SFS_BattleTank.UI
         }
         public override void CMD(string cmd)
         {
-            if (cmd == Consts.UI_CMD_CHANGE_TO_LOGIN_BUTTON)
-            {
-                _behaviorType = 1;
-                return;
-            }
-            if (cmd == Consts.UI_CMD_CHANGE_TO_EXIT_BUTTON)
-            {
-                _behaviorType = 2;
-                return;
-            }
-            if (cmd == Consts.UI_CMD_CHANGE_TO_SOLO_BUTTON)
-            {
-                _behaviorType = 3;
-            }
-            if(cmd == Consts.UI_CMD_CHANGE_TO_CUSTUME_BATTLE_BUTTON)
-            {
-                _behaviorType = 4;
-            }
-            if (cmd == Consts.UI_CMD_DISABLE)
-            {
-                _isEnable = false;
-                return;
-            }
-            if (cmd == Consts.UI_CMD_ENABLE)
-            {
-                _isEnable = true;
-                return;
-            }
             base.CMD(cmd);
         }
         public override void ChangeBackground(string name)
@@ -147,11 +113,18 @@ namespace SFS_BattleTank.UI
         {
             _labelColor = color;
         }
-        public bool ClickedInsideButton()
+        public void SetLabel(string value) { _label = value; }
+        public Vector2 GetButtonSize()
         {
-            return _clicked;
+            Vector2 result = Vector2.Zero;
+            result.X = _bounding.Width;
+            result.Y = _font.MeasureString(_label).Y * _textScale;
+            return result;
         }
-        public bool IsEnable() { return _isEnable; }
+        public bool LastState()
+        {
+            return _lastState;
+        }
         protected override void InitBoundingBox(float textScale)
         {
             if (_label != "")
@@ -162,65 +135,25 @@ namespace SFS_BattleTank.UI
             }
             base.InitBoundingBox(textScale);
         }
-        protected bool CheckInsideButton(Vector2 position, Rectangle boundingBox)
-        {
-            Vector2 mousePosition = Input.GetMousePosition();
-            if (mousePosition.X >= position.X &&
-                mousePosition.X <= position.X + boundingBox.Width &&
-                mousePosition.Y >= position.Y &&
-                mousePosition.Y <= position.Y + boundingBox.Height)
-            {
-                return true;
-            }
-            return false;
-        }
+
         protected void Hover(Vector2 position, Rectangle bounding)
         {
-            if (CheckInsideButton(position, bounding))
+            if (CheckInsideUI(position, bounding))
             {
                 int a;
                 a = (int)(255 * 0.75f);
                 _bgColor = new Color(_bgColor.R, _bgColor.G, _bgColor.B, a);
             }
             else
-            {
                 _bgColor = new Color(_bgColor.R, _bgColor.G, _bgColor.B, 255);
-            }
 
-            if(!_hoverBlockPlay && _hoverCanPlay)
+            if (!_hoverBlockPlay && _hoverCanPlay)
             {
                 // play sound
                 _hoverEffect.Play(0.2f);
                 _hoverBlockPlay = true;
             }
         }
-        protected void Behavior()
-        {
-            switch (_behaviorType)
-            {
-                case 1: // login => menu
-                    {
-                        Game1.network.Login(LoginScene.UserName());
-                        break;
-                    }
-                case 2: // exit
-                    {
-                        Game1.sceneManager.StopGame();
-                        break;
-                    }
-                case 3: // solo =>
-                    {
-                        break;
-                    }
-                case 4: // custume ballte
-                    {
-                        Game1.sceneManager.GotoScene(Consts.SCENE_PLAY);
-                        Game1.network.JoinRoom();
-                        break;
-                    }
-            }
-        }
-
 
     }
 }

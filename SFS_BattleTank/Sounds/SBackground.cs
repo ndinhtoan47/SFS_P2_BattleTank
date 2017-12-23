@@ -15,10 +15,10 @@ namespace SFS_BattleTank.Sounds
             _isMute = false;
         }
 
-        public void Play(TimeSpan startPos,float volume = 1.0f)
+        public void Play(TimeSpan startPos, float volume = 1.0f)
         {
             MediaPlayer.Volume = volume;
-            MediaPlayer.Play(_song,startPos);
+            MediaPlayer.Play(_song, startPos);
         }
         public void LoadContents(ContentManager content, string path)
         {
@@ -28,8 +28,11 @@ namespace SFS_BattleTank.Sounds
 
         public void Dispose()
         {
-            _song.Dispose();
-            _song = null;
+            if (_song != null)
+            {
+                _song.Dispose();
+                _song = null;
+            }
         }
         public void Stop()
         {

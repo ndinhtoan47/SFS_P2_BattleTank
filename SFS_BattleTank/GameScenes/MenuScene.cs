@@ -5,7 +5,16 @@ using SFS_BattleTank.Bases;
 using SFS_BattleTank.Constants;
 using SFS_BattleTank.Sounds;
 using SFS_BattleTank.UI;
+using Sfs2X;
+using Sfs2X.Core;
+using Sfs2X.Entities;
+using Sfs2X.Entities.Data;
+using Sfs2X.Entities.Variables;
+using Sfs2X.Requests;
+using Sfs2X.Requests.MMO;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 
 namespace SFS_BattleTank.GameScenes
@@ -25,11 +34,9 @@ namespace SFS_BattleTank.GameScenes
         protected Button _exitButton;
         protected Button _sOptionalButton;
         protected bool _drawOptional;
-        public MenuScene(ContentManager contents)
-            : base(Consts.SCENE_MENU, contents)
-        {
 
-        }
+        public MenuScene(ContentManager contents)
+            : base(Consts.SCENE_MENU, contents) { }
         public override bool Init()
         {
             _drawOptional = false;
@@ -43,10 +50,6 @@ namespace SFS_BattleTank.GameScenes
             _sOptionalButton = new Button("",
                new Vector2(Consts.VIEWPORT_WIDTH - 80, Consts.VIEWPORT_HEIGHT - 40),
                new Rectangle(0, 0, 40, 40), 0.0f);
-
-            _exitButton.CMD(Consts.UI_CMD_CHANGE_TO_EXIT_BUTTON);
-            _soloBt.CMD(Consts.UI_CMD_CHANGE_TO_SOLO_BUTTON);
-            _cusBattleBt.CMD(Consts.UI_CMD_CHANGE_TO_CUSTUME_BATTLE_BUTTON);
 
             _soloBt.CMD(Consts.UI_CMD_DISABLE);
             _cusBattleBt.CMD(Consts.UI_CMD_DISABLE);
@@ -67,7 +70,7 @@ namespace SFS_BattleTank.GameScenes
             _exitButton.ChangeBackground(Consts.UIS_EXIT_BUTTON);
             _menuBt.ChangeBackground(Consts.UIS_MENU_BUTTON);
             _soloBt.ChangeBackground(Consts.UIS_SOLO_BUTTON);
-            _cusBattleBt.ChangeBackground(Consts.UIS_CUSTUME_BATTLE_BUTTON);           
+            _cusBattleBt.ChangeBackground(Consts.UIS_CUSTUME_BATTLE_BUTTON);
             _sOptionalButton.ChangeBackground(Consts.UIS_SOUND_ENABLE_BUTTON);
 
             _sBg.LoadContents(_contents, S_BACKGROUND);
@@ -89,11 +92,9 @@ namespace SFS_BattleTank.GameScenes
             MenuButtonClick();
             _sOptionalButton.Update(deltaTime);
 
-            if (_sOptionalButton.ClickedInsideButton())
-            {
-                SoundOptionButtonBehavior();
-            }
-            
+            if (_sOptionalButton.ClickedInsideUI()) SoundOptionButtonBehavior();
+            if (_cusBattleBt.ClickedInsideUI()) CusBattleButtonBehavior();
+            if (_exitButton.ClickedInsideUI()) ExitButtonBehavior();
             base.Update(deltaTime);
         }
         public override void Draw(SpriteBatch sp)
@@ -113,7 +114,6 @@ namespace SFS_BattleTank.GameScenes
             sp.End();
             base.Draw(sp);
         }
-
         protected void AlignButton()
         {
             Rectangle originRect = _menuBt.GetBoundingBox();
@@ -133,7 +133,7 @@ namespace SFS_BattleTank.GameScenes
         }
         protected void MenuButtonClick()
         {
-            if (_menuBt.ClickedInsideButton())
+            if (_menuBt.ClickedInsideUI())
             {
                 if (_soloBt.IsEnable())
                     _soloBt.CMD(Consts.UI_CMD_DISABLE);
@@ -145,11 +145,51 @@ namespace SFS_BattleTank.GameScenes
                 _drawOptional = !_drawOptional;
             }
         }
+
+        // button behavior
         protected void SoundOptionButtonBehavior()
         {
             _sBg.Mute(!_sBg.IsMute());
             if (_sBg.IsMute()) _sOptionalButton.ChangeBackground(Consts.UIS_SOUND_DISABLE_BUTTON);
             else _sOptionalButton.ChangeBackground(Consts.UIS_SOUND_ENABLE_BUTTON);
         }
+        protected void CusBattleButtonBehavior()
+        {
+            _network.JoinRoom();
+        }
+        protected void ExitButtonBehavior()
+        {
+            Game1.sceneManager.StopGame();
+        }
+
+        protected override void AddListener()
+        {
+            _sfs.AddEventListener(SFSEvent.ROOM_JOIN, OnJoinRoom);
+            _sfs.AddEventListener(SFSEvent.ROOM_JOIN_ERROR, OnJoinRoomError);
+            base.AddListener();
+        }
+        // events handler
+        private void OnJoinRoom(BaseEvent e)
+        {
+            _network.AddMeToUserList();
+            _network.SetCurretRoom((Room)e.Params["room"]);
+            Game1.sceneManager.GotoScene(Consts.SCENE_ROOM);
+
+            Debug.WriteLine("Joined room " + (Room)e.Params["room"]);
+            List<UserVariable> vars = new List<UserVariable>();
+            vars.Add(new SFSUserVariable(Consts.ROTATION, (double)0));
+            vars.Add(new SFSUserVariable(Consts.X, (double)0));
+            vars.Add(new SFSUserVariable(Consts.Y, (double)0));
+
+            _sfs.Send(new SetUserVariablesRequest(vars));
+            _sfs.Send(new SetUserPositionRequest(new Vec3D(0, 0, 0), _network.GetCurretRoom()));
+        }
+        private void OnJoinRoomError(BaseEvent e)
+        {
+            Debug.WriteLine("Join room error !");
+        }
+
     }
+
 }
+

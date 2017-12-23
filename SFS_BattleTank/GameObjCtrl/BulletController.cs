@@ -29,24 +29,26 @@ namespace SFS_BattleTank.GameObjCtrl
             _s_fire.LoadContents(contents, SOUND_FIRE);
         }
 
-        public override void Add(Sfs2X.Entities.User user, SFSObject data)
+        public override void Add(Sfs2X.Entities.User user)
         {
-            if (_bullets != null)
-            {
-                if (data.ContainsKey(Consts.X) && (data.ContainsKey(Consts.Y) && data.ContainsKey(Consts.GO_ID)))
-                {
-                    int objectId = (int)data.GetDouble(Consts.GO_ID);
-                    if (!_bullets.ContainsKey(objectId))
-                    {
-                        _bullets.Add((int)data.GetDouble(Consts.GO_ID), new Bullet((float)data.GetDouble(Consts.X),
-                                                        (float)data.GetDouble(Consts.Y),
-                                                        (ulong)objectId));
-                        _bullets[objectId].LoadContents(_contents);
-                        _s_fire.Play();
-                    }
-                }
-            }
-            base.Add(user, data);
+            #region previous
+            //if (_bullets != null)
+            //{
+            //    if (data.ContainsKey(Consts.X) && (data.ContainsKey(Consts.Y) && data.ContainsKey(Consts.GO_ID)))
+            //    {
+            //        int objectId = (int)data.GetDouble(Consts.GO_ID);
+            //        if (!_bullets.ContainsKey(objectId))
+            //        {
+            //            _bullets.Add((int)data.GetDouble(Consts.GO_ID), new Bullet((float)data.GetDouble(Consts.X),
+            //                                            (float)data.GetDouble(Consts.Y),
+            //                                            (ulong)objectId));
+            //            _bullets[objectId].LoadContents(_contents);
+            //            _s_fire.Play();
+            //        }
+            //    }
+            //}
+            #endregion
+            base.Add(user);
         }
         public override void Remove(User user, SFSObject data)
         {
@@ -63,18 +65,20 @@ namespace SFS_BattleTank.GameObjCtrl
         {
             base.Init();
         }
-        public override void UpdateData(User user, SFSObject data)
+        public override void UpdateData(User user,List<string> changedVars)
         {
-            int go_id = (data.ContainsKey(Consts.GO_ID)) ? (int)data.GetDouble(Consts.GO_ID) : -1;
-            if (!(data.ContainsKey(Consts.X) && data.ContainsKey(Consts.Y))) return;
-            if (go_id != -1)
-            {
-                if (_bullets.ContainsKey(go_id))
-                {
-                    _bullets[go_id].SetPosition(new Vector2((float)data.GetDouble(Consts.X), (float)data.GetDouble(Consts.Y)));
-                }
-            }
-            base.UpdateData(user, data);
+            #region previous
+            //int go_id = (data.ContainsKey(Consts.GO_ID)) ? (int)data.GetDouble(Consts.GO_ID) : -1;
+            //if (!(data.ContainsKey(Consts.X) && data.ContainsKey(Consts.Y))) return;
+            //if (go_id != -1)
+            //{
+            //    if (_bullets.ContainsKey(go_id))
+            //    {
+            //        _bullets[go_id].SetPosition(new Vector2((float)data.GetDouble(Consts.X), (float)data.GetDouble(Consts.Y)));
+            //    }
+            //}
+            #endregion
+            base.UpdateData(user,changedVars);
         }
         public override void Behaviour(string cmd, int id, SFSObject data)
         {

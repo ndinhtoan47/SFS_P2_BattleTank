@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using SFS_BattleTank.Bases;
 using SFS_BattleTank.Constants;
+using SFS_BattleTank.GameObjCtrl;
 using SFS_BattleTank.GameScenes;
 using SFS_BattleTank.InputControl;
 using System.Collections.Generic;
@@ -34,6 +35,7 @@ namespace SFS_BattleTank.Managers
             this.Add(new PlayScene(_contents));
             this.Add(new LoginScene(_contents));
             this.Add(new MenuScene(_contents));
+            this.Add(new RoomScene(_contents));
 
             _isStarted = true;
             if (_activeScene == null)
@@ -98,7 +100,16 @@ namespace SFS_BattleTank.Managers
         }
         public void StopGame()
         {
+            if (_activeScene != null) _activeScene.Shutdown();
             _game.Exit();
+        }
+        public Scene GetActiveScene()
+        {
+            if(_isStarted)
+            {
+                return _activeScene;
+            }
+            return null;
         }
     }
 }

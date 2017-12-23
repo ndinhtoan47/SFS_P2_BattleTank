@@ -13,9 +13,14 @@ using SFS_BattleTank.Managers;
 using SFS_BattleTank.Maps;
 using SFS_BattleTank.UI;
 using Sfs2X;
+using Sfs2X.Core;
 using Sfs2X.Entities;
 using Sfs2X.Entities.Data;
+using Sfs2X.Entities.Variables;
+using Sfs2X.Requests;
+using Sfs2X.Requests.MMO;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace SFS_BattleTank.GameScenes
 {
@@ -25,6 +30,7 @@ namespace SFS_BattleTank.GameScenes
         protected ParticleManager _parManager;
         protected Texture2D _background;
         protected Map1 map1;
+
         public PlayScene(ContentManager contents)
             : base(Consts.SCENE_PLAY, contents)
         {
@@ -35,9 +41,6 @@ namespace SFS_BattleTank.GameScenes
 
         public override bool Init()
         {
-            _network.AddController(Consts.CTRL_TANK, new TankController(_contents));
-            _network.AddController(Consts.CTRL_BULLET, new BulletController(_contents));
-            _network.AddController(Consts.CTRL_ITEM, new ItemController(_contents));
             map1.Init();
             return base.Init();
         }
@@ -46,6 +49,13 @@ namespace SFS_BattleTank.GameScenes
             _parManager.LoadContents(_contents);
             _background = _contents.Load<Texture2D>(@"map\background");
             map1.LoadContent(_contents);
+            Controller ctrl = _network.GetController(Consts.CTRL_TANK);
+            if (ctrl != null)
+            {
+                Dictionary<int, GameObject> tanks = ctrl.GetAllGameObject();
+                foreach (GameObject tank in tanks.Values)
+                    tank.LoadContents(_contents);
+            }
             return base.LoadContents();
         }
         public override void Shutdown()
@@ -54,6 +64,7 @@ namespace SFS_BattleTank.GameScenes
         }
         public override void Update(float deltaTime)
         {
+            _network.UpdateControler(deltaTime);
             _parManager.Update(deltaTime);
             GameObject tank = _network.GetMainTank();
             if (tank != null)
@@ -65,12 +76,11 @@ namespace SFS_BattleTank.GameScenes
             sp.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _camera.GetTransfromMatrix());
             sp.Draw(_background, Vector2.Zero, Color.White);
             DrawObj(sp);
-            _parManager.Draw(sp);
-            map1.Draw(sp);
+            //_parManager.Draw(sp);
+            //map1.Draw(sp);
             sp.End();
             base.Draw(sp);
         }
-
         protected void DrawObj(SpriteBatch sp)
         {
             Dictionary<string, Controller> controllers = Game1.network.GetControllers();
@@ -83,58 +93,70 @@ namespace SFS_BattleTank.GameScenes
                 }
             }
         }
-
-        // test method
-        protected void TestItem()
+        protected override void AddListener()
         {
-            // test
-            if (Input.IsKeyDown(Keys.A))
+            _sfs.AddEventListener(SFSEvent.USER_VARIABLES_UPDATE, OnUserVariableUpdate);
+            _sfs.AddEventListener(SFSEvent.PROXIMITY_LIST_UPDATE, OnProximityListUpdate);
+            _sfs.AddEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtensionResponse);
+            base.AddListener();
+        }
+
+        // events handler
+        private void OnUserVariableUpdate(BaseEvent e)
+        {
+            User sender = (User)e.Params["user"];
+            List<string> changedVars = (List<string>)e.Params["changedVars"];
+            _network.GetController(Consts.CTRL_TANK).UpdateData(sender, changedVars);
+        }
+        private void OnProximityListUpdate(BaseEvent e)
+        {
+            Debug.WriteLine("Proximity list updated !");
+            List<User> addedUsers = (List<User>)e.Params["addedUsers"];
+            List<User> removedUsers = (List<User>)e.Params["removedUsers"];
+            _network.UserEnterExitMMORoom(addedUsers, removedUsers);
+            foreach (User user in addedUsers)
             {
-                SFSObject addData = new SFSObject();
-                addData.PutDouble(Consts.X, 100);
-                addData.PutDouble(Consts.Y, 100);
-                addData.PutDouble(Consts.GO_ID, 100);
-                addData.PutDouble(Consts.TYPE_KIND_OF_ITEM, 0);
-                Dictionary<string, Controller> ctrl = _network.GetControllers();
-                ctrl[Consts.CTRL_ITEM].Add(null, addData);
+                _network.GetController(Consts.CTRL_TANK).Add(user);
             }
-            if (Input.IsKeyDown(Keys.C))
+            foreach (User user in removedUsers)
             {
-                SFSObject data = new SFSObject();
-                data.PutUtfString(Consts.BHVR, Consts.BHVR_ITEM_COUNT_DOWN);
-                data.PutDouble(Consts.GO_ID, 100);
-                Dictionary<string, Controller> ctrl = _network.GetControllers();
-                ctrl[Consts.CTRL_ITEM].UpdateData(null, data);
-            }
-            if (Input.IsKeyDown(Keys.R))
-            {
-                SFSObject data = new SFSObject();
-                data.PutDouble(Consts.GO_ID, 100);
-                Dictionary<string, Controller> ctrl = _network.GetControllers();
-                ctrl[Consts.CTRL_ITEM].Remove(null, data);
+                _network.GetController(Consts.CTRL_TANK).Remove(user);
             }
         }
-        // test tank
-        protected void TestTank()
+        private void OnExtensionResponse(BaseEvent e)
         {
-            Dictionary<string, Controller> ctrl = _network.GetControllers();
-            SmartFox sfs = _network.GetInstance();
-            if (Input.IsKeyDown(Keys.A))
+            string cmd = (string)e.Params["cmd"];
+            SFSObject data = (SFSObject)e.Params["params"];
+            if (cmd == "play")
             {
-                User myself = sfs.MySelf;
-                SFSObject addData = new SFSObject();
-                addData.PutDouble(Consts.X, 100);
-                addData.PutDouble(Consts.Y, 100);
-                ctrl[Consts.CTRL_TANK].Add(myself, addData);
+                Debug.WriteLine("ExtesionResponse : + \n " + data);
+                if (data.ContainsKey("error"))
+                {
+                    Debug.WriteLine("Extesion Error : + \n " + (string)data.GetUtfString("error"));
+                    return;
+                }
+                double[] id = data.GetDoubleArray("id");
+                for (int i = 0; i < id.Length; i++)
+                {
+                    List<User> insideRoom = _network.GetUsersInsideCurrentRoom();
+                    Room room = _network.GetCurretRoom();
+                    User user = GetUserById(insideRoom,(int)id[i]);
+                    if (user != null)
+                    {
+                       
+                        _network.GetController(Consts.CTRL_TANK).Add(user);
+                    }
+                }
+
             }
-            if (Input.IsKeyDown(Keys.R))
+        }
+        private User GetUserById(List<User> users,int id)
+        {
+            foreach(User user in users)
             {
-                GameObject tank = _network.GetMainTank();
-                User myself = sfs.MySelf;
-                ctrl[Consts.CTRL_TANK].Remove(myself, null);
-                if (tank != null)
-                    _parManager.Add(Consts.TYPE_PAR_EXPLOSION, new Rectangle((int)tank.GetPosition().X - 16, (int)tank.GetPosition().Y - 16, 32, 32));
+                if (user.Id == id) return user;
             }
+            return null;
         }
     }
 }

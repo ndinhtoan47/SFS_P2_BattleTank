@@ -29,15 +29,16 @@ namespace SFS_BattleTank.UI
         protected SpriteFont _font;
         protected float _textScale;
 
-        public InputField(Vector2 position, Rectangle bounding, float textScale)
+        public InputField(Vector2 position, Rectangle bounding, float textScale,string defaultText = "")
             : base(Consts.UI_INPUT_FIELD, position, bounding)
         {
             _textScale = textScale;
+            _isEnable = false;
+            _inputText = defaultText;
             Init();
         }
         public override void Init()
         {
-            _inputText = "";
             _delayInput = 0.175f;
             _totalInput = 0.0f;
             _delayCursor = 0.5f;
@@ -56,8 +57,11 @@ namespace SFS_BattleTank.UI
         }
         public override void Update(float deltaTime)
         {
-            _inputText = GetInputText(deltaTime);
-            UpdateCursor(deltaTime);
+            if (_isEnable)
+            {
+                _inputText = GetInputText(deltaTime);
+                UpdateCursor(deltaTime);
+            }
             base.Update(deltaTime);
         }
         public override void Draw(SpriteBatch sp)
@@ -69,9 +73,8 @@ namespace SFS_BattleTank.UI
                     new Rectangle((int)_position.X, (int)_position.Y, (int)_bounding.Width, (int)_bounding.Height),
                     Color.White);
             }
-
-            DrawCursorAndText_DefaultType(sp);
-            DrawCursorAndText_IDType(sp);
+                DrawCursorAndText_DefaultType(sp);
+                DrawCursorAndText_IDType(sp);
             base.Draw(sp);
         }
         public override void CMD(string cmd)
@@ -114,7 +117,7 @@ namespace SFS_BattleTank.UI
                         if ((k >= Keys.A && k <= Keys.Z) ||
                             (k >= Keys.D0 && k <= Keys.D9) ||
                             (k >= Keys.NumPad0 && k <= Keys.NumPad9) ||
-                            (k == Keys.Space) || (k == Keys.Back))
+                            (k == Keys.Space) || (k == Keys.Back) || (k == Keys.OemPeriod))
                         {
                             switch (k)
                             {
@@ -129,6 +132,11 @@ namespace SFS_BattleTank.UI
                                 case Keys.Space:
                                     {
                                         result += " ";
+                                        break;
+                                    }
+                                case Keys.OemPeriod:
+                                    {
+                                        result += ".";
                                         break;
                                     }
                                 default:
@@ -227,12 +235,15 @@ namespace SFS_BattleTank.UI
             }
             // draw cursor
             // use default background
-            Vector2 size = new Vector2(0, _font.MeasureString("0").Y) * _textScale;
-            if (_inputText != "") size = _font.MeasureString(_drawText) * _textScale;
-            if (_drawCursor && _cursor != null && _background.Name == Consts.UIS_INPUT_FIELD)
-                sp.Draw(_cursor,
-                    new Rectangle((int)(_position.X + size.X - 4), (int)_position.Y, (int)(14), (int)((size.Y))),
-                    new Color(255, 255, 255, 200));
+            if (_isEnable)
+            {
+                Vector2 size = new Vector2(0, _font.MeasureString("0").Y) * _textScale;
+                if (_inputText != "") size = _font.MeasureString(_drawText) * _textScale;
+                if (_drawCursor && _cursor != null && _background.Name == Consts.UIS_INPUT_FIELD)
+                    sp.Draw(_cursor,
+                        new Rectangle((int)(_position.X + size.X - 4), (int)_position.Y, (int)(14), (int)((size.Y))),
+                        new Color(255, 255, 255, 200));
+            }
         }
         private void DrawCursorAndText_IDType(SpriteBatch sp)
         {
@@ -253,12 +264,15 @@ namespace SFS_BattleTank.UI
             }
             // draw cursor
             // use id background
-            Vector2 size = new Vector2(0, _font.MeasureString("0").Y) * _textScale;
-            if (_inputText != "") size = _font.MeasureString(_drawText) * _textScale;
-            if (_drawCursor && _cursor != null && _background.Name == Consts.UIS_ID)
-                sp.Draw(_cursor,
-                    new Rectangle((int)(_position.X + size.X + _bounding.Width * 0.15f), (int)_position.Y, (int)(14), (int)((size.Y))),
-                    new Color(255, 255, 255, 200));
+            if (_isEnable)
+            {
+                Vector2 size = new Vector2(0, _font.MeasureString("0").Y) * _textScale;
+                if (_inputText != "") size = _font.MeasureString(_drawText) * _textScale;
+                if (_drawCursor && _cursor != null && _background.Name == Consts.UIS_ID)
+                    sp.Draw(_cursor,
+                        new Rectangle((int)(_position.X + size.X + _bounding.Width * 0.15f), (int)_position.Y, (int)(14), (int)((size.Y))),
+                        new Color(255, 255, 255, 200));
+            }
         }
     }
 }

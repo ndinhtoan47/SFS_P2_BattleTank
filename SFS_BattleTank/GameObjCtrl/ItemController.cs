@@ -25,49 +25,53 @@ namespace SFS_BattleTank.GameObjCtrl
                 obj.Update(deltaTime);
             }
         }
-        public override void UpdateData(User user, SFSObject data) 
+        public override void UpdateData(User user,List<string> changedVars)
         {
-            if(data.ContainsKey(Consts.BHVR) && data.ContainsKey(Consts.GO_ID))
-            {
-                int id = (int)data.GetDouble(Consts.GO_ID);
-                string behavior = (string)data.GetUtfString(Consts.BHVR);
-                if(_items != null && _items.ContainsKey(id))
-                {
-                    _items[id].Behavior(behavior);
-                }
-            }
+            #region previous
+            //if (data.ContainsKey(Consts.BHVR) && data.ContainsKey(Consts.GO_ID))
+            //{
+            //    int id = (int)data.GetDouble(Consts.GO_ID);
+            //    string behavior = (string)data.GetUtfString(Consts.BHVR);
+            //    if(_items != null && _items.ContainsKey(id))
+            //    {
+            //        _items[id].Behavior(behavior);
+            //    }
+            //}
+            #endregion
         }
-        public override void Add(User user, SFSObject data)
+        public override void Add(User user)
         {
-            if (_items != null)
-            {
-                if (!(data.ContainsKey(Consts.X) &&
-                    data.ContainsKey(Consts.Y) &&
-                    data.ContainsKey(Consts.GO_ID) &&
-                    data.ContainsKey(Consts.TYPE_KIND_OF_ITEM))) return;
+            #region previous
+            //if (_items != null)
+            //{
+            //    if (!(data.ContainsKey(Consts.X) &&
+            //        data.ContainsKey(Consts.Y) &&
+            //        data.ContainsKey(Consts.GO_ID) &&
+            //        data.ContainsKey(Consts.TYPE_KIND_OF_ITEM))) return;
 
-                float x = (float)data.GetDouble(Consts.X);
-                float y = (float)data.GetDouble(Consts.Y);
-                int id = (int)data.GetDouble(Consts.GO_ID);
-                int itemKind = (int)data.GetDouble(Consts.TYPE_KIND_OF_ITEM);
-                if (_items.ContainsKey(id)) return;
-                #region add item
-                switch (itemKind)
-                {
-                    case 0:
-                        {
-                            _items.Add(id, new Item(x, y, Consts.ES_ITEM_HP));
-                            break;
-                        }
-                    case 1:
-                        {
-                            _items.Add(id, new Item(x, y, Consts.ES_ITEM_POWER_UP));
-                            break;
-                        }
-                }
-                #endregion
-                _items[id].LoadContents(_contents);
-            }
+            //    float x = (float)data.GetDouble(Consts.X);
+            //    float y = (float)data.GetDouble(Consts.Y);
+            //    int id = (int)data.GetDouble(Consts.GO_ID);
+            //    int itemKind = (int)data.GetDouble(Consts.TYPE_KIND_OF_ITEM);
+            //    if (_items.ContainsKey(id)) return;
+            //    #region add item
+            //    switch (itemKind)
+            //    {
+            //        case 0:
+            //            {
+            //                _items.Add(id, new Item(x, y, Consts.ES_ITEM_HP));
+            //                break;
+            //            }
+            //        case 1:
+            //            {
+            //                _items.Add(id, new Item(x, y, Consts.ES_ITEM_POWER_UP));
+            //                break;
+            //            }
+            //    }
+            //    #endregion
+            //    _items[id].LoadContents(_contents);
+            //}
+            #endregion
         }
         public override void Remove(User user, SFSObject data) 
         {
