@@ -106,22 +106,28 @@ namespace SFS_BattleTank.GameScenes
         {
             User sender = (User)e.Params["user"];
             List<string> changedVars = (List<string>)e.Params["changedVars"];
-            _network.GetController(Consts.CTRL_TANK).UpdateData(sender, changedVars);
+
+            Controller ctrl = _network.GetController(Consts.CTRL_TANK);
+            if (ctrl != null)
+            {
+                ctrl.Add(sender);
+                ctrl.UpdateData(sender, changedVars);
+            }
         }
         private void OnProximityListUpdate(BaseEvent e)
         {
-            Debug.WriteLine("Proximity list updated !");
+            Debug.WriteLine("PlayScene Proximity list updated !");
             List<User> addedUsers = (List<User>)e.Params["addedUsers"];
             List<User> removedUsers = (List<User>)e.Params["removedUsers"];
             _network.UserEnterExitMMORoom(addedUsers, removedUsers);
-            foreach (User user in addedUsers)
+
+            Controller tanks = _network.GetController(Consts.CTRL_TANK);
+            if(tanks != null)
             {
-                _network.GetController(Consts.CTRL_TANK).Add(user);
+                foreach (User user in addedUsers) tanks.Add(user);
+                foreach (User user in removedUsers) tanks.Remove(user);
             }
-            foreach (User user in removedUsers)
-            {
-                _network.GetController(Consts.CTRL_TANK).Remove(user);
-            }
+
         }
         private void OnExtensionResponse(BaseEvent e)
         {
@@ -142,8 +148,7 @@ namespace SFS_BattleTank.GameScenes
                     Room room = _network.GetCurretRoom();
                     User user = GetUserById(insideRoom,(int)id[i]);
                     if (user != null)
-                    {
-                       
+                    {                       
                         _network.GetController(Consts.CTRL_TANK).Add(user);
                     }
                 }

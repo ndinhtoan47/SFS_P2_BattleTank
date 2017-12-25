@@ -98,7 +98,6 @@ namespace SFS_BattleTank.GameObjCtrl
             {
                 Fire(_lastXDir, _lastYDir);
             }
-            SetDir(x, y);
             base.Update(deltaTime);
         }
         public override Dictionary<int, GameObject> GetAllGameObject()
@@ -211,14 +210,6 @@ namespace SFS_BattleTank.GameObjCtrl
         protected void Fire(int xDir, int yDir)
         {
            
-        }
-        protected void SetDir(int x, int y)
-        {
-            if (x != 0 || y != 0)
-            {
-                _lastXDir = x;
-                _lastYDir = y;
-            }
         }
 
     }

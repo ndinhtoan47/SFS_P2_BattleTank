@@ -151,11 +151,17 @@ namespace SFS_BattleTank.GameScenes
         // events handler     
         private void OnProximityListUpdate(BaseEvent e)
         {
-            Debug.WriteLine("Proximity list updated !");
+            Debug.WriteLine("RoomScene Proximity list updated !");
             List<User> addedUsers = (List<User>)e.Params["addedUsers"];
             List<User> removedUsers = (List<User>)e.Params["removedUsers"];
             _network.UserEnterExitMMORoom(addedUsers, removedUsers);
             this.UserEnterExitRoom(_network.GetUsersInsideCurrentRoom());
+
+            //Controller tanks = _network.GetController(Consts.CTRL_TANK);
+            //foreach (User user in addedUsers)
+            //    tanks.Add(user);
+            //foreach (User user in removedUsers)
+            //    tanks.Remove(user);
         }
         private void OnExtensionResponse(BaseEvent e)
         {
@@ -191,7 +197,13 @@ namespace SFS_BattleTank.GameScenes
         }
         private void OnUserVariable(BaseEvent e)
         {
-            Debug.WriteLine((User)e.Params["user"]);
+            Debug.WriteLine("RoomScene Variable Update : " + (User)e.Params["user"]);
+            User sender = (User)e.Params["user"];
+            Controller ctrl = _network.GetController(Consts.CTRL_TANK);
+            if (ctrl != null)
+            {
+                ctrl.Add(sender);
+            }
         }
     }
 }
