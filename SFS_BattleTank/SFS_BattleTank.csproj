@@ -76,6 +76,7 @@
     <Compile Include="Sounds\SEffect.cs" />
     <Compile Include="UI\Button.cs" />
     <Compile Include="UI\InputField.cs" />
+    <Compile Include="UI\NamePlate.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

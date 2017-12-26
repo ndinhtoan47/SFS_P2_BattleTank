@@ -23,8 +23,8 @@ namespace SFS_BattleTank.GameScenes
 {
     public class RoomScene : Scene
     {
-        protected const string SOUND_BACKGROUND = @"";
-        protected const string ROOM_BACKGROUND = @"";
+        protected const string SOUND_BACKGROUND = @"sounds\s_menu_BG";
+        protected const string ROOM_BACKGROUND = @"menuBG";
 
         protected Texture2D _background;
         protected SBackground _sBg;
@@ -53,24 +53,28 @@ namespace SFS_BattleTank.GameScenes
             _network.AddController(Consts.CTRL_BULLET, new BulletController(_contents));
             _network.AddController(Consts.CTRL_ITEM, new ItemController(_contents));
 
-            _readyButton = new Button("Ready", new Vector2(0, 0), new Rectangle(0, 0, 100, 0), 2.0f);
-            _playButton = new Button("Play", new Vector2(0, 0), new Rectangle(0, 0, 100, 0), 2.0f);
+            _readyButton = new Button("", new Vector2(0, 0), new Rectangle(0, 0, 100, 100), 2.0f);
+            _playButton = new Button("", new Vector2(0, 0), new Rectangle(0, 0, 100, 100), 2.0f);
+
             this.UserEnterExitRoom(_network.GetUsersInsideCurrentRoom());
             return base.Init();
         }
         public override bool LoadContents()
         {
-            //_background = _contents.Load<Texture2D>(ROOM_BACKGROUND);
-            //_sBg.LoadContents(_contents, SOUND_BACKGROUND);
+            _background = _contents.Load<Texture2D>(ROOM_BACKGROUND);
+            _sBg.LoadContents(_contents, SOUND_BACKGROUND);
             _font = _contents.Load<SpriteFont>("font");
             _readyButton.LoadContents(_contents);
             _playButton.LoadContents(_contents);
 
-            Vector2 readySize = _readyButton.GetButtonSize();
-            _readyButton.SetPosition(new Vector2(Consts.VIEWPORT_WIDTH, Consts.VIEWPORT_HEIGHT) - readySize);
-            _playButton.SetPosition(new Vector2(Consts.VIEWPORT_WIDTH, Consts.VIEWPORT_HEIGHT) -
-                new Vector2(_readyButton.GetPosition().X - _playButton.GetBoundingBox().Width, _readyButton.GetPosition().Y));
-
+            _playButton.ChangeBackground(Consts.UIS_START_BUTTON);
+            _readyButton.ChangeBackground(Consts.UIS_READY_BUTTON);
+            _playButton.SetBoundingBox(new Rectangle(0, 0, _playButton.GetSprite().Width, _playButton.GetSprite().Height));
+            _readyButton.SetBoundingBox(new Rectangle(0, 0, _readyButton.GetSprite().Width, _readyButton.GetSprite().Height));
+            _playButton.SetPosition(new Vector2(0, Consts.VIEWPORT_HEIGHT - _playButton.GetBoundingBox().Height));
+            _readyButton.SetPosition(new Vector2(_playButton.GetBoundingBox().Width + _playButton.GetPosition().X,
+                                                    Consts.VIEWPORT_HEIGHT - _readyButton.GetBoundingBox().Height));
+            _sBg.Play(new System.TimeSpan(0, 0, 0), 0.8f);
             return base.LoadContents();
         }
         public override void Shutdown()
@@ -82,12 +86,13 @@ namespace SFS_BattleTank.GameScenes
         public override void Draw(SpriteBatch sp)
         {
             sp.Begin();
-            if (_isEnablePlayButton)
-            {
-                _playButton.Draw(sp);
-            }
-            _readyButton.Draw(sp);
+            if (_background != null)
+                sp.Draw(_background, new Rectangle(0, 0, Consts.VIEWPORT_WIDTH, Consts.VIEWPORT_HEIGHT), Color.White);
 
+            if (_isEnablePlayButton)
+                _playButton.Draw(sp);
+            //else
+                _readyButton.Draw(sp);
             // test
             DrawUsers(sp);
             sp.End();
@@ -120,8 +125,15 @@ namespace SFS_BattleTank.GameScenes
         private void ReadyButtonBehavior()
         {
             if (_readyButton.LastState())
-                _readyButton.SetLabel("Unready");
-            else _readyButton.SetLabel("Ready");
+            {
+                _readyButton.ChangeBackground(Consts.UIS_UNREADY_BUTTON);
+                _readyButton.SetBGColor(Color.Red);
+            }
+            else
+            {
+                _readyButton.ChangeBackground(Consts.UIS_READY_BUTTON);
+                _readyButton.SetBGColor(Color.White);
+            }
 
             SFSObject data = new SFSObject();
             _sfs.Send(new ExtensionRequest(Consts.CRQ_READY, data, _network.GetCurretRoom()));

@@ -11,7 +11,6 @@ D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\curso
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\CustumeBattle.xnb
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\font.xnb
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\gameBullet.xnb
-D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\ID.xnb
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\loginBG.xnb
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\menuBG.xnb
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\menuBT.xnb
@@ -69,3 +68,11 @@ D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\obj\x86\Debug\SFS_BattleTank.exe
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\obj\x86\Debug\SFS_BattleTank.pdb
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\SFS_BattleTank.pdb
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\obj\x86\Debug\SFS_BattleTank.csprojResolveAssemblyReference.cache
+D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\idField.xnb
+D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\ipField.xnb
+D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\ownerDisplay.xnb
+D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\playerDisplay.xnb
+D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\portField.xnb
+D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\readyBT.xnb
+D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\startBT.xnb
+D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\unreadyBT.xnb

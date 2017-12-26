@@ -41,7 +41,6 @@ namespace SFS_BattleTank.UI
             _lastState = false;
 
             _behaviorType = 0;
-            InitBoundingBox(_textScale);
             if (_label != "")
                 _bgColor = new Color(30, 220, 190, 225);
             else
@@ -51,6 +50,7 @@ namespace SFS_BattleTank.UI
             _hoverCanPlay = false;
             _hoverBlockPlay = false;
             _hoverEffect = new SEffect();
+            InitBoundingBox(_textScale);
             base.Init();
         }
         public override void LoadContents(ContentManager contents)
@@ -84,11 +84,9 @@ namespace SFS_BattleTank.UI
         {
             // draw bacground
             if (_backgroud != null)
-            {
                 sp.Draw(_backgroud,
-                    new Rectangle((int)_position.X, (int)_position.Y, (int)_bounding.Width, (int)_bounding.Height),
-                    _bgColor);
-            }
+                   new Rectangle((int)_position.X, (int)_position.Y, (int)_bounding.Width, (int)_bounding.Height),
+                   _bgColor);
             // draw label   
             Vector2 size = _font.MeasureString(_label);
             Vector2 posDraw = _position + new Vector2((_bounding.Width - size.X) / 2, (_bounding.Height - size.Y) / 2);
@@ -97,12 +95,19 @@ namespace SFS_BattleTank.UI
         }
         public override void CMD(string cmd)
         {
+            if(cmd == Consts.UI_CMD_INVERSE_USE_SPRITE_BOUNDING)
+            {
+
+            }
             base.CMD(cmd);
         }
         public override void ChangeBackground(string name)
         {
             if (name != "")
+            {
                 _backgroud = _contents.Load<Texture2D>(name);
+            }
+            
             base.ChangeBackground(name);
         }
         public void SetBGColor(Color color)
@@ -125,17 +130,25 @@ namespace SFS_BattleTank.UI
         {
             return _lastState;
         }
+
         protected override void InitBoundingBox(float textScale)
         {
             if (_label != "")
             {
-                int heightPerUnit = 20;
+                int heightPerUnit = 020;
                 // textScale = 1 => height = 20px
                 _bounding.Height = (int)((float)heightPerUnit * textScale);
             }
+            else
+            {
+                if(_backgroud != null)
+                {
+                    _bounding.Width = _backgroud.Width;
+                    _bounding.Height = _backgroud.Height;
+                }
+            }            
             base.InitBoundingBox(textScale);
         }
-
         protected void Hover(Vector2 position, Rectangle bounding)
         {
             if (CheckInsideUI(position, bounding))
@@ -153,6 +166,11 @@ namespace SFS_BattleTank.UI
                 _hoverEffect.Play(0.2f);
                 _hoverBlockPlay = true;
             }
+        }
+        public override Texture2D GetSprite()
+        {
+            return _backgroud;
+            return base.GetSprite();
         }
 
     }

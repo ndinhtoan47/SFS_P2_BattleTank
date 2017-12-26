@@ -58,9 +58,7 @@ namespace SFS_BattleTank.GameObjCtrl
             if (user != null)
             {
                 if (!_tanks.ContainsKey(user.Id))
-                {
                     return;
-                }
                 _tanks.Remove(user.Id);
             }
             base.Remove(user, data);
@@ -96,7 +94,7 @@ namespace SFS_BattleTank.GameObjCtrl
                 Move(deltaTime, x, y);
             if (CheckFire(deltaTime))
             {
-                Fire(_lastXDir, _lastYDir);
+                Fire();
             }
             base.Update(deltaTime);
         }
@@ -157,7 +155,7 @@ namespace SFS_BattleTank.GameObjCtrl
         // myseft active
         protected void Move(float deltaTime, int xDir, int yDir)
         {
-            if (_tanks.Count <= 0) return;
+            if (_tanks.Count <= 0 || !_tanks.ContainsKey(_mySelf)) return;
             SmartFox sfs = _network.GetInstance();
 
             // get velocity
@@ -207,9 +205,15 @@ namespace SFS_BattleTank.GameObjCtrl
             _totalFireTime += deltaTime;
             return false;
         }
-        protected void Fire(int xDir, int yDir)
+        protected void Fire()
         {
-           
+            SmartFox sfs = _network.GetInstance();
+            if(sfs != null)
+            {
+                SFSObject data = new SFSObject();
+                data.PutDouble(Consts.ROTATION, (double)_network.GetMainTank().GetRotation());
+                sfs.Send(new ExtensionRequest(Consts.CRQ_FIRE, data, _network.GetCurretRoom()));
+            }
         }
 
     }

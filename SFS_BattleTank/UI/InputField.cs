@@ -29,7 +29,7 @@ namespace SFS_BattleTank.UI
         protected SpriteFont _font;
         protected float _textScale;
 
-        public InputField(Vector2 position, Rectangle bounding, float textScale,string defaultText = "")
+        public InputField(Vector2 position, Rectangle bounding, float textScale, string defaultText = "")
             : base(Consts.UI_INPUT_FIELD, position, bounding)
         {
             _textScale = textScale;
@@ -73,16 +73,14 @@ namespace SFS_BattleTank.UI
                     new Rectangle((int)_position.X, (int)_position.Y, (int)_bounding.Width, (int)_bounding.Height),
                     Color.White);
             }
-                DrawCursorAndText_DefaultType(sp);
-                DrawCursorAndText_IDType(sp);
+            DrawCursorAndText_DefaultType(sp);
+            DrawCursorAndText_IDType(sp);
             base.Draw(sp);
         }
         public override void CMD(string cmd)
         {
             if (cmd == Consts.UI_CMD_INVERSE_USE_BACKGROUND)
-            {
                 _useBackground = !_useBackground;
-            }
             base.CMD(cmd);
         }
         public override void ChangeBackground(string name)
@@ -95,9 +93,9 @@ namespace SFS_BattleTank.UI
 
         protected override void InitBoundingBox(float textScale)
         {
-            int heightPerUnit = 20;
-            // textScale = 1 => height = 20px
-            _bounding.Height = (int)((float)heightPerUnit * textScale);
+                int heightPerUnit = 20;
+                // textScale = 1 => height = 20px
+                _bounding.Height = (int)((float)heightPerUnit * textScale);
             base.InitBoundingBox(textScale);
         }
         protected string GetInputText(float deltaTime)
@@ -221,7 +219,7 @@ namespace SFS_BattleTank.UI
             // default background
             if (_background.Name == Consts.UIS_INPUT_FIELD)
             {
-                _drawText = CheckInputTextMaxSize(_font,(int) (_bounding.Width * 0.95f), _inputText, _textScale);
+                _drawText = CheckInputTextMaxSize(_font, (int)(_bounding.Width * 0.95f), _inputText, _textScale);
                 sp.DrawString(
                     spriteFont: _font,
                     text: _drawText,

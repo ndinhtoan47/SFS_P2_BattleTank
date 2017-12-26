@@ -26,7 +26,6 @@
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/sounds/s_buttonHover.wav</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/sounds/s_menu_BG.mp3</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/sounds/s_login_BG.mp3</File>
-    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/ID.png</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/sounds/s_fire.wav</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/particles/fire/0.png</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/particles/fire/1.png</File>
@@ -46,5 +45,13 @@
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/map/water.png</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/map/woodBox.png</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/map/empty.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/idField.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/ipField.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/ownerDisplay.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/playerDisplay.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/portField.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/readyBT.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/startBT.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/unreadyBT.png</File>
   </SourceFiles>
 </SourceFileCollection>

@@ -63,21 +63,30 @@ namespace SFS_BattleTank.Constants
         // game ui type
         public static readonly string UI_INPUT_FIELD = "inputField";
         public static readonly string UI_BUTTON = "button";
-        public static readonly string UI_DISPLAY_FIELD = "displayField";        
+        public static readonly string UI_DISPLAY_FIELD = "displayField";
+        public static readonly string UI_NAME_PLATE = "namePlate"; 
         // ui cmd
         public static readonly string UI_CMD_INVERSE_USE_BACKGROUND = "inverseUseBackground";
         public static readonly string UI_CMD_DISABLE = "disable";
         public static readonly string UI_CMD_ENABLE = "enable";
+        public static readonly string UI_CMD_INVERSE_USE_SPRITE_BOUNDING = "inverseUseSpriteBounding";
         // ui background
-        public static readonly string UIS_ID = @"ID";
-        public static readonly string UIS_PASS = "";
+        public static readonly string UIS_ID = @"idField";
+        public static readonly string UIS_PASS = @"";       
         public static readonly string UIS_INPUT_FIELD = "textInput";
+
+        public static readonly string UIS_UNREADY_BUTTON = "unReadyBT";
+        public static readonly string UIS_READY_BUTTON = "readyBT";
+        public static readonly string UIS_START_BUTTON = "startBT";
         public static readonly string UIS_EXIT_BUTTON = @"icon\exit";
         public static readonly string UIS_MENU_BUTTON = "menuBT";
         public static readonly string UIS_SOLO_BUTTON = "SoloButton";
         public static readonly string UIS_CUSTUME_BATTLE_BUTTON = "CustumeBattle";
         public static readonly string UIS_SOUND_ENABLE_BUTTON = @"icon\sound_enable";
         public static readonly string UIS_SOUND_DISABLE_BUTTON = @"icon\sound_disable";
+
+        public static readonly string UIS_OWNER_DISPLAY = "ownerDisplay";
+        public static readonly string UIS_PLAYER_DISPLAY = "playerDisplay";
         // item sprite
         public static readonly string ITS_HP = @"item\hp";
         public static readonly string ITS_POWER_UP = @"item\powerup";

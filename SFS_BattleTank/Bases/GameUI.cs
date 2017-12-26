@@ -12,6 +12,7 @@ namespace SFS_BattleTank.Bases
         protected Rectangle _bounding;
         protected string _type;
         protected bool _isEnable;
+        protected bool _isUseSpriteBounding;
 
         public GameUI(string type, Vector2 position,Rectangle bounding)
         {
@@ -35,6 +36,11 @@ namespace SFS_BattleTank.Bases
             if(cmd == Consts.UI_CMD_ENABLE)
             {
                 _isEnable = true;
+                return;
+            }
+            if(cmd == Consts.UI_CMD_INVERSE_USE_SPRITE_BOUNDING)
+            {
+                _isUseSpriteBounding = !_isUseSpriteBounding;
                 return;
             }
         }
@@ -77,7 +83,10 @@ namespace SFS_BattleTank.Bases
         public void SetPosition(Vector2 value) { _position = value; }
         public string GetUIType() { return _type; }
         public Rectangle GetBoundingBox() { return _bounding; }
+        public void SetBoundingBox(Rectangle rect) { _bounding = rect; }
         public bool IsEnable() { return _isEnable; }
+        public bool IsUseSpriteBounding() { return _isUseSpriteBounding; }
+        public virtual Texture2D GetSprite() { return null; }
 
     }
 }

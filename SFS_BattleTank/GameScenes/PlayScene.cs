@@ -127,41 +127,11 @@ namespace SFS_BattleTank.GameScenes
                 foreach (User user in addedUsers) tanks.Add(user);
                 foreach (User user in removedUsers) tanks.Remove(user);
             }
-
         }
         private void OnExtensionResponse(BaseEvent e)
         {
             string cmd = (string)e.Params["cmd"];
             SFSObject data = (SFSObject)e.Params["params"];
-            if (cmd == "play")
-            {
-                Debug.WriteLine("ExtesionResponse : + \n " + data);
-                if (data.ContainsKey("error"))
-                {
-                    Debug.WriteLine("Extesion Error : + \n " + (string)data.GetUtfString("error"));
-                    return;
-                }
-                double[] id = data.GetDoubleArray("id");
-                for (int i = 0; i < id.Length; i++)
-                {
-                    List<User> insideRoom = _network.GetUsersInsideCurrentRoom();
-                    Room room = _network.GetCurretRoom();
-                    User user = GetUserById(insideRoom,(int)id[i]);
-                    if (user != null)
-                    {                       
-                        _network.GetController(Consts.CTRL_TANK).Add(user);
-                    }
-                }
-
-            }
-        }
-        private User GetUserById(List<User> users,int id)
-        {
-            foreach(User user in users)
-            {
-                if (user.Id == id) return user;
-            }
-            return null;
         }
     }
 }

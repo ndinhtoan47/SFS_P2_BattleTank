@@ -12,6 +12,7 @@ using SFS_BattleTank.GameObjCtrl;
 using Sfs2X.Entities.Variables;
 using Sfs2X.Requests.MMO;
 using SFS_BattleTank.GameScenes;
+using System;
 
 namespace SFS_BattleTank.Network
 {
@@ -91,13 +92,21 @@ namespace SFS_BattleTank.Network
         // connection methods
         public void Connect(string host, int port)
         {
-            ConfigData data = new ConfigData();
-            data.Port = port;
-            data.Zone = ZONE;
-            data.Host = host;
-            data.Debug = false;
-            data.UseBlueBox = true;
-            _sfs.Connect(data);
+            try
+            {
+                ConfigData data = new ConfigData();
+                data.Port = port;
+                data.Zone = ZONE;
+                data.Host = host;
+                data.Debug = false;
+                data.UseBlueBox = true;
+                _sfs.Connect(data);
+            }
+            catch (NullReferenceException e)
+            {
+                Debug.WriteLine(e.Message);
+                Game1.sceneManager.GotoScene(Consts.SCENE_LOGIN);
+            }
         }
         public void Login(string name, string password = "")
         {
