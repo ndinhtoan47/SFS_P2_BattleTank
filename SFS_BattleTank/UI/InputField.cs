@@ -33,7 +33,7 @@ namespace SFS_BattleTank.UI
             : base(Consts.UI_TYPE_INPUT_FIELD, position, bounding)
         {
             _textScale = textScale;
-            _isEnable = true;
+            _isEnable = false;
             _inputText = defaultText;
             Init();
         }
@@ -58,7 +58,6 @@ namespace SFS_BattleTank.UI
         }
         public override void Update(float deltaTime)
         {
-            if(CheckInsideUI(_position,_bounding) && Input.Clicked(Consts.MOUSEBUTTON_LEFT)) _isEnable = !_isEnable;
             if (_isEnable)
             {
                 _inputText = GetInputText(deltaTime);
@@ -95,9 +94,9 @@ namespace SFS_BattleTank.UI
 
         protected override void InitBoundingBox(float textScale)
         {
-                int heightPerUnit = 20;
-                // textScale = 1 => height = 20px
-                _bounding.Height = (int)((float)heightPerUnit * textScale);
+            int heightPerUnit = 20;
+            // textScale = 1 => height = 20px
+            _bounding.Height = (int)((float)heightPerUnit * textScale);
             base.InitBoundingBox(textScale);
         }
         protected string GetInputText(float deltaTime)
@@ -268,7 +267,7 @@ namespace SFS_BattleTank.UI
             {
                 Vector2 size = new Vector2(0, _font.MeasureString("0").Y) * _textScale;
                 if (_inputText != "") size = _font.MeasureString(_drawText) * _textScale;
-                if (_drawCursor && _cursor != null && _background.Name == Consts.UIS_ID)
+                if (_drawCursor && _cursor != null && (_background.Name == Consts.UIS_ID || _background.Name == Consts.UIS_IP || _background.Name == Consts.UIS_PORT))
                     sp.Draw(_cursor,
                         new Rectangle((int)(_position.X + size.X + _bounding.Width * 0.15f), (int)_position.Y, (int)(14), (int)((size.Y))),
                         new Color(255, 255, 255, 200));

@@ -50,11 +50,11 @@ namespace SFS_BattleTank.GameScenes
             _inputHost = new InputField(
                 inputPosition + new Vector2(0, -inputRect.Height),
                 new Rectangle(0, 0, 200, 0),
-                2f);
+                2f,"127.0.0.1");
             _inputPort = new InputField(
                 _inputHost.GetPosition() + new Vector2(0, -_inputHost.GetBoundingBox().Height),
                 new Rectangle(0, 0, 200, 0),
-                2f);
+                2f,"9933");
 
             _loginButton = new Button("Login",
                 new Vector2(inputPosition.X + inputRect.Width, inputPosition.Y),
@@ -97,6 +97,7 @@ namespace SFS_BattleTank.GameScenes
         }
         public override void Update(float deltaTime)
         {
+            UpdateInputField(deltaTime);
 
             _inputName.Update(deltaTime);
             _inputHost.Update(deltaTime);
@@ -137,7 +138,36 @@ namespace SFS_BattleTank.GameScenes
             sp.End();
             base.Draw(sp);
         }
+        
+        private void UpdateInputField(float deltaTime)
+        {
+            if(InputControl.Input.Clicked(Consts.MOUSEBUTTON_LEFT))
+            {
+                if(_inputName.CheckInsideUI(_inputName.GetPosition(),_inputName.GetBoundingBox()) && !_inputName.IsEnable())
+                {
+                    DisableInputFields();
+                    _inputName.CMD(Consts.UI_CMD_ENABLE);
+                }
+                if (_inputHost.CheckInsideUI(_inputHost.GetPosition(), _inputHost.GetBoundingBox()) && !_inputHost.IsEnable())
+                {
+                    DisableInputFields();
+                    _inputHost.CMD(Consts.UI_CMD_ENABLE);
+                }
+                if (_inputPort.CheckInsideUI(_inputPort.GetPosition(), _inputPort.GetBoundingBox()) && !_inputPort.IsEnable())
+                {
+                    DisableInputFields();
+                    _inputPort.CMD(Consts.UI_CMD_ENABLE);
+                }
+            }
+        }
 
+        // helper
+        private void DisableInputFields()
+        {
+            _inputName.CMD(Consts.UI_CMD_DISABLE);
+            _inputHost.CMD(Consts.UI_CMD_DISABLE);
+            _inputPort.CMD(Consts.UI_CMD_DISABLE);
+        }
         // static methods
         static public string UserName()
         {

@@ -48,7 +48,7 @@ namespace SFS_BattleTank.Bases
         protected virtual void InitBoundingBox(float textScale) { }
         
         // helper
-        protected bool CheckInsideUI(Vector2 position, Rectangle boundingBox)
+        public bool CheckInsideUI(Vector2 position, Rectangle boundingBox)
         {
             Vector2 mousePosition = Input.GetMousePosition();
             if (mousePosition.X >= position.X &&
