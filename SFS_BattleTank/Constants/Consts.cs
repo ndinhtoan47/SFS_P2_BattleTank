@@ -61,10 +61,10 @@ namespace SFS_BattleTank.Constants
         public static readonly string TYPE_PAR_EXPLOSION = "explosionpar";
         public static readonly string TYPE_PAR_FIRE = "firepar";
         // game ui type
-        public static readonly string UI_INPUT_FIELD = "inputField";
-        public static readonly string UI_BUTTON = "button";
-        public static readonly string UI_DISPLAY_FIELD = "displayField";
-        public static readonly string UI_NAME_PLATE = "namePlate"; 
+        public static readonly string UI_TYPE_INPUT_FIELD = "inputField";
+        public static readonly string UI_TYPE_BUTTON = "button";
+        public static readonly string UI_TYPE_DISPLAY_FIELD = "displayField";
+        public static readonly string UI_TYPE_NAME_PLATE = "namePlate"; 
         // ui cmd
         public static readonly string UI_CMD_INVERSE_USE_BACKGROUND = "inverseUseBackground";
         public static readonly string UI_CMD_DISABLE = "disable";
@@ -74,6 +74,8 @@ namespace SFS_BattleTank.Constants
         public static readonly string UIS_ID = @"idField";
         public static readonly string UIS_PASS = @"";       
         public static readonly string UIS_INPUT_FIELD = "textInput";
+        public static readonly string UIS_IP = @"ipField";
+        public static readonly string UIS_PORT = @"portField";
 
         public static readonly string UIS_UNREADY_BUTTON = "unReadyBT";
         public static readonly string UIS_READY_BUTTON = "readyBT";

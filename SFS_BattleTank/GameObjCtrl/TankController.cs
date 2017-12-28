@@ -35,7 +35,7 @@ namespace SFS_BattleTank.GameObjCtrl
             _lastYDir = 0;
         }
 
-        public override void Add(User user)
+        public override void Add(User user, IMMOItem item)
         {
             if (user != null)
             {
@@ -51,9 +51,9 @@ namespace SFS_BattleTank.GameObjCtrl
                     _tanks[user.Id].LoadContents(_contents);
                 }
             }
-            base.Add(user);
+            base.Add(user, item);
         }
-        public override void Remove(User user, SFSObject data)
+        public override void Remove(User user, IMMOItem item)
         {
             if (user != null)
             {
@@ -61,9 +61,9 @@ namespace SFS_BattleTank.GameObjCtrl
                     return;
                 _tanks.Remove(user.Id);
             }
-            base.Remove(user, data);
+            base.Remove(user, item);
         }
-        public override void UpdateData(User user, List<string> changedVars)
+        public override void UpdateData(User user, List<string> changedVars, IMMOItem item)
         {
             if (user != null)
             {
@@ -79,7 +79,7 @@ namespace SFS_BattleTank.GameObjCtrl
                     }
                 }
             }
-            base.UpdateData(user, changedVars);
+            base.UpdateData(user, changedVars, item);
         }
 
         public override void Behaviour(string cmd, int id, SFSObject data)
@@ -208,7 +208,7 @@ namespace SFS_BattleTank.GameObjCtrl
         protected void Fire()
         {
             SmartFox sfs = _network.GetInstance();
-            if(sfs != null)
+            if (sfs != null)
             {
                 SFSObject data = new SFSObject();
                 data.PutDouble(Consts.ROTATION, (double)_network.GetMainTank().GetRotation());

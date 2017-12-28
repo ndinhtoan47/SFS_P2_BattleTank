@@ -24,61 +24,44 @@ namespace SFS_BattleTank.GameObjCtrl
             : base(contents)
         {
             _bullets = new Dictionary<int, GameObject>();
-
             _s_fire = new SEffect();
             _s_fire.LoadContents(contents, SOUND_FIRE);
         }
 
-        public override void Add(Sfs2X.Entities.User user)
+        public override void Add(User user, IMMOItem item)
         {
-            #region previous
-            //if (_bullets != null)
-            //{
-            //    if (data.ContainsKey(Consts.X) && (data.ContainsKey(Consts.Y) && data.ContainsKey(Consts.GO_ID)))
-            //    {
-            //        int objectId = (int)data.GetDouble(Consts.GO_ID);
-            //        if (!_bullets.ContainsKey(objectId))
-            //        {
-            //            _bullets.Add((int)data.GetDouble(Consts.GO_ID), new Bullet((float)data.GetDouble(Consts.X),
-            //                                            (float)data.GetDouble(Consts.Y),
-            //                                            (ulong)objectId));
-            //            _bullets[objectId].LoadContents(_contents);
-            //            _s_fire.Play();
-            //        }
-            //    }
-            //}
-            #endregion
-            base.Add(user);
-        }
-        public override void Remove(User user, SFSObject data)
-        {
-            if (!data.ContainsKey(Consts.GO_ID)) return;
-            else
+            if (item != null && !_bullets.ContainsKey(item.Id))
             {
-                int objectId = (int)data.GetDouble(Consts.GO_ID);
-                if (_bullets.ContainsKey(objectId))
-                    _bullets.Remove(objectId);
+                if (item.ContainsVariable(Consts.X) && item.ContainsVariable(Consts.Y))
+                    _bullets.Add(item.Id, new Bullet((float)item.GetVariable(Consts.X).GetDoubleValue(),
+                                                        (float)item.GetVariable(Consts.Y).GetDoubleValue(),
+                                                        (ulong)item.Id));
+                _bullets[item.Id].LoadContents(_contents);
             }
-            base.Remove(user, data);
+            base.Add(user, item);
+        }
+        public override void Remove(User user, IMMOItem item)
+        {
+            if (item != null && _bullets.ContainsKey(item.Id))
+            {
+                _bullets.Remove(item.Id);
+            }
+            base.Remove(user, item);
         }
         public override void Init()
         {
             base.Init();
         }
-        public override void UpdateData(User user,List<string> changedVars)
+        public override void UpdateData(User user, List<string> changedVars, IMMOItem item)
         {
-            #region previous
-            //int go_id = (data.ContainsKey(Consts.GO_ID)) ? (int)data.GetDouble(Consts.GO_ID) : -1;
-            //if (!(data.ContainsKey(Consts.X) && data.ContainsKey(Consts.Y))) return;
-            //if (go_id != -1)
-            //{
-            //    if (_bullets.ContainsKey(go_id))
-            //    {
-            //        _bullets[go_id].SetPosition(new Vector2((float)data.GetDouble(Consts.X), (float)data.GetDouble(Consts.Y)));
-            //    }
-            //}
-            #endregion
-            base.UpdateData(user,changedVars);
+            if(item != null && _bullets.ContainsKey(item.Id))
+            {
+                float x = 0; float y = 0;
+                if (item.ContainsVariable(Consts.X)) x = (float)item.GetVariable(Consts.X).GetDoubleValue();
+                if (item.ContainsVariable(Consts.Y)) y = (float)item.GetVariable(Consts.Y).GetDoubleValue();
+                _bullets[item.Id].SetPosition(new Vector2(x, y));
+            }
+            base.UpdateData(user, changedVars, item);
         }
         public override void Behaviour(string cmd, int id, SFSObject data)
         {

@@ -30,15 +30,16 @@ namespace SFS_BattleTank.UI
         protected float _textScale;
 
         public InputField(Vector2 position, Rectangle bounding, float textScale, string defaultText = "")
-            : base(Consts.UI_INPUT_FIELD, position, bounding)
+            : base(Consts.UI_TYPE_INPUT_FIELD, position, bounding)
         {
             _textScale = textScale;
-            _isEnable = false;
+            _isEnable = true;
             _inputText = defaultText;
             Init();
         }
         public override void Init()
         {
+            _drawText = _inputText;
             _delayInput = 0.175f;
             _totalInput = 0.0f;
             _delayCursor = 0.5f;
@@ -57,6 +58,7 @@ namespace SFS_BattleTank.UI
         }
         public override void Update(float deltaTime)
         {
+            if(CheckInsideUI(_position,_bounding) && Input.Clicked(Consts.MOUSEBUTTON_LEFT)) _isEnable = !_isEnable;
             if (_isEnable)
             {
                 _inputText = GetInputText(deltaTime);
@@ -246,7 +248,7 @@ namespace SFS_BattleTank.UI
         private void DrawCursorAndText_IDType(SpriteBatch sp)
         {
             // id bacground
-            if (_background.Name == Consts.UIS_ID)
+            if (_background.Name == Consts.UIS_ID || _background.Name == Consts.UIS_PORT || _background.Name == Consts.UIS_IP)
             {
                 _drawText = CheckInputTextMaxSize(_font, (int)(_bounding.Width * 0.8f), _inputText, _textScale);
                 sp.DrawString(

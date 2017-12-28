@@ -29,7 +29,7 @@ namespace SFS_BattleTank.UI
         protected SEffect _hoverEffect;
 
         public Button(string lable, Vector2 position, Rectangle bounding, float textScale)
-            : base(Consts.UI_BUTTON, position, bounding)
+            : base(Consts.UI_TYPE_BUTTON, position, bounding)
         {
             _label = lable;
             _textScale = textScale;

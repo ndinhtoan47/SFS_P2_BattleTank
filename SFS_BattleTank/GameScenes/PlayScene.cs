@@ -110,8 +110,8 @@ namespace SFS_BattleTank.GameScenes
             Controller ctrl = _network.GetController(Consts.CTRL_TANK);
             if (ctrl != null)
             {
-                ctrl.Add(sender);
-                ctrl.UpdateData(sender, changedVars);
+                ctrl.Add(sender, null);
+                ctrl.UpdateData(sender, changedVars, null);
             }
         }
         private void OnProximityListUpdate(BaseEvent e)
@@ -122,10 +122,10 @@ namespace SFS_BattleTank.GameScenes
             _network.UserEnterExitMMORoom(addedUsers, removedUsers);
 
             Controller tanks = _network.GetController(Consts.CTRL_TANK);
-            if(tanks != null)
+            if (tanks != null)
             {
-                foreach (User user in addedUsers) tanks.Add(user);
-                foreach (User user in removedUsers) tanks.Remove(user);
+                foreach (User user in addedUsers) tanks.Add(user, null);
+                foreach (User user in removedUsers) tanks.Remove(user, null);
             }
         }
         private void OnExtensionResponse(BaseEvent e)

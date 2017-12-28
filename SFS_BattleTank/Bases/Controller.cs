@@ -20,9 +20,9 @@ namespace SFS_BattleTank.Bases
         }
 
         public virtual void Update(float deltaTime) { }
-        public virtual void UpdateData(User user,List<string> changedVars) { }
-        public virtual void Add(User user) { }
-        public virtual void Remove(User user, SFSObject data = null) { }
+        public virtual void UpdateData(User user, List<string> changedVars, IMMOItem item) { }
+        public virtual void Add(User user, IMMOItem item) { }
+        public virtual void Remove(User user, IMMOItem item) { }
         public virtual void Behaviour(string cmd, int id, SFSObject data) { }
         public virtual Dictionary<int, GameObject> GetAllGameObject() { return null; }
         public virtual void Init() { }

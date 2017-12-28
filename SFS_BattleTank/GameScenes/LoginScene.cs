@@ -50,11 +50,11 @@ namespace SFS_BattleTank.GameScenes
             _inputHost = new InputField(
                 inputPosition + new Vector2(0, -inputRect.Height),
                 new Rectangle(0, 0, 200, 0),
-                2f, "127.0.0.1");
+                2f);
             _inputPort = new InputField(
                 _inputHost.GetPosition() + new Vector2(0, -_inputHost.GetBoundingBox().Height),
                 new Rectangle(0, 0, 200, 0),
-                2f, "9933");
+                2f);
 
             _loginButton = new Button("Login",
                 new Vector2(inputPosition.X + inputRect.Width, inputPosition.Y),
@@ -65,8 +65,6 @@ namespace SFS_BattleTank.GameScenes
             _sOptionalButton = new Button("",
                 new Vector2(Consts.VIEWPORT_WIDTH - 80, Consts.VIEWPORT_HEIGHT - 40),
                 new Rectangle(0, 0, 40, 40), 0.0f);
-
-            _inputHost.CMD(Consts.UI_CMD_ENABLE);
             _sBg = new SBackground();
             return base.Init();
         }
@@ -85,6 +83,8 @@ namespace SFS_BattleTank.GameScenes
             _sOptionalButton.LoadContents(_contents);
             _sOptionalButton.ChangeBackground(Consts.UIS_SOUND_ENABLE_BUTTON);
             _inputName.ChangeBackground(Consts.UIS_ID);
+            _inputHost.ChangeBackground(Consts.UIS_IP);
+            _inputPort.ChangeBackground(Consts.UIS_PORT);
             _sBg.LoadContents(_contents, S_BACKGROUND);
             _sBg.Play(new TimeSpan(0, 0, 2));
             return base.LoadContents();
@@ -101,6 +101,7 @@ namespace SFS_BattleTank.GameScenes
             _inputName.Update(deltaTime);
             _inputHost.Update(deltaTime);
             _inputPort.Update(deltaTime);
+
             _loginButton.Update(deltaTime);
             _exitButton.Update(deltaTime);
             _userName = _inputName.GetInputText();
@@ -125,6 +126,7 @@ namespace SFS_BattleTank.GameScenes
             _inputName.Draw(sp);
             _inputHost.Draw(sp);
             _inputPort.Draw(sp);
+
             _loginButton.Draw(sp);
             _exitButton.Draw(sp);
             _sOptionalButton.Draw(sp);

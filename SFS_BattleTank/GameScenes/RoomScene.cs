@@ -32,8 +32,10 @@ namespace SFS_BattleTank.GameScenes
         protected List<User> _usersInsideRoom;
         protected bool _isEnablePlayButton;
 
+
         // test
         protected List<string> _names;
+        protected NamePlateManager _namePlates;
         // ui
         protected Button _readyButton;
         protected Button _playButton;
@@ -45,6 +47,10 @@ namespace SFS_BattleTank.GameScenes
             _usersInsideRoom = new List<User>();
             _names = new List<string>();
             _isEnablePlayButton = false;
+
+            // test
+            _namePlates = new NamePlateManager();
+
         }
         public override bool Init()
         {
@@ -56,7 +62,8 @@ namespace SFS_BattleTank.GameScenes
             _readyButton = new Button("", new Vector2(0, 0), new Rectangle(0, 0, 100, 100), 2.0f);
             _playButton = new Button("", new Vector2(0, 0), new Rectangle(0, 0, 100, 100), 2.0f);
 
-            this.UserEnterExitRoom(_network.GetUsersInsideCurrentRoom());
+            // test
+            _namePlates.Init();
             return base.Init();
         }
         public override bool LoadContents()
@@ -75,6 +82,9 @@ namespace SFS_BattleTank.GameScenes
             _readyButton.SetPosition(new Vector2(_playButton.GetBoundingBox().Width + _playButton.GetPosition().X,
                                                     Consts.VIEWPORT_HEIGHT - _readyButton.GetBoundingBox().Height));
             _sBg.Play(new System.TimeSpan(0, 0, 0), 0.8f);
+
+            _namePlates.LoadContents(_contents);
+            //this.UserEnterExitRoom(_network.GetUsersInsideCurrentRoom());
             return base.LoadContents();
         }
         public override void Shutdown()
@@ -92,9 +102,10 @@ namespace SFS_BattleTank.GameScenes
             if (_isEnablePlayButton)
                 _playButton.Draw(sp);
             //else
-                _readyButton.Draw(sp);
+            _readyButton.Draw(sp);
             // test
-            DrawUsers(sp);
+            // DrawUsers(sp);
+            _namePlates.Draw(sp);
             sp.End();
 
             base.Draw(sp);
@@ -151,6 +162,7 @@ namespace SFS_BattleTank.GameScenes
             foreach (User us in currentUsers)
             {
                 _names.Add(us.Name);
+                //_namePlates.Add(us,false);
             }
         }
         protected override void AddListener()
@@ -179,6 +191,7 @@ namespace SFS_BattleTank.GameScenes
         {
             string cmd = (string)e.Params["cmd"];
             SFSObject data = (SFSObject)e.Params["params"];
+            User user = (User)e.Params["user"];
             if (cmd == Consts.CMD_IS_PRIMARY)
             {
                 _network.SetPrimary((bool)data.GetBool(Consts.PRIMARY));
@@ -214,7 +227,7 @@ namespace SFS_BattleTank.GameScenes
             Controller ctrl = _network.GetController(Consts.CTRL_TANK);
             if (ctrl != null)
             {
-                ctrl.Add(sender);
+                ctrl.Add(sender, null);
             }
         }
     }
