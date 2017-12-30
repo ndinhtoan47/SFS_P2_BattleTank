@@ -38,6 +38,10 @@ namespace SFS_BattleTank.GameObjCtrl
                                                         (ulong)item.Id));
                 _bullets[item.Id].LoadContents(_contents);
             }
+            else if(item != null)
+            {
+                this.UpdateData(user,null, item);
+            }
             base.Add(user, item);
         }
         public override void Remove(User user, IMMOItem item)

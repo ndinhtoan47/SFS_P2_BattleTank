@@ -133,6 +133,7 @@ namespace SFS_BattleTank.GameScenes
             Controller bullet = _network.GetController(Consts.CTRL_BULLET);
             if (bullet != null)
             {
+                Debug.WriteLine("Add bullet");
                 foreach (IMMOItem item in addedItems) bullet.Add(null, item);
                 foreach (IMMOItem item in removedItems) bullet.Remove(null, item);
             }
