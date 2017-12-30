@@ -166,6 +166,7 @@ namespace SFS_BattleTank.GameScenes
         {
             _sfs.AddEventListener(SFSEvent.ROOM_JOIN, OnJoinRoom);
             _sfs.AddEventListener(SFSEvent.ROOM_JOIN_ERROR, OnJoinRoomError);
+            _sfs.AddEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtension);
             base.AddListener();
         }
         // events handler
@@ -182,6 +183,15 @@ namespace SFS_BattleTank.GameScenes
         private void OnJoinRoomError(BaseEvent e)
         {
             Debug.WriteLine("Join room error !");
+        }
+        private void OnExtension(BaseEvent e)
+        {
+            string cmd = (string)e.Params["cmd"];
+            SFSObject data = (SFSObject)e.Params["params"];
+            if (cmd == "error")
+            {
+                Debug.WriteLine(data.GetUtfString("er"));
+            }
         }
 
     }

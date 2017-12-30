@@ -204,6 +204,9 @@ namespace SFS_BattleTank.GameScenes
             _sfs.AddEventListener(SFSEvent.CONNECTION, OnConnection);
             _sfs.AddEventListener(SFSEvent.LOGIN, OnLogin);
             _sfs.AddEventListener(SFSEvent.LOGIN_ERROR, OnLoginError);
+
+            // test
+            _sfs.AddEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtension);
             base.AddListener();
         }
 
@@ -230,6 +233,15 @@ namespace SFS_BattleTank.GameScenes
         {
             LoginScene.SetNotice("Login fail !");
             Debug.WriteLine("Login fail !");
+        }
+        private void OnExtension(BaseEvent e)
+        {
+            string cmd = (string)e.Params["cmd"];
+            SFSObject data = (SFSObject)e.Params["params"];
+            if(cmd == "error")
+            {
+                Debug.WriteLine(data.GetUtfString("er"));
+            }
         }
     }
 }

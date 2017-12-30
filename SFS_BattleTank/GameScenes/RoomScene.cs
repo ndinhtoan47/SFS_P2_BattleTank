@@ -219,6 +219,10 @@ namespace SFS_BattleTank.GameScenes
                 bool canPlay = data.GetBool(Consts.CAN_PLAY);
                 if (canPlay) Game1.sceneManager.GotoScene(Consts.SCENE_PLAY);
             }
+            if(cmd == "time")
+            {
+
+            }
         }
         private void OnUserVariable(BaseEvent e)
         {

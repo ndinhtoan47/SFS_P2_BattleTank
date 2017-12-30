@@ -119,14 +119,24 @@ namespace SFS_BattleTank.GameScenes
             Debug.WriteLine("PlayScene Proximity list updated !");
             List<User> addedUsers = (List<User>)e.Params["addedUsers"];
             List<User> removedUsers = (List<User>)e.Params["removedUsers"];
+            List<IMMOItem> addedItems = (List<IMMOItem>)e.Params["addedItems"];
+            List<IMMOItem> removedItems = (List<IMMOItem>)e.Params["removedItems"];
+
             _network.UserEnterExitMMORoom(addedUsers, removedUsers);
 
-            Controller tanks = _network.GetController(Consts.CTRL_TANK);
-            if (tanks != null)
+            Controller tank = _network.GetController(Consts.CTRL_TANK);
+            if (tank != null)
             {
-                foreach (User user in addedUsers) tanks.Add(user, null);
-                foreach (User user in removedUsers) tanks.Remove(user, null);
+                foreach (User user in addedUsers) tank.Add(user, null);
+                foreach (User user in removedUsers) tank.Remove(user, null);
             }
+            Controller bullet = _network.GetController(Consts.CTRL_BULLET);
+            if (bullet != null)
+            {
+                foreach (IMMOItem item in addedItems) bullet.Add(null, item);
+                foreach (IMMOItem item in removedItems) bullet.Remove(null, item);
+            }
+
         }
         private void OnExtensionResponse(BaseEvent e)
         {
