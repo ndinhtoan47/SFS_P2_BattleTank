@@ -69,6 +69,8 @@ namespace SFS_BattleTank.GameScenes
             GameObject tank = _network.GetMainTank();
             if (tank != null)
                 _camera.Update(deltaTime, tank.GetPosition());
+            // test
+            UpdateBullet();
             base.Update(deltaTime);
         }
         public override void Draw(SpriteBatch sp)
@@ -122,8 +124,6 @@ namespace SFS_BattleTank.GameScenes
             List<IMMOItem> addedItems = (List<IMMOItem>)e.Params["addedItems"];
             List<IMMOItem> removedItems = (List<IMMOItem>)e.Params["removedItems"];
 
-            _network.UserEnterExitMMORoom(addedUsers, removedUsers);
-
             Controller tank = _network.GetController(Consts.CTRL_TANK);
             if (tank != null)
             {
@@ -133,7 +133,6 @@ namespace SFS_BattleTank.GameScenes
             Controller bullet = _network.GetController(Consts.CTRL_BULLET);
             if (bullet != null)
             {
-                Debug.WriteLine("Add bullet");
                 foreach (IMMOItem item in addedItems) bullet.Add(null, item);
                 foreach (IMMOItem item in removedItems) bullet.Remove(null, item);
             }
@@ -143,6 +142,19 @@ namespace SFS_BattleTank.GameScenes
         {
             string cmd = (string)e.Params["cmd"];
             SFSObject data = (SFSObject)e.Params["params"];
+        }
+
+        // test
+        private void UpdateBullet()
+        {
+            Controller bullet = _network.GetController(Consts.CTRL_BULLET);
+            MMORoom room = (MMORoom)_network.GetCurretRoom();
+            List<IMMOItem> items = room.GetMMOItems();
+            if (items.Count > 0)
+            {
+                foreach (IMMOItem item in items)
+                    bullet.UpdateData(null, null, item);
+            }
         }
     }
 }

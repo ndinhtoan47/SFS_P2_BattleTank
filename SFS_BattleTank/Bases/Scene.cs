@@ -23,9 +23,9 @@ namespace SFS_BattleTank.Bases
 
         public virtual bool Init()
         {
-            _isInit = LoadContents();
             _sfs = _network.GetInstance();
             AddListener();
+            _isInit = LoadContents();            
             return _isInit;
         }
         public virtual void Shutdown()

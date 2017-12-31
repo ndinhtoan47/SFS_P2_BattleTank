@@ -66,6 +66,9 @@ namespace SFS_BattleTank.GameScenes
                 new Vector2(Consts.VIEWPORT_WIDTH - 80, Consts.VIEWPORT_HEIGHT - 40),
                 new Rectangle(0, 0, 40, 40), 0.0f);
             _sBg = new SBackground();
+
+            _inputPort.SetTextAlignment(0.45f);
+            _inputPort.SetTextMaxSize(0.5f);
             return base.Init();
         }
         public override bool LoadContents()

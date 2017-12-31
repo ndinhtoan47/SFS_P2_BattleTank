@@ -46,10 +46,10 @@ namespace SFS_BattleTank
             {
                 graphics.PreferredBackBufferWidth = graphics.GraphicsDevice.DisplayMode.Width;
                 graphics.PreferredBackBufferHeight = graphics.GraphicsDevice.DisplayMode.Height;
-                Consts.VIEWPORT_WIDTH = graphics.GraphicsDevice.DisplayMode.Width;
-                Consts.VIEWPORT_HEIGHT = graphics.GraphicsDevice.DisplayMode.Height;
                 Consts.VIEWPORT_SCALE_RATE_WIDTH = (float)graphics.GraphicsDevice.DisplayMode.Width / (float)Consts.VIEWPORT_WIDTH;
                 Consts.VIEWPORT_SCALE_RATE_HEIGHT = (float)graphics.GraphicsDevice.DisplayMode.Height / (float)Consts.VIEWPORT_HEIGHT;
+                Consts.VIEWPORT_WIDTH = graphics.GraphicsDevice.DisplayMode.Width;
+                Consts.VIEWPORT_HEIGHT = graphics.GraphicsDevice.DisplayMode.Height;
                 graphics.GraphicsDevice.Viewport = new Viewport(0, 0, Consts.VIEWPORT_WIDTH, Consts.VIEWPORT_HEIGHT);
 
                 graphics.ApplyChanges();

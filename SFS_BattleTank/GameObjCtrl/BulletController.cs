@@ -12,6 +12,7 @@ using Sfs2X.Entities;
 using Sfs2X.Entities.Data;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 namespace SFS_BattleTank.GameObjCtrl
 {
     public class BulletController : Controller
@@ -32,15 +33,14 @@ namespace SFS_BattleTank.GameObjCtrl
         {
             if (item != null && !_bullets.ContainsKey(item.Id))
             {
+               
                 if (item.ContainsVariable(Consts.X) && item.ContainsVariable(Consts.Y))
                     _bullets.Add(item.Id, new Bullet((float)item.GetVariable(Consts.X).GetDoubleValue(),
                                                         (float)item.GetVariable(Consts.Y).GetDoubleValue(),
                                                         (ulong)item.Id));
                 _bullets[item.Id].LoadContents(_contents);
-            }
-            else if(item != null)
-            {
-                this.UpdateData(user,null, item);
+              //  _s_fire.Play();
+                Debug.WriteLine("Added " + item.Id);
             }
             base.Add(user, item);
         }

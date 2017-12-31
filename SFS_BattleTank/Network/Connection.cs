@@ -23,7 +23,6 @@ namespace SFS_BattleTank.Network
         protected string ROOM = "The Lobby";
         protected Room _curRoom;
         protected Dictionary<string, Controller> _controllers;
-        protected List<User> _usersInsideRoom;
         protected bool _isPrimary;
 
         public Connection()
@@ -32,7 +31,6 @@ namespace SFS_BattleTank.Network
             _sfs = new SmartFox();
             _sfs.ThreadSafeMode = true;
             _controllers = new Dictionary<string, Controller>();
-            _usersInsideRoom = new List<User>();
             _isPrimary = false;
         }
         ~Connection()
@@ -75,7 +73,7 @@ namespace SFS_BattleTank.Network
         // properties
         public List<User> GetUsersInsideCurrentRoom()
         {
-            return _usersInsideRoom;
+            return _curRoom.UserList;
         }
         public Controller GetController(string ctrl)
         {
@@ -115,26 +113,6 @@ namespace SFS_BattleTank.Network
         public void JoinRoom(string roomName = "The Lobby", string password = "")
         {
             _sfs.Send(new JoinRoomRequest(roomName, password));
-        }
-        // helper
-        public void AddMeToUserList()
-        {
-            if (_sfs.MySelf != null)
-            {
-                if (!_usersInsideRoom.Contains(_sfs.MySelf))
-                    _usersInsideRoom.Add(_sfs.MySelf);
-            }
-        }
-        public void UserEnterExitMMORoom(List<User> added, List<User> removed)
-        {
-            foreach (User user in added)
-            {
-                if (!_usersInsideRoom.Contains(user)) _usersInsideRoom.Add(user);
-            }
-            foreach (User user in removed)
-            {
-                if (_usersInsideRoom.Contains(user)) _usersInsideRoom.Remove(user);
-            }
         }
         public void SetPrimary(bool value)
         {

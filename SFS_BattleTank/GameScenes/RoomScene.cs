@@ -84,7 +84,6 @@ namespace SFS_BattleTank.GameScenes
             _sBg.Play(new System.TimeSpan(0, 0, 0), 0.8f);
 
             _namePlates.LoadContents(_contents);
-            //this.UserEnterExitRoom(_network.GetUsersInsideCurrentRoom());
             return base.LoadContents();
         }
         public override void Shutdown()
@@ -101,10 +100,7 @@ namespace SFS_BattleTank.GameScenes
 
             if (_isEnablePlayButton)
                 _playButton.Draw(sp);
-            //else
             _readyButton.Draw(sp);
-            // test
-            // DrawUsers(sp);
             _namePlates.Draw(sp);
             sp.End();
 
@@ -156,15 +152,6 @@ namespace SFS_BattleTank.GameScenes
             _sfs.Send(new ExtensionRequest(Consts.CRQ_PLAY, data, _network.GetCurretRoom()));
         }
 
-        private void UserEnterExitRoom(List<User> currentUsers)
-        {
-            _names.Clear();
-            foreach (User us in currentUsers)
-            {
-                _names.Add(us.Name);
-                //_namePlates.Add(us,false);
-            }
-        }
         protected override void AddListener()
         {
             _sfs.AddEventListener(SFSEvent.PROXIMITY_LIST_UPDATE, OnProximityListUpdate);
@@ -178,14 +165,22 @@ namespace SFS_BattleTank.GameScenes
             Debug.WriteLine("RoomScene Proximity list updated !");
             List<User> addedUsers = (List<User>)e.Params["addedUsers"];
             List<User> removedUsers = (List<User>)e.Params["removedUsers"];
-            _network.UserEnterExitMMORoom(addedUsers, removedUsers);
-            this.UserEnterExitRoom(_network.GetUsersInsideCurrentRoom());
 
-            //Controller tanks = _network.GetController(Consts.CTRL_TANK);
-            //foreach (User user in addedUsers)
-            //    tanks.Add(user);
-            //foreach (User user in removedUsers)
-            //    tanks.Remove(user);
+            Controller tanks = _network.GetController(Consts.CTRL_TANK);
+            foreach (User user in addedUsers)
+            {
+                bool isOnwer = (user.ContainsVariable(Consts.PRIMARY)) ? user.GetVariable(Consts.PRIMARY).GetBoolValue() : false;
+                _namePlates.Add(user, isOnwer);
+                tanks.Add(user, null);
+            }
+            foreach (User user in removedUsers)
+            {
+                tanks.Remove(user, null);
+                 bool isOnwer = (user.ContainsVariable(Consts.PRIMARY)) ? user.GetVariable(Consts.PRIMARY).GetBoolValue() : false;
+                 _namePlates.Remove(user, isOnwer);
+            }
+
+
         }
         private void OnExtensionResponse(BaseEvent e)
         {
@@ -219,10 +214,6 @@ namespace SFS_BattleTank.GameScenes
                 bool canPlay = data.GetBool(Consts.CAN_PLAY);
                 if (canPlay) Game1.sceneManager.GotoScene(Consts.SCENE_PLAY);
             }
-            if(cmd == "time")
-            {
-
-            }
         }
         private void OnUserVariable(BaseEvent e)
         {
@@ -230,9 +221,7 @@ namespace SFS_BattleTank.GameScenes
             User sender = (User)e.Params["user"];
             Controller ctrl = _network.GetController(Consts.CTRL_TANK);
             if (ctrl != null)
-            {
                 ctrl.Add(sender, null);
-            }
         }
     }
 }

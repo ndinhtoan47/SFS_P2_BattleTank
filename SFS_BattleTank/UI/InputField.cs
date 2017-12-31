@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using SFS_BattleTank.Bases;
 using SFS_BattleTank.Constants;
 using SFS_BattleTank.InputControl;
+using System.Diagnostics;
 
 namespace SFS_BattleTank.UI
 {
@@ -28,13 +29,17 @@ namespace SFS_BattleTank.UI
 
         protected SpriteFont _font;
         protected float _textScale;
-
+        protected float _textAlignment;
+        protected float _textMaxSize;
+        protected KeyboardState _lastState;
         public InputField(Vector2 position, Rectangle bounding, float textScale, string defaultText = "")
             : base(Consts.UI_TYPE_INPUT_FIELD, position, bounding)
         {
             _textScale = textScale;
             _isEnable = false;
             _inputText = defaultText;
+            _lastState = Keyboard.GetState();
+
             Init();
         }
         public override void Init()
@@ -45,6 +50,8 @@ namespace SFS_BattleTank.UI
             _delayCursor = 0.5f;
             _totalCusor = 0.0f;
             _useBackground = true;
+            _textAlignment = 0.15f;
+            _textMaxSize = 0.8f;
             InitBoundingBox(_textScale);
             base.Init();
         }
@@ -71,7 +78,10 @@ namespace SFS_BattleTank.UI
             if (_background != null && _useBackground)
             {
                 sp.Draw(_background,
-                    new Rectangle((int)_position.X, (int)_position.Y, (int)_bounding.Width, (int)_bounding.Height),
+                    new Rectangle((int)(_position.X * Consts.VIEWPORT_SCALE_RATE_WIDTH),
+                                (int)(_position.Y * Consts.VIEWPORT_SCALE_RATE_HEIGHT),
+                                (int)(_bounding.Width * Consts.VIEWPORT_SCALE_RATE_WIDTH),
+                                (int)(_bounding.Height * Consts.VIEWPORT_SCALE_RATE_HEIGHT)),
                     Color.White);
             }
             DrawCursorAndText_DefaultType(sp);
@@ -103,7 +113,8 @@ namespace SFS_BattleTank.UI
         {
             string result = _inputText;
             Keys[] curPressKeys = Input.GetKeyDowns();
-            if (_totalInput >= _delayInput)
+            KeyboardState curState = Keyboard.GetState();
+            if (_totalInput >= _delayInput || (curState != _lastState && curPressKeys.Length <= 1))
             {
                 // if has key press
                 if (curPressKeys.Length > 0)
@@ -116,69 +127,61 @@ namespace SFS_BattleTank.UI
                         if ((k >= Keys.A && k <= Keys.Z) ||
                             (k >= Keys.D0 && k <= Keys.D9) ||
                             (k >= Keys.NumPad0 && k <= Keys.NumPad9) ||
-                            (k == Keys.Space) || (k == Keys.Back) || (k == Keys.OemPeriod))
+                            (k == Keys.Space) || (k == Keys.Back) || (k == Keys.OemPeriod || k == Keys.Decimal))
                         {
                             switch (k)
                             {
                                 case Keys.Back:
-                                    {
-                                        if (result.Length > 0)
-                                        {
-                                            result = result.Remove(result.Length - 1);
-                                        }
-                                        break;
-                                    }
+                                    if (result.Length > 0)
+                                        result = result.Remove(result.Length - 1);
+                                    break;
                                 case Keys.Space:
-                                    {
-                                        result += " ";
-                                        break;
-                                    }
+                                    result += " ";
+                                    break;
                                 case Keys.OemPeriod:
-                                    {
-                                        result += ".";
-                                        break;
-                                    }
+                                case Keys.Decimal:
+                                    result += ".";
+                                    break;
                                 default:
+                                    #region re-define Keys.D and Keys.NumPad
+                                    if (k == Keys.D0 || k == Keys.NumPad0)
+                                        result += "0";
+                                    else if (k == Keys.D1 || k == Keys.NumPad1)
+                                        result += "1";
+                                    else if (k == Keys.D2 || k == Keys.NumPad2)
+                                        result += "2";
+                                    else if (k == Keys.D3 || k == Keys.NumPad3)
+                                        result += "3";
+                                    else if (k == Keys.D4 || k == Keys.NumPad4)
+                                        result += "4";
+                                    else if (k == Keys.D5 || k == Keys.NumPad5)
+                                        result += "5";
+                                    else if (k == Keys.D6 || k == Keys.NumPad6)
+                                        result += "6";
+                                    else if (k == Keys.D7 || k == Keys.NumPad7)
+                                        result += "7";
+                                    else if (k == Keys.D8 || k == Keys.NumPad8)
+                                        result += "8";
+                                    else if (k == Keys.D9 || k == Keys.NumPad9)
+                                        result += "9";
+                                    #endregion
+                                    else
                                     {
-                                        #region re-define Keys.D and Keys.NumPad
-                                        if (k == Keys.D0 || k == Keys.NumPad0)
-                                            result += "0";
-                                        else if (k == Keys.D1 || k == Keys.NumPad1)
-                                            result += "1";
-                                        else if (k == Keys.D2 || k == Keys.NumPad2)
-                                            result += "2";
-                                        else if (k == Keys.D3 || k == Keys.NumPad3)
-                                            result += "3";
-                                        else if (k == Keys.D4 || k == Keys.NumPad4)
-                                            result += "4";
-                                        else if (k == Keys.D5 || k == Keys.NumPad5)
-                                            result += "5";
-                                        else if (k == Keys.D6 || k == Keys.NumPad6)
-                                            result += "6";
-                                        else if (k == Keys.D7 || k == Keys.NumPad7)
-                                            result += "7";
-                                        else if (k == Keys.D8 || k == Keys.NumPad8)
-                                            result += "8";
-                                        else if (k == Keys.D9 || k == Keys.NumPad9)
-                                            result += "9";
-                                        #endregion
+                                        if (!(IsContaintKeys(curPressKeys, Keys.LeftShift) || IsContaintKeys(curPressKeys, Keys.RightShift)))
+                                            result += k.ToString().ToLower();
                                         else
                                         {
-                                            if (!(IsContaintKeys(curPressKeys, Keys.LeftShift) || IsContaintKeys(curPressKeys, Keys.RightShift)))
-                                                result += k.ToString().ToLower();
-                                            else
-                                            {
-                                                result += k.ToString();
-                                            }
+                                            result += k.ToString();
                                         }
-                                        break;
                                     }
+                                    break;
                             }
                         }
                     }
                 }
             }
             else _totalInput += deltaTime;
+            _lastState = curState;
             return result;
         }
         protected void UpdateCursor(float deltaTime)
@@ -249,11 +252,12 @@ namespace SFS_BattleTank.UI
             // id bacground
             if (_background.Name == Consts.UIS_ID || _background.Name == Consts.UIS_PORT || _background.Name == Consts.UIS_IP)
             {
-                _drawText = CheckInputTextMaxSize(_font, (int)(_bounding.Width * 0.8f), _inputText, _textScale);
+                _drawText = CheckInputTextMaxSize(_font, (int)(_bounding.Width * _textMaxSize), _inputText, _textScale);
                 sp.DrawString(
                     spriteFont: _font,
                     text: _drawText,
-                    position: _position + new Vector2(_bounding.Width * 0.15f, 0.0f),
+                    position: _position * new Vector2(Consts.VIEWPORT_SCALE_RATE_WIDTH, Consts.VIEWPORT_SCALE_RATE_HEIGHT)
+                    + new Vector2(_bounding.Width * _textAlignment, 0.0f),
                     scale: _textScale,
                     rotation: 0.0f,
                     effects: SpriteEffects.None,
@@ -269,9 +273,21 @@ namespace SFS_BattleTank.UI
                 if (_inputText != "") size = _font.MeasureString(_drawText) * _textScale;
                 if (_drawCursor && _cursor != null && (_background.Name == Consts.UIS_ID || _background.Name == Consts.UIS_IP || _background.Name == Consts.UIS_PORT))
                     sp.Draw(_cursor,
-                        new Rectangle((int)(_position.X + size.X + _bounding.Width * 0.15f), (int)_position.Y, (int)(14), (int)((size.Y))),
+                        new Rectangle((int)(_position.X * Consts.VIEWPORT_SCALE_RATE_WIDTH + size.X + _bounding.Width * _textAlignment),
+                            (int)(_position.Y * Consts.VIEWPORT_SCALE_RATE_HEIGHT), (int)(14), (int)((size.Y))),
                         new Color(255, 255, 255, 200));
             }
         }
+
+        /// <summary>
+        /// 0.0f -> 1.0f
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetTextAlignment(float value) { _textAlignment = value; }
+        /// <summary>
+        /// 0.0f -> 1.0f
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetTextMaxSize(float value) { _textMaxSize = value; }
     }
 }

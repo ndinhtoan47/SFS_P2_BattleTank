@@ -51,10 +51,10 @@ namespace SFS_BattleTank.Bases
         public bool CheckInsideUI(Vector2 position, Rectangle boundingBox)
         {
             Vector2 mousePosition = Input.GetMousePosition();
-            if (mousePosition.X >= position.X &&
-                mousePosition.X <= position.X + boundingBox.Width &&
-                mousePosition.Y >= position.Y &&
-                mousePosition.Y <= position.Y + boundingBox.Height)
+            if (mousePosition.X >= position.X * Consts.VIEWPORT_SCALE_RATE_WIDTH &&
+                mousePosition.X <= position.X * Consts.VIEWPORT_SCALE_RATE_WIDTH + boundingBox.Width &&
+                mousePosition.Y >= position.Y * Consts.VIEWPORT_SCALE_RATE_HEIGHT &&
+                mousePosition.Y <= position.Y * Consts.VIEWPORT_SCALE_RATE_HEIGHT + boundingBox.Height)
             {
                 return true;
             }
