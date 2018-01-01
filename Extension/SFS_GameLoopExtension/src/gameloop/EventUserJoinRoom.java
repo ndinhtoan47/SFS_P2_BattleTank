@@ -40,7 +40,6 @@ public class EventUserJoinRoom extends BaseServerEventHandler
 			
 			Game game = ext.GetGameInstance();
 			game.AddTank(sender);
-			
 			UserVariable primary = new SFSUserVariable("primary",false);
 			List<UserVariable> vars = new ArrayList<UserVariable>();
             vars.add((new SFSUserVariable("x", (double)0)));

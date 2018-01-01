@@ -15,6 +15,7 @@ import com.smartfoxserver.v2.entities.variables.SFSUserVariable;
 import com.smartfoxserver.v2.entities.variables.UserVariable;
 import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
 import com.smartfoxserver.v2.mmo.MMORoom;
+import com.smartfoxserver.v2.mmo.Vec3D;
 
 public class RequestPlay extends BaseClientRequestHandler
 {
@@ -31,7 +32,14 @@ public class RequestPlay extends BaseClientRequestHandler
 		
 		MMORoom room = (MMORoom)mainExt.getParentRoom();
 		ISFSObject outData = new SFSObject();
-		if(mainExt.GetGameInstance().GetReadys().size() >= 2)
+		
+		Map<Integer,Boolean> readys = mainExt.GetGameInstance().GetReadys();
+		int readiedCount = 0;
+		for(int user:readys.keySet())
+		{
+			if(readys.get(user)) readiedCount++;
+		}
+		if(readiedCount >= 2)
 		{
 			mainExt.SetGameState((int)RoomExtension.STATE_PLAYING);
 			RoomVariable state = new SFSRoomVariable("state",(int)RoomExtension.STATE_PLAYING);
@@ -44,7 +52,6 @@ public class RequestPlay extends BaseClientRequestHandler
 			trace("Put message !");
 			outData.putUtfString("message","there are not player readyed !");
 		}
-		Map<Integer,Boolean> readys = game.GetReadys();
 		Collection<Integer> idCanPlay = new ArrayList<Integer>();
 		trace("Getting user can play ...");
 		for(int k:readys.keySet())
@@ -64,9 +71,10 @@ public class RequestPlay extends BaseClientRequestHandler
 				{
 					trace(k);						
 					User player = mainExt.getParentRoom().getUserById(k);
-					List<UserVariable> vars = new ArrayList<UserVariable>();
-					double x = mainExt.rd.nextDouble() * (double)1008;
-					double y = mainExt.rd.nextDouble() * (double)1008;
+					List<UserVariable> vars = new ArrayList<UserVariable>();					
+					Vec3D position = game.RadomTankPosition();
+					double x = (double)position.intX();
+					double y = (double)position.intY();
 					vars.add(new SFSUserVariable("x",x));
 					vars.add(new SFSUserVariable("y",y));
 					vars.add(new SFSUserVariable("rotation",(double)0));
@@ -78,6 +86,5 @@ public class RequestPlay extends BaseClientRequestHandler
 		outData.putBool("canplay", canPlay);
 		mainExt.send("canplay", outData, receives);
 		trace("Game state now : " + room.getVariable("state"));	
-		///////////////////////
 	}
 }
