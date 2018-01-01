@@ -1,4 +1,4 @@
-package demoUserVariables;
+package gameloop;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,20 +11,21 @@ import com.smartfoxserver.v2.entities.variables.UserVariable;
 import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
 import com.smartfoxserver.v2.mmo.MMORoom;
 
-public class ReadyRequestHandler extends BaseClientRequestHandler
+
+public class RequestReady extends BaseClientRequestHandler
 {
 
 	@Override
 	public void handleClientRequest(User sender, ISFSObject params) 
 	{
-		// TODO Auto-generated method stub
-		RoomExtension mainExt = (RoomExtension)this.getParentExtension();
-		mainExt.GetGameInstance().Ready(sender);
 		trace(sender.getId() + "ReadyRequestHandler");
+		RoomExtension mainExt = (RoomExtension)this.getParentExtension();				
+		Game game = mainExt.GetGameInstance();;		
+		game.Ready(sender);
+			
 		MMORoom room = (MMORoom)mainExt.getParentRoom();
-		Boolean isPlayed = room.getVariable("isPlayed").getBoolValue();
-						
-		if(isPlayed)
+		trace("Game state now : " + room.getVariable("state"));	
+		if( room.getVariable("state").getIntValue() == RoomExtension.STATE_PLAYING)
 		{
 			List<UserVariable> vars = new ArrayList<UserVariable>();
 			double x = mainExt.rd.nextDouble() * (double)1008;
@@ -33,9 +34,10 @@ public class ReadyRequestHandler extends BaseClientRequestHandler
 			vars.add(new SFSUserVariable("y",y));
 			vars.add(new SFSUserVariable("rotation",(double)0));
 			mainExt.getApi().setUserVariables(sender, vars, true, true);
-			ISFSObject data = new SFSObject();
-			data.putBool("canplay", true);
-			mainExt.send("canplay", data, sender);		
+			
+			ISFSObject outData = new SFSObject();
+			outData.putBool("canplay", true);
+			mainExt.send("canplay", outData, sender);
 		}
 	}
 
