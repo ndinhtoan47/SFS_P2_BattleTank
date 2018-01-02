@@ -28,6 +28,7 @@ public class EventUserLeaveRoom extends BaseServerEventHandler
 		{
 			RoomVariable state = new SFSRoomVariable("state",(int)RoomExtension.STATE_WAIT);
 			room.setVariables(Arrays.asList(state));
+			mainExt.SetGameState((int)RoomExtension.STATE_WAIT);
 			trace("Destroyed game");
 			trace("room state " + room.getVariable("state"));
 			mainExt.destroy();			
