@@ -26,6 +26,7 @@ namespace SFS_BattleTank.Constants
         public static readonly string VY = "vy";
         public static readonly string ROTATION = "rotation";
         public static readonly string GO_ID = "objectid";
+        public static readonly string ROOM_ONWER = "roomonwer";
         public static readonly string PRIMARY = "primary";
         public static readonly string MESSAGE = "message";
         public static readonly string CAN_PLAY = "canplay";

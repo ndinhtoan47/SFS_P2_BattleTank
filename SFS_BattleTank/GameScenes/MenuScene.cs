@@ -171,18 +171,18 @@ namespace SFS_BattleTank.GameScenes
         }
         // events handler
         private void OnJoinRoom(BaseEvent e)
-        {
-            _network.SetCurretRoom((Room)e.Params["room"]);
+        {         
+            Room room = (Room)e.Params["room"];
+            _network.SetCurretRoom(room);
+            List<User> joinedUser = room.UserList;
+            if(joinedUser != null)
+            {
+                foreach (User user in joinedUser)
+                    _network.AddJoinedUser(user);
+            }
+            _network.AddJoinedUser(_sfs.MySelf);
             Game1.sceneManager.GotoScene(Consts.SCENE_ROOM);
-
             Debug.WriteLine("Joined room " + (Room)e.Params["room"]);
-            //List<UserVariable> vars = new List<UserVariable>();
-            //vars.Add(new SFSUserVariable(Consts.X, (double)0));
-            //vars.Add(new SFSUserVariable(Consts.Y, (double)0));
-            //vars.Add(new SFSUserVariable(Consts.ROTATION, (double)0));
-            //vars.Add(new SFSUserVariable(Consts.PRIMARY, false));
-            //_sfs.Send(new SetUserVariablesRequest(vars));
-
         }
         private void OnJoinRoomError(BaseEvent e)
         {

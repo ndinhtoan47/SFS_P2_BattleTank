@@ -189,7 +189,6 @@ namespace SFS_BattleTank.GameObjCtrl
                 vars.Add(new SFSUserVariable(Consts.Y, (double)curPosition.Y));
                 vars.Add(new SFSUserVariable(Consts.ROTATION, (double)rotation));
                 sfs.Send(new SetUserVariablesRequest(vars));
-                sfs.Send(new SetUserPositionRequest(new Vec3D((int)curPosition.X, (int)curPosition.Y, 1)));
             }
         }
         protected bool CheckFire(float deltaTime)

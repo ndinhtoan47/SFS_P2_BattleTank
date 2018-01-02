@@ -137,6 +137,8 @@ namespace SFS_BattleTank.GameScenes
                 foreach (IMMOItem item in removedItems) bullet.Remove(null, item);
             }
 
+           
+
         }
         private void OnExtensionResponse(BaseEvent e)
         {

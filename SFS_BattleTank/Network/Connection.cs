@@ -23,7 +23,8 @@ namespace SFS_BattleTank.Network
         protected string ROOM = "The Lobby";
         protected Room _curRoom;
         protected Dictionary<string, Controller> _controllers;
-        protected bool _isPrimary;
+        protected int _isPrimary;
+        protected List<User> _userJoinedRoom;
 
         public Connection()
         {
@@ -31,7 +32,8 @@ namespace SFS_BattleTank.Network
             _sfs = new SmartFox();
             _sfs.ThreadSafeMode = true;
             _controllers = new Dictionary<string, Controller>();
-            _isPrimary = false;
+            _isPrimary = -1;
+            _userJoinedRoom = new List<User>();
         }
         ~Connection()
         {
@@ -68,6 +70,21 @@ namespace SFS_BattleTank.Network
             if (_tanks.ContainsKey(_controllers[Consts.CTRL_TANK].GetMySefl()))
                 return _tanks[_controllers[Consts.CTRL_TANK].GetMySefl()];
             return null;
+        }
+        public List<User> GetUserJoinedRoom() { return _userJoinedRoom; }
+        public void AddJoinedUser(User user)
+        {
+            if(user != null)
+            {
+                _userJoinedRoom.Add(user);
+            }
+        }
+        public void HandleUserLeaveRoom(User user) 
+        {
+            if(user != null && !_curRoom.ContainsUser(user) && _userJoinedRoom.Contains(user))
+            {
+                _userJoinedRoom.Remove(user);
+            }
         }
 
         // properties
@@ -114,11 +131,11 @@ namespace SFS_BattleTank.Network
         {
             _sfs.Send(new JoinRoomRequest(roomName, password));
         }
-        public void SetPrimary(bool value)
+        public void SetPrimary(int value)
         {
             _isPrimary = value;
         }
-        public bool IsPrimary() { return _isPrimary; }
+        public int IsPrimary() { return _isPrimary; }
 
     }
 }

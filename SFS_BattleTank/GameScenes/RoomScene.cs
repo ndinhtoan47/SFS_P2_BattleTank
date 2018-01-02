@@ -79,11 +79,16 @@ namespace SFS_BattleTank.GameScenes
             _playButton.SetBoundingBox(new Rectangle(0, 0, _playButton.GetSprite().Width, _playButton.GetSprite().Height));
             _readyButton.SetBoundingBox(new Rectangle(0, 0, _readyButton.GetSprite().Width, _readyButton.GetSprite().Height));
             _playButton.SetPosition(new Vector2(0, Consts.VIEWPORT_HEIGHT - _playButton.GetBoundingBox().Height));
-            _readyButton.SetPosition(new Vector2(_playButton.GetBoundingBox().Width + _playButton.GetPosition().X,
-                                                    Consts.VIEWPORT_HEIGHT - _readyButton.GetBoundingBox().Height));
+            _readyButton.SetPosition(new Vector2(0, Consts.VIEWPORT_HEIGHT - _readyButton.GetBoundingBox().Height));
             _sBg.Play(new System.TimeSpan(0, 0, 0), 0.8f);
 
             _namePlates.LoadContents(_contents);
+
+            List<User> joinedRoom = _network.GetUserJoinedRoom();
+            foreach (User user in joinedRoom)
+                if (user.ContainsVariable(Consts.PRIMARY))
+                    _namePlates.Add(user, user.GetVariable(Consts.PRIMARY).GetBoolValue());
+
             return base.LoadContents();
         }
         public override void Shutdown()
@@ -98,9 +103,9 @@ namespace SFS_BattleTank.GameScenes
             if (_background != null)
                 sp.Draw(_background, new Rectangle(0, 0, Consts.VIEWPORT_WIDTH, Consts.VIEWPORT_HEIGHT), Color.White);
 
-            if (_isEnablePlayButton)
-                _playButton.Draw(sp);
-            _readyButton.Draw(sp);
+            if (_isEnablePlayButton) _playButton.Draw(sp);
+            else _readyButton.Draw(sp);
+
             _namePlates.Draw(sp);
             sp.End();
 
@@ -109,12 +114,15 @@ namespace SFS_BattleTank.GameScenes
         public override void Update(float deltaTime)
         {
             _readyButton.Update(deltaTime);
-            if (_isEnablePlayButton)
-                _playButton.Update(deltaTime);
+            _playButton.Update(deltaTime);
 
             // button behavior
-            if (_readyButton.ClickedInsideUI()) ReadyButtonBehavior();
-            if (_playButton.ClickedInsideUI()) PlayButtonBehavor();
+            if (!_isEnablePlayButton)
+            {
+                if (_readyButton.ClickedInsideUI()) ReadyButtonBehavior();
+            }
+            else
+                if (_playButton.ClickedInsideUI()) PlayButtonBehavor();
             base.Update(deltaTime);
         }
 
@@ -147,7 +155,6 @@ namespace SFS_BattleTank.GameScenes
         }
         private void PlayButtonBehavor()
         {
-            //Game1.sceneManager.GotoScene(Consts.SCENE_PLAY);
             SFSObject data = new SFSObject();
             _sfs.Send(new ExtensionRequest(Consts.CRQ_PLAY, data, _network.GetCurretRoom()));
         }
@@ -176,11 +183,16 @@ namespace SFS_BattleTank.GameScenes
             foreach (User user in removedUsers)
             {
                 tanks.Remove(user, null);
-                 bool isOnwer = (user.ContainsVariable(Consts.PRIMARY)) ? user.GetVariable(Consts.PRIMARY).GetBoolValue() : false;
-                 _namePlates.Remove(user, isOnwer);
+                bool isOnwer = (user.ContainsVariable(Consts.ROOM_ONWER)) ? user.GetVariable(Consts.ROOM_ONWER).GetBoolValue() : false;
+                _namePlates.Remove(user, isOnwer);
             }
 
-
+            // test
+            List<IMMOItem> addedItems = (List<IMMOItem>)e.Params["addedItems"];
+            if (addedItems.Count > 0)
+            {
+                Debug.WriteLine("Added items :" + addedItems.Count);
+            }
         }
         private void OnExtensionResponse(BaseEvent e)
         {
@@ -189,22 +201,23 @@ namespace SFS_BattleTank.GameScenes
             User user = (User)e.Params["user"];
             if (cmd == Consts.CMD_IS_PRIMARY)
             {
-                _network.SetPrimary((bool)data.GetBool(Consts.PRIMARY));
-                _isEnablePlayButton = _network.IsPrimary();
+                _network.SetPrimary((int)data.GetInt(Consts.ROOM_ONWER));
+                _isEnablePlayButton = (_network.IsPrimary() == _sfs.MySelf.Id) ? true : false;
                 Debug.WriteLine("Is primary :" + _isEnablePlayButton);
                 if (!_isEnablePlayButton)
                 {
                     _playButton.CMD(Consts.UI_CMD_DISABLE);
-                    return;
                 }
+                else _readyButton.CMD(Consts.UI_CMD_DISABLE);
+                return;
             }
             if (cmd == Consts.CMD_USER_READY)
             {
-
+                return;
             }
             if (cmd == Consts.CMD_CAN_PLAY)
             {
-                if (_network.IsPrimary())
+                if (_network.IsPrimary() == _sfs.MySelf.Id)
                 {
                     if (data.ContainsKey(Consts.MESSAGE))
                     {
@@ -219,9 +232,13 @@ namespace SFS_BattleTank.GameScenes
         {
             Debug.WriteLine("RoomScene Variable Update : " + (User)e.Params["user"]);
             User sender = (User)e.Params["user"];
+            List<string> changedVars = (List<string>)e.Params["changedVars"];
             Controller ctrl = _network.GetController(Consts.CTRL_TANK);
             if (ctrl != null)
+            {
                 ctrl.Add(sender, null);
+                ctrl.UpdateData(sender, changedVars, null);
+            }
         }
     }
 }
