@@ -12,11 +12,13 @@ namespace SFS_BattleTank.GameObjects
         protected Texture2D _sprite;
         protected const string BULLET_PATH = "gameBullet";
         protected Rectangle _desRect;
+        protected Vector2 _origin;
 
         public Bullet(float x, float y,ulong id)
             : base(x, y, Consts.ES_BULLET)
         {
             _desRect = new Rectangle(0,0,10,10);
+            _origin = new Vector2(5, 5);
             _id = id;
         }
 
@@ -35,6 +37,7 @@ namespace SFS_BattleTank.GameObjects
             {
                 sp.Draw(
                     texture: _sprite,
+                    origin: _origin,
                     destinationRectangle: new Rectangle((int)_position.X, (int)_position.Y, (int)_desRect.Width, (int)_desRect.Height),
                     color: Color.Green);
             }

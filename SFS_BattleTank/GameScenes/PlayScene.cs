@@ -69,8 +69,6 @@ namespace SFS_BattleTank.GameScenes
             GameObject tank = _network.GetMainTank();
             if (tank != null)
                 _camera.Update(deltaTime, tank.GetPosition());
-            // test
-            UpdateBullet();
             base.Update(deltaTime);
         }
         public override void Draw(SpriteBatch sp)
@@ -79,7 +77,7 @@ namespace SFS_BattleTank.GameScenes
             sp.Draw(_background, Vector2.Zero, Color.White);
             DrawObj(sp);
             //_parManager.Draw(sp);
-            //map1.Draw(sp);
+            map1.Draw(sp);
             sp.End();
             base.Draw(sp);
         }
@@ -131,32 +129,24 @@ namespace SFS_BattleTank.GameScenes
                 foreach (User user in removedUsers) tank.Remove(user, null);
             }
             Controller bullet = _network.GetController(Consts.CTRL_BULLET);
-            if (bullet != null)
+            if (addedItems.Count > 0 || removedItems.Count > 0)
             {
-                foreach (IMMOItem item in addedItems) bullet.Add(null, item);
-                foreach (IMMOItem item in removedItems) bullet.Remove(null, item);
+                Debug.WriteLine("Added items count = " + addedItems.Count + "\n" + "Removed items count = " + removedItems.Count);
+                if (bullet != null)
+                {
+                    foreach (IMMOItem item in addedItems)
+                    {
+                        bullet.Add(null, item);
+                    }
+                    foreach (IMMOItem item in removedItems) bullet.Remove(null, item);
+                }
             }
-
-           
-
         }
         private void OnExtensionResponse(BaseEvent e)
         {
             string cmd = (string)e.Params["cmd"];
             SFSObject data = (SFSObject)e.Params["params"];
         }
-
-        // test
-        private void UpdateBullet()
-        {
-            Controller bullet = _network.GetController(Consts.CTRL_BULLET);
-            MMORoom room = (MMORoom)_network.GetCurretRoom();
-            List<IMMOItem> items = room.GetMMOItems();
-            if (items.Count > 0)
-            {
-                foreach (IMMOItem item in items)
-                    bullet.UpdateData(null, null, item);
-            }
-        }
     }
 }
+

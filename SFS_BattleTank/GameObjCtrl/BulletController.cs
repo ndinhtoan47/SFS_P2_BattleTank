@@ -21,26 +21,34 @@ namespace SFS_BattleTank.GameObjCtrl
 
         protected const string SOUND_FIRE = @"sounds\s_fire";
         protected SEffect _s_fire;
+        protected MMORoom _room;
         public BulletController(ContentManager contents)
             : base(contents)
         {
             _bullets = new Dictionary<int, GameObject>();
             _s_fire = new SEffect();
             _s_fire.LoadContents(contents, SOUND_FIRE);
+            _room = (MMORoom)_network.GetCurretRoom();
         }
 
         public override void Add(User user, IMMOItem item)
         {
             if (item != null && !_bullets.ContainsKey(item.Id))
             {
-               
-                if (item.ContainsVariable(Consts.X) && item.ContainsVariable(Consts.Y))
-                    _bullets.Add(item.Id, new Bullet((float)item.GetVariable(Consts.X).GetDoubleValue(),
-                                                        (float)item.GetVariable(Consts.Y).GetDoubleValue(),
-                                                        (ulong)item.Id));
-                _bullets[item.Id].LoadContents(_contents);
-              //  _s_fire.Play();
-                Debug.WriteLine("Added " + item.Id);
+                // check type var contain inside item or not
+                if (item.ContainsVariable(Consts.TYPE))
+                {   // check type is bullet
+                    if (item.GetVariable(Consts.TYPE).GetStringValue() == Consts.ES_BULLET)
+                        if (item.ContainsVariable(Consts.X) && item.ContainsVariable(Consts.Y))
+                        {
+                            _bullets.Add(item.Id, new Bullet((float)item.GetVariable(Consts.X).GetDoubleValue(),
+                                                                (float)item.GetVariable(Consts.Y).GetDoubleValue(),
+                                                                (ulong)item.Id));
+                            _bullets[item.Id].LoadContents(_contents);
+                              _s_fire.Play();
+                            Debug.WriteLine("Added " + item.Id);
+                        }
+                }
             }
             base.Add(user, item);
         }
@@ -58,7 +66,7 @@ namespace SFS_BattleTank.GameObjCtrl
         }
         public override void UpdateData(User user, List<string> changedVars, IMMOItem item)
         {
-            if(item != null && _bullets.ContainsKey(item.Id))
+            if (item != null && _bullets.ContainsKey(item.Id))
             {
                 float x = 0; float y = 0;
                 if (item.ContainsVariable(Consts.X)) x = (float)item.GetVariable(Consts.X).GetDoubleValue();
@@ -80,6 +88,12 @@ namespace SFS_BattleTank.GameObjCtrl
 
         public override void Update(float deltaTime)
         {
+            List<IMMOItem> bullets = _room.GetMMOItems();
+            if (bullets.Count > 0)
+                foreach (IMMOItem bullet in bullets)
+                {
+                    this.UpdateData(null, null, bullet);
+                }
             base.Update(deltaTime);
         }
     }
