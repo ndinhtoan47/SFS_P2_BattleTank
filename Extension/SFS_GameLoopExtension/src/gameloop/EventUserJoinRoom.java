@@ -31,12 +31,6 @@ public class EventUserJoinRoom extends BaseServerEventHandler
 			ISFSMMOApi api = SmartFoxServer.getInstance().getAPIManager().getMMOApi();
 			
 			MMORoom room = (MMORoom)ext.getParentRoom();
-//			List<User> userJoinedRoom = room.getUserList();
-//			List<Double> idJoined
-//			for(User user:userJoinedRoom)
-//			{
-//				
-//			}
 			
 			Game game = ext.GetGameInstance();
 			game.AddTank(sender);
@@ -45,6 +39,8 @@ public class EventUserJoinRoom extends BaseServerEventHandler
             vars.add((new SFSUserVariable("x", (double)0)));
             vars.add(new SFSUserVariable("y", (double)0));
             vars.add(new SFSUserVariable("rotation", (double)0));
+            vars.add(new SFSUserVariable("alive",(boolean)true));
+            
 			if(game.GetTanks().size() == 1)
 			{				
 				primary = new SFSUserVariable("primary",true);	
@@ -57,7 +53,6 @@ public class EventUserJoinRoom extends BaseServerEventHandler
 				trace(sender.getName() + "isn't primary");
 			}
 			vars.add(primary);
-			//sender.setVariables(vars);
 			ext.getApi().setUserVariables(sender, vars, true, true);
 			api.setUserPosition(sender, new Vec3D(0,0,0), room);
 			ISFSObject data = new SFSObject();

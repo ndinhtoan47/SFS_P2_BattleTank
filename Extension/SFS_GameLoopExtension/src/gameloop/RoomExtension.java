@@ -16,6 +16,8 @@ public class RoomExtension extends SFSExtension
 {
 	public static final int STATE_WAIT = 1;
 	public static final int STATE_PLAYING = 2;
+	public static final double PI = Math.PI;
+	public static final double SPEED_BULLET = 150;
 	
 	public Random rd;
 	
@@ -33,8 +35,11 @@ public class RoomExtension extends SFSExtension
 		this.addEventHandler(SFSEventType.USER_LEAVE_ROOM, EventUserLeaveRoom.class);
 		this.addEventHandler(SFSEventType.USER_VARIABLES_UPDATE, EventUserVariableUpdate.class);
 		
+		this.addRequestHandler("fire", RequestFire.class);
 		this.addRequestHandler("ready", RequestReady.class);
 		this.addRequestHandler("play", RequestPlay.class);
+		this.addRequestHandler("death", RequestTest.class);
+		
 		// Get a reference to the SmartFoxServer instance
 		rd = new Random();
 		sfs = SmartFoxServer.getInstance();
@@ -44,7 +49,7 @@ public class RoomExtension extends SFSExtension
 		RoomVariable state = new SFSRoomVariable("state",(int)STATE_WAIT);
 		room.setVariables(Arrays.asList(state));
 		
-		gameTask = sfs.getTaskScheduler().scheduleAtFixedRate(game, 0, 1000, TimeUnit.MILLISECONDS);
+		gameTask = sfs.getTaskScheduler().scheduleAtFixedRate(game, 0, 10, TimeUnit.MILLISECONDS);
 	}
 	@Override
 	public void destroy()
