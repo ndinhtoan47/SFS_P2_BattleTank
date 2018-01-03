@@ -33,7 +33,7 @@ namespace SFS_BattleTank.GameObjects
             _totalEffect = 0.0f;
             _color = Color.White;
             _flag = false;
-            if (_essental == Consts.ES_ITEM_HP)
+            if (_essental == Consts.ES_ITEM_ARMOR)
             {
                 _spritePath = Consts.ITS_HP;
             }

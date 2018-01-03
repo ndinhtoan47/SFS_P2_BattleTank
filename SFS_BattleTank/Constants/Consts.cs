@@ -31,13 +31,14 @@ namespace SFS_BattleTank.Constants
         public static readonly string MESSAGE = "message";
         public static readonly string CAN_PLAY = "canplay";
         public static readonly string TYPE = "type";
+        public static readonly string DURATION = "duration";
         // data properties
         public static readonly string ID_ARRAY = "idarray";
         // essental
         public static readonly string ES_TANK = "tank";
         public static readonly string ES_BULLET = "bullettype";
-        public static readonly string ES_ITEM_HP = "itemhp";
-        public static readonly string ES_ITEM_POWER_UP = "itempowerup";
+        public static readonly string ES_ITEM_ARMOR = "bonusAmor";
+        public static readonly string ES_ITEM_POWER_UP = "bonusShot";
         public static readonly string ES_TILE_WATER = "tilewater";
         public static readonly string ES_TILE_WOOD_BOX = "tilewoodbox";
         public static readonly string ES_TILE_TREE = "tiletree";

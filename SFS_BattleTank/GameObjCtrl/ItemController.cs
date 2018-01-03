@@ -6,6 +6,7 @@ using SFS_BattleTank.GameObjects;
 using Sfs2X.Entities;
 using Sfs2X.Entities.Data;
 using System.Collections.Generic;
+using System.Diagnostics;
 namespace SFS_BattleTank.GameObjCtrl
 {
     public class ItemController : Controller
@@ -27,14 +28,43 @@ namespace SFS_BattleTank.GameObjCtrl
         }
         public override void UpdateData(User user, List<string> changedVars, IMMOItem item)
         {
+            if(item !=null && _items.ContainsKey(item.Id))
+            {
+                double remainDuration = 0;
+                if (item.ContainsVariable(Consts.DURATION)) remainDuration = item.GetVariable(Consts.DURATION).GetDoubleValue();
+                remainDuration /= 1000.0f; // convert to second
+           
+                if (remainDuration <= 3) _items[item.Id].Behavior(Consts.BHVR_ITEM_COUNT_DOWN);
+            }
             base.UpdateData(user, changedVars, item);
         }
         public override void Add(User user,IMMOItem item)
         {
+            if (item != null && !_items.ContainsKey(item.Id))
+            {
+                // check type var contain inside item or not
+                if (item.ContainsVariable(Consts.TYPE))
+                {   // check type is bullet
+                    string type = item.GetVariable(Consts.TYPE).GetStringValue() ;
+                    if (type == Consts.ES_ITEM_ARMOR || type == Consts.ES_ITEM_POWER_UP)
+                        if (item.ContainsVariable(Consts.X) && item.ContainsVariable(Consts.Y))
+                        {
+                            _items.Add(item.Id, new Item((float)item.GetVariable(Consts.X).GetDoubleValue(),
+                                                                (float)item.GetVariable(Consts.Y).GetDoubleValue(),
+                                                                type));
+                            _items[item.Id].LoadContents(_contents);
+                            Debug.WriteLine("Added item bounus " + item.Id);
+                        }
+                }
+            }
             base.Add(user, item);
         }
         public override void Remove(User user, IMMOItem item)
         {
+            if (item != null && _items.ContainsKey(item.Id))
+            {
+                _items.Remove(item.Id);
+            }
             base.Remove(user, item);
         }
         public override void Behaviour(string cmd, int id, SFSObject data) { }
