@@ -18,7 +18,7 @@ public class RoomExtension extends SFSExtension
 	public static final int STATE_PLAYING = 2;
 	public static final double PI = Math.PI;
 	public static final double SPEED_BULLET = 150;
-	
+	public static final float DEATH_DURATION = 5.0f;
 	public Random rd;
 	
 	private int gameState;
