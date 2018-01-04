@@ -9,8 +9,6 @@ import java.util.Map;
 
 import com.smartfoxserver.v2.api.SFSMMOApi;
 import com.smartfoxserver.v2.entities.User;
-import com.smartfoxserver.v2.entities.data.ISFSObject;
-import com.smartfoxserver.v2.entities.data.SFSObject;
 import com.smartfoxserver.v2.entities.variables.SFSUserVariable;
 import com.smartfoxserver.v2.entities.variables.UserVariable;
 import com.smartfoxserver.v2.exceptions.ExceptionMessageComposer;
@@ -71,7 +69,7 @@ public class Game implements Runnable {
 				float deltaTime = (float) _deltaTime / 1000.0f;
 				_bullets.Update(deltaTime);
 				this.SaveBulletPositionToServer();
-				this.UpdateTanks(deltaTime);
+				this.UpdateTanksState(deltaTime);
 			}
 		} catch (Exception e) {
 			// In case of exceptions this try-catch prevents the task to stop
@@ -249,24 +247,27 @@ public class Game implements Runnable {
 		// _ext.trace("Save bullet variable and position complete !");
 	}
 
-	public void UpdateTanks(float deltaTime) {
+	public void UpdateTanksState(float deltaTime) {
 		for (Tank t : _tanks.values()) {
-			if (!t.IsAlive()) {
-				_ext.trace("Had user death");
-				t.UpdateDeathDuration(deltaTime);
-				if (t.GetDeathRemainDuration() <= 0) {
-					int key = GetTankKeyFromMap(_tanks, t);
-					if (key != -1) {
-						t.ReGeneration();
-						User user = _ext.getParentRoom().getUserById(key);
-						Vec3D regenerationPos = this.RadomTankPosition();
-						UserVariable alive = new SFSUserVariable("alive", true);
-						UserVariable x = new SFSUserVariable("x", (double)(regenerationPos.intX()));
-						UserVariable y = new SFSUserVariable("y", (double)(regenerationPos.intY()));
-						
-						_ext.getApi().setUserVariables(user, Arrays.asList(alive,x,y), true,
-								true);
-						_ext.trace("Regeneration user with id is " + key);
+			// check is playing
+			if (t.IsActive()) {
+				// check state (alive or death)
+				if (!t.IsAlive()) {
+					_ext.trace("Had user death");
+					t.UpdateDeathDuration(deltaTime);
+					if (t.GetDeathRemainDuration() <= 0) {
+						int key = GetTankKeyFromMap(_tanks, t);
+						if (key != -1) {
+							t.ReGeneration();
+							User user = _ext.getParentRoom().getUserById(key);
+							Vec3D regenerationPos = this.RadomTankPosition();
+							UserVariable alive = new SFSUserVariable("alive", true);
+							UserVariable x = new SFSUserVariable("x", (double) (regenerationPos.intX()));
+							UserVariable y = new SFSUserVariable("y", (double) (regenerationPos.intY()));
+
+							_ext.getApi().setUserVariables(user, Arrays.asList(alive, x, y), true, true);
+							_ext.trace("Regeneration user with id is " + key);
+						}
 					}
 				}
 			}
@@ -277,8 +278,7 @@ public class Game implements Runnable {
 	private int GetTankKeyFromMap(Map<Integer, Tank> map, Tank value) {
 		int result = -1;
 		for (int k : map.keySet()) {
-			if (map.get(k) == value)
-			{
+			if (map.get(k) == value) {
 				result = k;
 				_ext.trace("found tank with user id is " + result);
 				break;

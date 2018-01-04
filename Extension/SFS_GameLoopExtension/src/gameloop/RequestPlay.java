@@ -34,11 +34,13 @@ public class RequestPlay extends BaseClientRequestHandler
 		ISFSObject outData = new SFSObject();
 		
 		Map<Integer,Boolean> readys = mainExt.GetGameInstance().GetReadys();
+		// get all user readied
 		int readiedCount = 0;
 		for(int user:readys.keySet())
 		{
 			if(readys.get(user)) readiedCount++;
 		}
+		// check can play
 		if(readiedCount >= 2)
 		{
 			mainExt.SetGameState((int)RoomExtension.STATE_PLAYING);
@@ -52,6 +54,7 @@ public class RequestPlay extends BaseClientRequestHandler
 			trace("Put message !");
 			outData.putUtfString("message","there are not player readyed !");
 		}
+		// get users can play (readied) 
 		Collection<Integer> idCanPlay = new ArrayList<Integer>();
 		trace("Getting user can play ...");
 		for(int k:readys.keySet())
@@ -62,14 +65,18 @@ public class RequestPlay extends BaseClientRequestHandler
 				if(recipient != null) receives.add(recipient);
 			}
 		trace("IdCanPlay size = " + idCanPlay.size());
-		
+		// initialize variable for player and send back event can play
 		if(canPlay)
 		{
 			for(int k:idCanPlay)
 			{
 				if(tanks.containsKey(k))
 				{
-					trace(k);						
+						
+					// active user
+					tanks.get(k).Active();
+					trace("user " + k + " active");
+					// get user and set variable
 					User player = mainExt.getParentRoom().getUserById(k);
 					List<UserVariable> vars = new ArrayList<UserVariable>();					
 					Vec3D position = game.RadomTankPosition();

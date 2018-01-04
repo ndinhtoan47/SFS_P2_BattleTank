@@ -40,6 +40,8 @@ public class EventUserJoinRoom extends BaseServerEventHandler
             vars.add(new SFSUserVariable("y", (double)0));
             vars.add(new SFSUserVariable("rotation", (double)0));
             vars.add(new SFSUserVariable("alive",(boolean)true));
+            vars.add(new SFSUserVariable("kill",(double)0));
+            vars.add(new SFSUserVariable("death",(double)0));
             
 			if(game.GetTanks().size() == 1)
 			{				

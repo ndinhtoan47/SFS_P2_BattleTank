@@ -39,7 +39,7 @@ public class EventUserVariableUpdate extends BaseServerEventHandler {
 					mmoApi.setUserPosition(sender, pos, ext.getParentRoom());
 					game.SetTankProperties(sender, varMap.get("x").getDoubleValue(), varMap.get("y").getDoubleValue(),
 							varMap.get("rotation").getDoubleValue());
-					trace(sender.getName() + "user variable update " + "Position :" + pos);
+					//trace(sender.getName() + "user variable update " + "Position :" + pos);
 				}
 			}
 		}
