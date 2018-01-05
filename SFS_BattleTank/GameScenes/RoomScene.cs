@@ -141,12 +141,10 @@ namespace SFS_BattleTank.GameScenes
         {
             if (_readyButton.LastState())
             {
-                _readyButton.ChangeBackground(Consts.UIS_UNREADY_BUTTON);
                 _readyButton.SetBGColor(Color.Red);
             }
             else
             {
-                _readyButton.ChangeBackground(Consts.UIS_READY_BUTTON);
                 _readyButton.SetBGColor(Color.White);
             }
 

@@ -55,5 +55,10 @@ namespace SFS_BattleTank.GameObjects
         {
             base.Update(deltaTime);
         }
+        public override Rectangle GetBoundingBox()
+        {
+            return _desRect;
+            return base.GetBoundingBox();
+        }
     }
 }

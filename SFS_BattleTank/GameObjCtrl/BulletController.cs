@@ -45,7 +45,8 @@ namespace SFS_BattleTank.GameObjCtrl
                                                                 (float)item.GetVariable(Consts.Y).GetDoubleValue(),
                                                                 (ulong)item.Id));
                             _bullets[item.Id].LoadContents(_contents);
-                              _s_fire.Play();
+                            _s_fire.Stop(true);
+                            _s_fire.Play();
                             Debug.WriteLine("Added " + item.Id);
                         }
                 }

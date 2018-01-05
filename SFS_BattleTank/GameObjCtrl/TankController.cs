@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using SFS_BattleTank.Bases;
 using SFS_BattleTank.Constants;
 using SFS_BattleTank.GameObjects;
+using SFS_BattleTank.GameScenes;
 using SFS_BattleTank.InputControl;
 using Sfs2X;
 using Sfs2X.Entities;
@@ -12,6 +13,7 @@ using Sfs2X.Entities.Variables;
 using Sfs2X.Requests;
 using Sfs2X.Requests.MMO;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace SFS_BattleTank.GameObjCtrl
 {
@@ -40,9 +42,10 @@ namespace SFS_BattleTank.GameObjCtrl
             if (user != null)
             {
                 if (_tanks.ContainsKey(user.Id)) return;
-                if (user.ContainsVariable(Consts.X) ||
-                    user.ContainsVariable(Consts.X) ||
-                    user.ContainsVariable(Consts.ROTATION))
+                if (user.ContainsVariable(Consts.X) &&
+                    user.ContainsVariable(Consts.X) &&
+                    user.ContainsVariable(Consts.ROTATION) &&
+                    user.ContainsVariable(Consts.ALIVE))
                 {
                     _tanks.Add(user.Id, new Tank(user.Id,
                         (float)user.GetVariable(Consts.X).GetDoubleValue(),
@@ -70,12 +73,42 @@ namespace SFS_BattleTank.GameObjCtrl
                 if (_tanks.ContainsKey(user.Id))
                 {
                     List<UserVariable> vars = user.GetVariables();
-                    if (changedVars.Contains(Consts.X) || changedVars.Contains(Consts.Y) || changedVars.Contains(Consts.ROTATION))
+                    if (changedVars.Contains(Consts.X) || 
+                        changedVars.Contains(Consts.Y) || 
+                        changedVars.Contains(Consts.ROTATION) ||
+                        changedVars.Contains(Consts.ALIVE) ||
+                        changedVars.Contains(Consts.KILL) ||
+                        changedVars.Contains(Consts.DEATH))
                     {
-                        float x = (float)user.GetVariable(Consts.X).GetDoubleValue();
-                        float y = (float)user.GetVariable(Consts.Y).GetDoubleValue();
-                        int r = (int)user.GetVariable(Consts.ROTATION).GetDoubleValue();
-                        _tanks[user.Id].SetVariable(x, y, r);
+                        Tank tank = (Tank)_tanks[user.Id];
+                        if (changedVars.Contains(Consts.X) ||
+                        changedVars.Contains(Consts.Y) ||
+                        changedVars.Contains(Consts.ROTATION)) // position changed
+                        {
+                            float x = (float)user.GetVariable(Consts.X).GetDoubleValue();
+                            float y = (float)user.GetVariable(Consts.Y).GetDoubleValue();
+                            int r = (int)user.GetVariable(Consts.ROTATION).GetDoubleValue();
+                            tank.SetVariable(x, y, r);
+                        }
+                        if (changedVars.Contains(Consts.ALIVE)) // state changed
+                        {
+                            bool a = (bool)user.GetVariable(Consts.ALIVE).GetBoolValue();
+                            if (!a)
+                            {
+                                tank.Death();
+                            }
+                            else tank.ReGeneration();
+                        }
+                        // score changed
+                        if (changedVars.Contains(Consts.KILL) || changedVars.Contains(Consts.DEATH))
+                        {
+                            double kill = (double)user.GetVariable(Consts.KILL).GetDoubleValue();
+                            double death = (double)user.GetVariable(Consts.DEATH).GetDoubleValue();
+                            tank.SetKillAndDeath((int)death, (int)kill);
+                            PlayScene._deathCount.SetInfo(death.ToString());
+                            PlayScene._killCount.SetInfo(kill.ToString());
+                            Debug.WriteLine("User " + user.Id + " kill = " + kill + " death = " + death);
+                        }                                            
                     }
                 }
             }
@@ -88,13 +121,20 @@ namespace SFS_BattleTank.GameObjCtrl
         }
         public override void Update(float deltaTime)
         {
-            int x, y;
-            this.GetDirection(out x, out y);
-            if (x != 0 || y != 0)
-                Move(deltaTime, x, y);
-            if (CheckFire(deltaTime))
+            if (_tanks.ContainsKey(_mySelf))
             {
-                Fire();
+                Tank me = (Tank)_tanks[_mySelf];
+                if (me.IsAlive())
+                {
+                    int x, y;
+                    this.GetDirection(out x, out y);
+                    if (x != 0 || y != 0)
+                        Move(deltaTime, x, y);
+                    if (CheckFire(deltaTime))
+                    {
+                        Fire();
+                    }
+                }
             }
             base.Update(deltaTime);
         }

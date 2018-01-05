@@ -30,6 +30,7 @@ namespace SFS_BattleTank.Bases
         public virtual void Update(float deltaTime) { }
         public virtual void Behavior(string cmd) { }
         public virtual string Respose(string cmd) { return ""; }
+        public virtual Rectangle GetBoundingBox() { return new Rectangle(); }
         // properties
         public ulong ID
         {

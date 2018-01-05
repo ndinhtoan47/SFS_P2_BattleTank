@@ -71,7 +71,11 @@ namespace SFS_BattleTank.GameObjects
             }
         }
         public override string Respose(string cmd) { return ""; }
-
+        public override Rectangle GetBoundingBox()
+        {
+            return _destRect;
+            return base.GetBoundingBox();
+        }
         //
         protected void CountDownEffectFlag(float deltaTime)
         {

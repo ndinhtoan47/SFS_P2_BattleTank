@@ -65,5 +65,9 @@ namespace SFS_BattleTank.Camera
         {
             _follow = value;
         }
+        public Vector2 GetFollowPos()
+        {
+            return _followPos;
+        }
     }
 }

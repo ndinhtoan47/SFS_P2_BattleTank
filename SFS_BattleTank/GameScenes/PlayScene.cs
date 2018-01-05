@@ -26,10 +26,13 @@ namespace SFS_BattleTank.GameScenes
 {
     public class PlayScene : Scene
     {
+        static public ParticleManager _parManager;
         protected Camera2D _camera;
-        protected ParticleManager _parManager;
         protected Texture2D _background;
         protected Map1 map1;
+
+        public static DisplayInfo _deathCount = new DisplayInfo(new Vector2(0, 0), new Rectangle(0, 0, 51, 25));
+        public static DisplayInfo _killCount = new DisplayInfo(new Vector2(0, 0), new Rectangle(0, 0, 51, 25));
 
         public PlayScene(ContentManager contents)
             : base(Consts.SCENE_PLAY, contents)
@@ -42,6 +45,9 @@ namespace SFS_BattleTank.GameScenes
         public override bool Init()
         {
             map1.Init();
+
+            _deathCount.SetPosition(new Vector2(Consts.VIEWPORT_WIDTH - _deathCount.GetBoundingBox().Width, _deathCount.GetPosition().Y));
+            _killCount.SetPosition(new Vector2(Consts.VIEWPORT_WIDTH - _killCount.GetBoundingBox().Width, _deathCount.GetPosition().Y + _deathCount.GetBoundingBox().Height));
             return base.Init();
         }
         public override bool LoadContents()
@@ -56,6 +62,11 @@ namespace SFS_BattleTank.GameScenes
                 foreach (GameObject tank in tanks.Values)
                     tank.LoadContents(_contents);
             }
+      
+            _deathCount.LoadContents(_contents);
+            _deathCount.ChangeBackground(Consts.UIS_ICON_DEATH);
+            _killCount.LoadContents(_contents);
+            _killCount.ChangeBackground(Consts.UIS_ICON_KILL);
             return base.LoadContents();
         }
         public override void Shutdown()
@@ -64,6 +75,11 @@ namespace SFS_BattleTank.GameScenes
         }
         public override void Update(float deltaTime)
         {
+            if (Input.IsKeyDown(Keys.D))
+            {
+                SFSObject data = new SFSObject();
+                _sfs.Send(new ExtensionRequest("death", data, _network.GetCurretRoom()));
+            }
             _network.UpdateControler(deltaTime);
             _parManager.Update(deltaTime);
             GameObject tank = _network.GetMainTank();
@@ -76,8 +92,14 @@ namespace SFS_BattleTank.GameScenes
             sp.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _camera.GetTransfromMatrix());
             sp.Draw(_background, Vector2.Zero, Color.White);
             DrawObj(sp);
-            //_parManager.Draw(sp);
+            _parManager.Draw(sp);
             map1.Draw(sp);
+
+            /// show death and kill
+            _deathCount.SetPosition(_camera.GetFollowPos() + new Vector2((int)(Consts.VIEWPORT_WIDTH / 2 - _deathCount.GetBoundingBox().Width), (int)(-Consts.VIEWPORT_HEIGHT / 2)));
+            _deathCount.Draw(sp);
+            _killCount.SetPosition(_camera.GetFollowPos() + new Vector2((int)(Consts.VIEWPORT_WIDTH / 2 - _deathCount.GetBoundingBox().Width), (int)(-Consts.VIEWPORT_HEIGHT / 2 + _deathCount.GetBoundingBox().Height)));
+             _killCount.Draw(sp);
             sp.End();
             base.Draw(sp);
         }

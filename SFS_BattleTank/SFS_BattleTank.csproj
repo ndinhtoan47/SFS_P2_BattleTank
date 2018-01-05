@@ -75,6 +75,7 @@
     <Compile Include="Sounds\SBackground.cs" />
     <Compile Include="Sounds\SEffect.cs" />
     <Compile Include="UI\Button.cs" />
+    <Compile Include="UI\DisplayInfo.cs" />
     <Compile Include="UI\InputField.cs" />
     <Compile Include="UI\NamePlate.cs" />
     <Compile Include="UI\NamePlateManager.cs" />

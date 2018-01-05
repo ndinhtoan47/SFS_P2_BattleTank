@@ -52,6 +52,9 @@
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/portField.png</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/readyBT.png</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/startBT.png</File>
-    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/unreadyBT.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/icon/back.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/icon/ready.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/icon/kill.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/icon/death.png</File>
   </SourceFiles>
 </SourceFileCollection>

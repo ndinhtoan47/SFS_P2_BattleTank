@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using SFS_BattleTank.Bases;
 using SFS_BattleTank.Constants;
+using SFS_BattleTank.InputControl;
 using SFS_BattleTank.Network;
 using SFS_BattleTank.Sounds;
 using SFS_BattleTank.UI;
@@ -69,6 +71,9 @@ namespace SFS_BattleTank.GameScenes
 
             _inputPort.SetTextAlignment(0.45f);
             _inputPort.SetTextMaxSize(0.5f);
+
+
+          
             return base.Init();
         }
         public override bool LoadContents()
@@ -90,6 +95,8 @@ namespace SFS_BattleTank.GameScenes
             _inputPort.ChangeBackground(Consts.UIS_PORT);
             _sBg.LoadContents(_contents, S_BACKGROUND);
             _sBg.Play(new TimeSpan(0, 0, 2));
+
+            
             return base.LoadContents();
         }
         public override void Shutdown()
@@ -113,7 +120,7 @@ namespace SFS_BattleTank.GameScenes
 
             // check button click
             if (_sOptionalButton.ClickedInsideUI()) SoundOptionButtonBehavior();
-            if (_loginButton.ClickedInsideUI()) LoginButtonBehavior();
+            if (_loginButton.ClickedInsideUI() || Input.IsKeyDown(Keys.Enter)) LoginButtonBehavior();
             if (_exitButton.ClickedInsideUI()) ExitButtonBehavior();
             base.Update(deltaTime);
         }

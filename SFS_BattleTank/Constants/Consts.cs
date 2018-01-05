@@ -22,18 +22,18 @@ namespace SFS_BattleTank.Constants
         // client proterties
         public static readonly string X = "x";
         public static readonly string Y = "y";
-        public static readonly string VX = "vx";
-        public static readonly string VY = "vy";
         public static readonly string ROTATION = "rotation";
-        public static readonly string GO_ID = "objectid";
+        public static readonly string ALIVE = "alive";
+        public static readonly string DEATH = "death";
+        public static readonly string KILL = "kill";
         public static readonly string ROOM_ONWER = "roomonwer";
         public static readonly string PRIMARY = "primary";
         public static readonly string MESSAGE = "message";
         public static readonly string CAN_PLAY = "canplay";
         public static readonly string TYPE = "type";
         public static readonly string DURATION = "duration";
+
         // data properties
-        public static readonly string ID_ARRAY = "idarray";
         // essental
         public static readonly string ES_TANK = "tank";
         public static readonly string ES_BULLET = "bullettype";
@@ -67,7 +67,8 @@ namespace SFS_BattleTank.Constants
         public static readonly string UI_TYPE_INPUT_FIELD = "inputField";
         public static readonly string UI_TYPE_BUTTON = "button";
         public static readonly string UI_TYPE_DISPLAY_FIELD = "displayField";
-        public static readonly string UI_TYPE_NAME_PLATE = "namePlate"; 
+        public static readonly string UI_TYPE_NAME_PLATE = "namePlate";
+        public static readonly string UI_TYPE_DISPLAY_ONLY_ONE_INFO= "displayInfo"; 
         // ui cmd
         public static readonly string UI_CMD_INVERSE_USE_BACKGROUND = "inverseUseBackground";
         public static readonly string UI_CMD_DISABLE = "disable";
@@ -79,10 +80,12 @@ namespace SFS_BattleTank.Constants
         public static readonly string UIS_INPUT_FIELD = "textInput";
         public static readonly string UIS_IP = @"ipField";
         public static readonly string UIS_PORT = @"portField";
+        public static readonly string UIS_ICON_DEATH = @"icon\death";
+        public static readonly string UIS_ICON_KILL = @"icon\kill";
 
         public static readonly string UIS_UNREADY_BUTTON = "unReadyBT";
-        public static readonly string UIS_READY_BUTTON = "readyBT";
-        public static readonly string UIS_START_BUTTON = "startBT";
+        public static readonly string UIS_READY_BUTTON = @"icon\ready";
+        public static readonly string UIS_START_BUTTON = @"icon\play";
         public static readonly string UIS_EXIT_BUTTON = @"icon\exit";
         public static readonly string UIS_MENU_BUTTON = "menuBT";
         public static readonly string UIS_SOLO_BUTTON = "SoloButton";
