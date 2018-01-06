@@ -20,7 +20,6 @@ public class RequestReady extends BaseClientRequestHandler {
 		trace(sender.getId() + "ReadyRequestHandler");
 		RoomExtension mainExt = (RoomExtension) this.getParentExtension();
 		Game game = mainExt.GetGameInstance();
-		;
 		game.Ready(sender);
 		Map<Integer, Tank> tanks = game.GetTanks();
 
@@ -31,14 +30,14 @@ public class RequestReady extends BaseClientRequestHandler {
 			{
 				tanks.get(sender.getId()).Active();
 				trace("user " + sender.getId() + " active");
-				Vec3D position = game.RadomTankPosition();
+				Vec3D position = game.RadomPosition();
 				List<UserVariable> vars = new ArrayList<UserVariable>();
-				double x = (double) position.intX();
-				double y = (double) position.intY();
+				int x = position.intX();
+				int y = position.intY();
 
-				vars.add(new SFSUserVariable("x", x));
-				vars.add(new SFSUserVariable("y", y));
-				vars.add(new SFSUserVariable("rotation", (double) 0));
+				vars.add(new SFSUserVariable("x", (int)x));
+				vars.add(new SFSUserVariable("y", (int)y));
+				vars.add(new SFSUserVariable("rotation", (int) 0));
 				mainExt.getApi().setUserVariables(sender, vars, true, true);
 
 				ISFSObject outData = new SFSObject();

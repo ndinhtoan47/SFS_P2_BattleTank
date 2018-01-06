@@ -72,20 +72,21 @@ public class RequestPlay extends BaseClientRequestHandler
 			{
 				if(tanks.containsKey(k))
 				{
-						
-					// active user
-					tanks.get(k).Active();
+							
 					trace("user " + k + " active");
 					// get user and set variable
 					User player = mainExt.getParentRoom().getUserById(k);
 					List<UserVariable> vars = new ArrayList<UserVariable>();					
-					Vec3D position = game.RadomTankPosition();
-					double x = (double)position.intX();
-					double y = (double)position.intY();
-					vars.add(new SFSUserVariable("x",x));
-					vars.add(new SFSUserVariable("y",y));
-					vars.add(new SFSUserVariable("rotation",(double)0));
-					mainExt.getApi().setUserVariables(player, vars, true, true);
+					Vec3D position = game.RadomPosition();
+					int x = position.intX();
+					int y = position.intY();
+					vars.add(new SFSUserVariable("x",(int)x));
+					vars.add(new SFSUserVariable("y",(int)y));
+					vars.add(new SFSUserVariable("rotation",(int)0));
+					mainExt.getApi().setUserVariables(player, vars, true, false);
+					// active user and save start position
+					tanks.get(k).Active();
+					tanks.get(k).SetProperties((float)x, (float)y);
 					trace("set user variable " + k);
 				}
 			}				

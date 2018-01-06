@@ -36,12 +36,12 @@ public class EventUserJoinRoom extends BaseServerEventHandler
 			game.AddTank(sender);
 			UserVariable primary = new SFSUserVariable("primary",false);
 			List<UserVariable> vars = new ArrayList<UserVariable>();
-            vars.add((new SFSUserVariable("x", (double)0)));
-            vars.add(new SFSUserVariable("y", (double)0));
-            vars.add(new SFSUserVariable("rotation", (double)0));
+            vars.add((new SFSUserVariable("x", (int)0)));
+            vars.add(new SFSUserVariable("y", (int)0));
+            vars.add(new SFSUserVariable("rotation", (int)0));
             vars.add(new SFSUserVariable("alive",(boolean)true));
-            vars.add(new SFSUserVariable("kill",(double)0));
-            vars.add(new SFSUserVariable("death",(double)0));
+            vars.add(new SFSUserVariable("kill",(int)0));
+            vars.add(new SFSUserVariable("death",(int)0));
             
 			if(game.GetTanks().size() == 1)
 			{				

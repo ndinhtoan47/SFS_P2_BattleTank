@@ -18,7 +18,6 @@ public class RequestTest  extends BaseClientRequestHandler
 		if(tanks.containsKey(sender.getId()))
 		{
 			tanks.get(sender.getId()).Death(mainExt,sender.getId());
-			//mainExt.getApi().setUserVariables(sender, Arrays.asList(new SFSUserVariable("alive",false)), true, true);
 			trace("Set alive = false");
 		}
 		else trace("tanks doesn't contain " + sender.getId());

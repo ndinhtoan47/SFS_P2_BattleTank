@@ -17,9 +17,18 @@ public class RoomExtension extends SFSExtension
 	public static final int STATE_WAIT = 1;
 	public static final int STATE_PLAYING = 2;
 	public static final double PI = Math.PI;
-	public static final double SPEED_BULLET = 150;
+	public static final int SPEED_BULLET = 150;
+	public static final int SPEED_TANK = 150;
 	public static final float DEATH_DURATION = 5.0f;
-	public Random rd;
+	
+	public static final int ITEM_TYPE_BULLET = 12;
+	public static final int ITEM_TYPE_ARMOR = 13;
+	public static final int ITEM_TYPE_ISVISIABLE = 14;
+	public static final int ITEM_TYPE_FREZZE = 15;	
+	public static final int ES_TANK = 11;
+	public static final int ES_TILE = 16;
+	
+	public static Random rd;
 	
 	private int gameState;
 	private SmartFoxServer sfs;
@@ -29,7 +38,8 @@ public class RoomExtension extends SFSExtension
 	@Override
 	public void init() 
 	{
-		game = new Game(this);
+		rd = new Random();
+		
 		this.addEventHandler(SFSEventType.USER_JOIN_ROOM,EventUserJoinRoom.class);
 		this.addEventHandler(SFSEventType.USER_DISCONNECT, EventUserDisconnect.class);
 		this.addEventHandler(SFSEventType.USER_LEAVE_ROOM, EventUserLeaveRoom.class);
@@ -41,7 +51,7 @@ public class RoomExtension extends SFSExtension
 		this.addRequestHandler("death", RequestTest.class);
 		
 		// Get a reference to the SmartFoxServer instance
-		rd = new Random();
+		game = new Game(this);
 		sfs = SmartFoxServer.getInstance();
 		gameState = STATE_WAIT;
 		
@@ -67,5 +77,13 @@ public class RoomExtension extends SFSExtension
 	public void SetGameState(int state)
 	{
 		gameState = state;
+	}
+	
+	public static double ConvertToRadian(double value)
+	{
+		double result = 0;
+		// pi = 180
+		result = (value * RoomExtension.PI)/180.0;
+		return result;
 	}
 }
