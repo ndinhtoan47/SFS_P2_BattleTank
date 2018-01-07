@@ -11,9 +11,7 @@ D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\menuB
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\ownerDisplay.xnb
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\playerDisplay.xnb
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\portField.xnb
-D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\readyBT.xnb
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\SoloButton.xnb
-D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\startBT.xnb
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\tanks.xnb
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\textInput.xnb
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\icon\about.xnb
@@ -24,8 +22,6 @@ D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\icon\
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\icon\play.xnb
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\icon\sound_disable.xnb
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\icon\sound_enable.xnb
-D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\item\hp.xnb
-D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\item\powerup.xnb
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\map\background.xnb
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\map\empty.xnb
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\map\metalBox.xnb
@@ -79,3 +75,6 @@ D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\icon\
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\icon\ready.xnb
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\icon\death.xnb
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\icon\kill.xnb
+D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\item\armor.xnb
+D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\item\freeze.xnb
+D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\item\isvisible.xnb

@@ -35,13 +35,12 @@ namespace SFS_BattleTank.Constants
 
         // data properties
         // essental
-        public static readonly string ES_TANK = "tank";
-        public static readonly string ES_BULLET = "bullettype";
-        public static readonly string ES_ITEM_ARMOR = "bonusAmor";
-        public static readonly string ES_ITEM_POWER_UP = "bonusShot";
-        public static readonly string ES_TILE_WATER = "tilewater";
-        public static readonly string ES_TILE_WOOD_BOX = "tilewoodbox";
-        public static readonly string ES_TILE_TREE = "tiletree";
+        public static readonly int ES_TANK = 11;
+        public static readonly int ES_BULLET = 12;
+        public static readonly int ES_ITEM_ARMOR = 13;
+        public static readonly int ES_ITEM_ISVISIABLE = 14;
+        public static readonly int ES_ITEM_FREZZE = 15;
+        public static readonly int ES_TILE = 16;
         // request from server
         public static readonly string CMD_REMOVE = "remove";
         public static readonly string CMD_IS_PRIMARY = "isprimary";
@@ -96,8 +95,9 @@ namespace SFS_BattleTank.Constants
         public static readonly string UIS_OWNER_DISPLAY = "ownerDisplay";
         public static readonly string UIS_PLAYER_DISPLAY = "playerDisplay";
         // item sprite
-        public static readonly string ITS_HP = @"item\hp";
-        public static readonly string ITS_POWER_UP = @"item\powerup";
+        public static readonly string ITS_ISVISIBLE = @"item\isvisible";
+        public static readonly string ITS_ARMOR = @"item\armor";
+        public static readonly string ITS_FREEZE = @"item\freeze";
         // behavior
         public static readonly string BHVR = "behavior";
         public static readonly string BHVR_ITEM_COUNT_DOWN = "countdown";

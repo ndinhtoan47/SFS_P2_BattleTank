@@ -45,12 +45,12 @@ namespace SFS_BattleTank.GameObjCtrl
                 // check type var contain inside item or not
                 if (item.ContainsVariable(Consts.TYPE))
                 {   // check type is bullet
-                    string type = item.GetVariable(Consts.TYPE).GetStringValue() ;
-                    if (type == Consts.ES_ITEM_ARMOR || type == Consts.ES_ITEM_POWER_UP)
+                    int type = item.GetVariable(Consts.TYPE).GetIntValue() ;
+                    if (type == Consts.ES_ITEM_ARMOR || type == Consts.ES_ITEM_ISVISIABLE || type == Consts.ES_ITEM_FREZZE)
                         if (item.ContainsVariable(Consts.X) && item.ContainsVariable(Consts.Y))
                         {
-                            _items.Add(item.Id, new Item((float)item.GetVariable(Consts.X).GetDoubleValue(),
-                                                                (float)item.GetVariable(Consts.Y).GetDoubleValue(),
+                            _items.Add(item.Id, new Item((float)item.GetVariable(Consts.X).GetIntValue(),
+                                                                (float)item.GetVariable(Consts.Y).GetIntValue(),
                                                                 type));
                             _items[item.Id].LoadContents(_contents);
                             Debug.WriteLine("Added item bounus " + item.Id);

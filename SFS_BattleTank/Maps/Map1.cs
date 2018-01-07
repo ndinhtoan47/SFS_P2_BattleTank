@@ -15,7 +15,7 @@ namespace SFS_BattleTank.Maps
             int size = 0;
             int[,] treeLayer = MapHelper.LoadFileMap(@"..\..\..\..\Data\layer1.data",ref size);
             this.Add(1, treeLayer, size);
-            int[,] emptyLayer = MapHelper.LoadFileMap(@"..\..\..\..\Data\layer2.data", ref size);
+            int[,] emptyLayer = MapHelper.LoadFileMap(@"..\..\..\..\Data\layer0.data", ref size);
             this.Add(2, emptyLayer, size);
             base.Init();
         }

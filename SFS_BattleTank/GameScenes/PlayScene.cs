@@ -62,7 +62,7 @@ namespace SFS_BattleTank.GameScenes
                 foreach (GameObject tank in tanks.Values)
                     tank.LoadContents(_contents);
             }
-      
+
             _deathCount.LoadContents(_contents);
             _deathCount.ChangeBackground(Consts.UIS_ICON_DEATH);
             _killCount.LoadContents(_contents);
@@ -75,11 +75,6 @@ namespace SFS_BattleTank.GameScenes
         }
         public override void Update(float deltaTime)
         {
-            if (Input.IsKeyDown(Keys.D))
-            {
-                SFSObject data = new SFSObject();
-                _sfs.Send(new ExtensionRequest("death", data, _network.GetCurretRoom()));
-            }
             _network.UpdateControler(deltaTime);
             _parManager.Update(deltaTime);
             GameObject tank = _network.GetMainTank();
@@ -99,7 +94,7 @@ namespace SFS_BattleTank.GameScenes
             _deathCount.SetPosition(_camera.GetFollowPos() + new Vector2((int)(Consts.VIEWPORT_WIDTH / 2 - _deathCount.GetBoundingBox().Width), (int)(-Consts.VIEWPORT_HEIGHT / 2)));
             _deathCount.Draw(sp);
             _killCount.SetPosition(_camera.GetFollowPos() + new Vector2((int)(Consts.VIEWPORT_WIDTH / 2 - _deathCount.GetBoundingBox().Width), (int)(-Consts.VIEWPORT_HEIGHT / 2 + _deathCount.GetBoundingBox().Height)));
-             _killCount.Draw(sp);
+            _killCount.Draw(sp);
             sp.End();
             base.Draw(sp);
         }
@@ -151,17 +146,20 @@ namespace SFS_BattleTank.GameScenes
                 foreach (User user in removedUsers) tank.Remove(user, null);
             }
             Controller bullet = _network.GetController(Consts.CTRL_BULLET);
-            if (addedItems.Count > 0 || removedItems.Count > 0)
+            if (bullet != null)
             {
-                Debug.WriteLine("Added items count = " + addedItems.Count + "\n" + "Removed items count = " + removedItems.Count);
-                if (bullet != null)
-                {
-                    foreach (IMMOItem item in addedItems)
-                    {
-                        bullet.Add(null, item);
-                    }
+                if (addedItems.Count > 0)
+                    foreach (IMMOItem item in addedItems) bullet.Add(null, item);
+                if (removedItems.Count > 0)
                     foreach (IMMOItem item in removedItems) bullet.Remove(null, item);
-                }
+            }
+            Controller items = _network.GetController(Consts.CTRL_ITEM);
+            if (items != null)
+            {
+                if (addedItems.Count > 0)
+                    foreach (IMMOItem item in addedItems) items.Add(null, item);
+                if (removedItems.Count > 0)
+                    foreach (IMMOItem item in removedItems) items.Remove(null, item);
             }
         }
         private void OnExtensionResponse(BaseEvent e)

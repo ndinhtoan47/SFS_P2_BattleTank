@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using SFS_BattleTank.Bases;
 using SFS_BattleTank.Constants;
 using SFS_BattleTank.GameObjects;
+using SFS_BattleTank.GameScenes;
 using SFS_BattleTank.InputControl;
 using SFS_BattleTank.Managers;
 using SFS_BattleTank.Sounds;
@@ -38,16 +39,15 @@ namespace SFS_BattleTank.GameObjCtrl
                 // check type var contain inside item or not
                 if (item.ContainsVariable(Consts.TYPE))
                 {   // check type is bullet
-                    if (item.GetVariable(Consts.TYPE).GetStringValue() == Consts.ES_BULLET)
+                    if (item.GetVariable(Consts.TYPE).GetIntValue() == Consts.ES_BULLET)
                         if (item.ContainsVariable(Consts.X) && item.ContainsVariable(Consts.Y))
                         {
-                            _bullets.Add(item.Id, new Bullet((float)item.GetVariable(Consts.X).GetDoubleValue(),
-                                                                (float)item.GetVariable(Consts.Y).GetDoubleValue(),
+                            _bullets.Add(item.Id, new Bullet((float)item.GetVariable(Consts.X).GetIntValue(),
+                                                                (float)item.GetVariable(Consts.Y).GetIntValue(),
                                                                 (ulong)item.Id));
                             _bullets[item.Id].LoadContents(_contents);
-                            _s_fire.Stop(true);
                             _s_fire.Play();
-                            Debug.WriteLine("Added " + item.Id);
+                            Debug.WriteLine("Added bullet " + item.Id);
                         }
                 }
             }
@@ -57,7 +57,12 @@ namespace SFS_BattleTank.GameObjCtrl
         {
             if (item != null && _bullets.ContainsKey(item.Id))
             {
+                GameObject bullet = (GameObject)_bullets[item.Id];
+                Rectangle bounding = new Rectangle((int)bullet.GetPosition().X, (int)bullet.GetPosition().Y,
+                    bullet.GetBoundingBox().Width, bullet.GetBoundingBox().Height);
+                PlayScene._parManager.Add(Consts.TYPE_PAR_EXPLOSION, bounding);
                 _bullets.Remove(item.Id);
+                Debug.WriteLine("Removed bullets " + item.Id + "remain " + _bullets.Count + " bullet");
             }
             base.Remove(user, item);
         }
@@ -70,8 +75,8 @@ namespace SFS_BattleTank.GameObjCtrl
             if (item != null && _bullets.ContainsKey(item.Id))
             {
                 float x = 0; float y = 0;
-                if (item.ContainsVariable(Consts.X)) x = (float)item.GetVariable(Consts.X).GetDoubleValue();
-                if (item.ContainsVariable(Consts.Y)) y = (float)item.GetVariable(Consts.Y).GetDoubleValue();
+                if (item.ContainsVariable(Consts.X)) x = (float)item.GetVariable(Consts.X).GetIntValue();
+                if (item.ContainsVariable(Consts.Y)) y = (float)item.GetVariable(Consts.Y).GetIntValue();
                 _bullets[item.Id].SetPosition(new Vector2(x, y));
             }
             base.UpdateData(user, changedVars, item);

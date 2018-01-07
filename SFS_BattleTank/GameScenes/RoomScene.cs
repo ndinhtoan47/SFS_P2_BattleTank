@@ -62,7 +62,7 @@ namespace SFS_BattleTank.GameScenes
             _readyButton = new Button("", new Vector2(0, 0), new Rectangle(0, 0, 100, 100), 2.0f);
             _playButton = new Button("", new Vector2(0, 0), new Rectangle(0, 0, 100, 100), 2.0f);
 
-            // test
+            //
             _namePlates.Init();
             return base.Init();
         }
@@ -183,13 +183,6 @@ namespace SFS_BattleTank.GameScenes
                 tanks.Remove(user, null);
                 bool isOnwer = (user.ContainsVariable(Consts.ROOM_ONWER)) ? user.GetVariable(Consts.ROOM_ONWER).GetBoolValue() : false;
                 _namePlates.Remove(user, isOnwer);
-            }
-
-            // test
-            List<IMMOItem> addedItems = (List<IMMOItem>)e.Params["addedItems"];
-            if (addedItems.Count > 0)
-            {
-                Debug.WriteLine("Added items :" + addedItems.Count);
             }
         }
         private void OnExtensionResponse(BaseEvent e)

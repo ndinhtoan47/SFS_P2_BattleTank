@@ -10,14 +10,14 @@ namespace SFS_BattleTank.Bases
         // only one id with one object
         protected ulong _id;
         // essental's obj
-        protected string _essental;
+        protected int _essental;
         // position
         protected Vector2 _position;
         // rotation in degrees
         protected int _rotation;
         
         
-        public GameObject(float x,float y,string essental)
+        public GameObject(float x,float y,int essental)
         {
             _essental = essental;
             _position = new Vector2(x,y);
@@ -37,7 +37,7 @@ namespace SFS_BattleTank.Bases
             get { return _id; }
             private set { _id = value; }
         }
-        public string Essental()
+        public int Essental()
         {
             return _essental;
         }

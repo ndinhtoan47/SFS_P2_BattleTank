@@ -12,19 +12,19 @@ namespace SFS_BattleTank.Maps
         protected string _spritePath;
         protected int _size;
 
-        public Tile(float x,float y,int size,int essental)
-            :base(x,y,"")
+        public Tile(float x,float y,int size,int kind)
+            :base(x,y,Consts.ES_TILE)
         {
             _size = size;
-            if(essental == 1)
+            if(kind == 1)
             {
                 _spritePath = @"map\tree";
-                _essental = Consts.ES_TILE_TREE;
+                _essental = Consts.ES_TILE;
             }
-            if (essental == 2)
+            if (kind == 2)
             {
                 _spritePath = @"map\empty";
-                _essental = "";
+                _essental = Consts.ES_TILE;
             }
         }
         public override void LoadContents(ContentManager contents)

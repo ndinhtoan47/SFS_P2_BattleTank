@@ -120,7 +120,6 @@ namespace SFS_BattleTank.Network
             catch (NullReferenceException e)
             {
                 Debug.WriteLine(e.Message);
-                Game1.sceneManager.GotoScene(Consts.SCENE_LOGIN);
             }
         }
         public void Login(string name, string password = "")

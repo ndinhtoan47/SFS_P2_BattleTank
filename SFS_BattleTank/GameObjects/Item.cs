@@ -9,7 +9,7 @@ namespace SFS_BattleTank.GameObjects
     public class Item : GameObject
     {
         protected Rectangle _destRect;
-        protected string _spritePath;
+        protected string _spritePath = "";
         protected Texture2D _sprite;
         protected bool _countDown;
 
@@ -18,7 +18,7 @@ namespace SFS_BattleTank.GameObjects
         protected float _totalEffect;
         protected bool _flag;
 
-        public Item(float x, float y, string essental)
+        public Item(float x, float y, int essental)
             : base(x, y, essental)
         {
             Init();
@@ -35,13 +35,20 @@ namespace SFS_BattleTank.GameObjects
             _flag = false;
             if (_essental == Consts.ES_ITEM_ARMOR)
             {
-                _spritePath = Consts.ITS_HP;
+                _spritePath = Consts.ITS_ARMOR;
+                return true;
             }
-            if (_essental == Consts.ES_ITEM_POWER_UP)
+            if (_essental == Consts.ES_ITEM_ISVISIABLE)
             {
-                _spritePath = Consts.ITS_POWER_UP;
+                _spritePath = Consts.ITS_ISVISIBLE;
+                return true;
             }
-            return true;
+            if(_essental == Consts.ES_ITEM_FREZZE)
+            {
+                _spritePath = Consts.ITS_FREEZE;
+                return true;
+            }
+            return false;
         }
         public override void LoadContents(ContentManager contents)
         {

@@ -83,9 +83,12 @@ namespace SFS_BattleTank.GameObjects
         public int GetDeath() { return _death; }
         public int GetKill() { return _kill; }
 
-        public void SetKillAndDeath(int death,int kill)
+        public void SetKill(int kill)
         {
             _kill = kill;
+        }
+        public void SetDeath(int death)
+        {
             _death = death;
         }
     }

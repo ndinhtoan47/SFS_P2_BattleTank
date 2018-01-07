@@ -36,8 +36,6 @@
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/particles/explosion/2.png</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/particles/explosion/3.png</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/particles/explosion/4.png</File>
-    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/item/hp.png</File>
-    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/item/powerup.png</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/sounds/s_explode.wav</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/map/background.png</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/map/metalBox.png</File>
@@ -50,11 +48,12 @@
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/ownerDisplay.png</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/playerDisplay.png</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/portField.png</File>
-    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/readyBT.png</File>
-    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/startBT.png</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/icon/back.png</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/icon/ready.png</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/icon/kill.png</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/icon/death.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/item/armor.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/item/freeze.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/item/isvisible.png</File>
   </SourceFiles>
 </SourceFileCollection>

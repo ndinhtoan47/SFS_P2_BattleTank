@@ -203,6 +203,7 @@ namespace SFS_BattleTank.GameScenes
                 return;
             }
             _network.Connect(_inputHost.GetInputText(), int.Parse(_inputPort.GetInputText()));
+            Debug.WriteLine(_inputHost.GetInputText() + " " + int.Parse(_inputPort.GetInputText()));
         }
         protected void ExitButtonBehavior()
         {
