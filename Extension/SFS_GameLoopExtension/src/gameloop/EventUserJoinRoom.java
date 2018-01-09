@@ -2,6 +2,7 @@ package gameloop;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.smartfoxserver.v2.SmartFoxServer;
 import com.smartfoxserver.v2.api.ISFSMMOApi;
@@ -28,21 +29,32 @@ public class EventUserJoinRoom extends BaseServerEventHandler
 		{
 			User sender = (User)event.getParameter(SFSEventParam.USER);
 			RoomExtension ext = (RoomExtension)this.getParentExtension();
-			ISFSMMOApi api = SmartFoxServer.getInstance().getAPIManager().getMMOApi();
-			
+			ISFSMMOApi api = SmartFoxServer.getInstance().getAPIManager().getMMOApi();			
 			MMORoom room = (MMORoom)ext.getParentRoom();
-			
+			// add tank
 			Game game = ext.GetGameInstance();
 			game.AddTank(sender);
+			
 			UserVariable primary = new SFSUserVariable("primary",false);
 			List<UserVariable> vars = new ArrayList<UserVariable>();
             vars.add((new SFSUserVariable("x", (int)0)));
             vars.add(new SFSUserVariable("y", (int)0));
             vars.add(new SFSUserVariable("rotation", (int)0));
-            vars.add(new SFSUserVariable("alive",(boolean)true));
-            vars.add(new SFSUserVariable("kill",(int)0));
-            vars.add(new SFSUserVariable("death",(int)0));
-            
+//            vars.add(new SFSUserVariable("alive",(boolean)true));
+//            vars.add(new SFSUserVariable("kill",(int)0));
+//            vars.add(new SFSUserVariable("death",(int)0));
+            // get users readied
+            List<Short> id = new ArrayList<Short>();
+            List<Boolean> isReady = new ArrayList<Boolean>();
+            Map<Integer,Boolean> readys = game.GetReadys();
+            for(int k:readys.keySet())
+            {
+            	if(readys.containsKey(k))
+            	{
+            		id.add((short)k);
+            		isReady.add(readys.get(k));
+            	}
+            }          
 			if(game.GetTanks().size() == 1)
 			{				
 				primary = new SFSUserVariable("primary",true);	
@@ -55,10 +67,12 @@ public class EventUserJoinRoom extends BaseServerEventHandler
 				trace(sender.getName() + "isn't primary");
 			}
 			vars.add(primary);
-			ext.getApi().setUserVariables(sender, vars, true, true);
+			ext.getApi().setUserVariables(sender, vars, true, false);
 			api.setUserPosition(sender, new Vec3D(0,0,0), room);
 			ISFSObject data = new SFSObject();
-			data.putInt("roomonwer", game.GetPrimary());
+			data.putShort("roomonwer", (short)game.GetPrimary());
+			data.putShortArray("idarray", id);
+			data.putBoolArray("readyarray", isReady);
 			ext.send("isprimary", data, sender);
 		}
 		catch(Exception e)

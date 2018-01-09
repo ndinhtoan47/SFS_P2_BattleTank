@@ -19,9 +19,8 @@ public class Bullet extends GameObject
 		int yDir = (int) Math.sin(RoomExtension.ConvertToRadian(_rotation));
 		int xDir = (int)Math.cos(RoomExtension.ConvertToRadian(_rotation));
 		
-		float newX = this._x  + (float)xDir * (float)deltaTime * (float)RoomExtension.SPEED_BULLET;
-		float newY = this._y  + (float)yDir * (float)deltaTime * (float)RoomExtension.SPEED_BULLET;
-		super.SetProperties(newX, newY);
+		_x += (float)(xDir * deltaTime * (float)RoomExtension.SPEED_BULLET);
+		_y +=  (float)(yDir * deltaTime * (float)RoomExtension.SPEED_BULLET);
 		super.Update(deltaTime);
 	}
 	public int GetOnwer(){return _onwer;}

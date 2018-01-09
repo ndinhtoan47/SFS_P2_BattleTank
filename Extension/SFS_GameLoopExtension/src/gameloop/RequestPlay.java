@@ -71,8 +71,7 @@ public class RequestPlay extends BaseClientRequestHandler
 			for(int k:idCanPlay)
 			{
 				if(tanks.containsKey(k))
-				{
-							
+				{						
 					trace("user " + k + " active");
 					// get user and set variable
 					User player = mainExt.getParentRoom().getUserById(k);
@@ -83,7 +82,7 @@ public class RequestPlay extends BaseClientRequestHandler
 					vars.add(new SFSUserVariable("x",(int)x));
 					vars.add(new SFSUserVariable("y",(int)y));
 					vars.add(new SFSUserVariable("rotation",(int)0));
-					mainExt.getApi().setUserVariables(player, vars, true, false);
+					mainExt.getApi().setUserVariables(player, vars, true,false);
 					// active user and save start position
 					tanks.get(k).Active();
 					tanks.get(k).SetProperties((float)x, (float)y);
@@ -92,7 +91,7 @@ public class RequestPlay extends BaseClientRequestHandler
 			}				
 		}
 		outData.putBool("canplay", canPlay);
-		mainExt.send("canplay", outData, receives);
+		mainExt.send("userready", outData, receives);
 		trace("Game state now : " + room.getVariable("state"));	
 	}
 }

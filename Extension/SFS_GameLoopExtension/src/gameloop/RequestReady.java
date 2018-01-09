@@ -1,6 +1,7 @@
 package gameloop;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -22,9 +23,12 @@ public class RequestReady extends BaseClientRequestHandler {
 		Game game = mainExt.GetGameInstance();
 		game.Ready(sender);
 		Map<Integer, Tank> tanks = game.GetTanks();
-
 		MMORoom room = (MMORoom) mainExt.getParentRoom();
 		trace("Game state now : " + room.getVariable("state"));
+		ISFSObject outData = new SFSObject();
+		outData.putShortArray("idarray", Arrays.asList((short)sender.getId()));
+		outData.putBoolArray("readyarray", Arrays.asList(game.GetReadys().get(sender.getId())));
+		
 		if (room.getVariable("state").getIntValue() == RoomExtension.STATE_PLAYING) {
 			if (tanks.containsKey(sender.getId()))
 			{
@@ -38,13 +42,12 @@ public class RequestReady extends BaseClientRequestHandler {
 				vars.add(new SFSUserVariable("x", (int)x));
 				vars.add(new SFSUserVariable("y", (int)y));
 				vars.add(new SFSUserVariable("rotation", (int) 0));
-				mainExt.getApi().setUserVariables(sender, vars, true, true);
-
-				ISFSObject outData = new SFSObject();
+				mainExt.getApi().setUserVariables(sender, vars, true, false);
+				game.GetTankById(sender.getId()).SetProperties(x, y);
 				outData.putBool("canplay", true);
-				mainExt.send("canplay", outData, sender);
 			}
 		}
+		mainExt.send("userready", outData, mainExt.getParentRoom().getUserList());
 	}
 
 }

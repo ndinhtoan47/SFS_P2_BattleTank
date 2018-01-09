@@ -1,12 +1,12 @@
 package gameloop;
 
+import java.awt.Rectangle;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.smartfoxserver.v2.api.SFSMMOApi;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.exceptions.ExceptionMessageComposer;
-import com.smartfoxserver.v2.mmo.MMOItem;
 import com.smartfoxserver.v2.mmo.Vec3D;
 
 public class Game implements Runnable {
@@ -32,21 +32,24 @@ public class Game implements Runnable {
 	// bullet test
 	private BulletManager _bulletManager;
 	// item test
-	private ItemManager _itemsManager;
+	private ItemManager _itemManager;
 	// tank test
 	private TankManager _tankManager;
+	// collision test
+	private CollisionDetection _collision;
+
 	public Game(RoomExtension ext) {
-		_ext = ext;		
+		_ext = ext;
 		_readys = new HashMap<Integer, Boolean>();
 		_deltaTime = 0;
 		_lastTime = System.currentTimeMillis();
 		_primary = -1;
 		_bulletManager = new BulletManager(ext);
-		_itemsManager = new ItemManager(ext);
+		_itemManager = new ItemManager(ext);
 		_tankManager = new TankManager(ext);
-		_mmoApi = (SFSMMOApi)ext.getMMOApi();
+		_mmoApi = (SFSMMOApi) ext.getMMOApi();
+		_collision = new CollisionDetection();
 		InitRdArea();
-		_ext.trace("Game contrustor");
 	}
 
 	@Override
@@ -58,7 +61,9 @@ public class Game implements Runnable {
 				float deltaTime = (float) _deltaTime / 1000.0f;
 				_bulletManager.Update(deltaTime);
 				_tankManager.Update(deltaTime);
-				_itemsManager.Update(deltaTime);
+				_itemManager.Update(deltaTime);
+
+				CheckCollision();
 			}
 		} catch (Exception e) {
 			// In case of exceptions this try-catch prevents the task to stop
@@ -68,13 +73,12 @@ public class Game implements Runnable {
 		}
 	}
 
-	public Tank GetTankById(int id)
-	{
-		if(_tankManager.GetTanks().containsKey(id))
+	public Tank GetTankById(int id) {
+		if (_tankManager.GetTanks().containsKey(id))
 			return _tankManager.GetTanks().get(id);
 		return null;
 	}
-	
+
 	public long GetDeltaTime() {
 		return _deltaTime;
 	}
@@ -97,22 +101,21 @@ public class Game implements Runnable {
 			_rdArea = new Area[4];
 			for (int i = 0; i < 4; i++)
 				_rdArea[i] = new Area();
-			_rdArea[0].start = new Vec3D(0, 0, 0);
-			_rdArea[0].dimension = new Vec3D(500, 500, 0);
-			;
-			_rdArea[1].start = new Vec3D(650, 0, 0);
-			_rdArea[1].dimension = new Vec3D(320, 500, 0);
-			_rdArea[2].start = new Vec3D(0, 550, 0);
-			_rdArea[2].dimension = new Vec3D(500, 400, 0);
-			_rdArea[3].start = new Vec3D(600, 900, 0);
-			_rdArea[3].dimension = new Vec3D(360, 65, 0);
+			_rdArea[0].start = new Vec3D(80, 80, 0);
+			_rdArea[0].dimension = new Vec3D(416, 384, 0);
+			_rdArea[1].start = new Vec3D(48, 384, 0);
+			_rdArea[1].dimension = new Vec3D(400, 320, 0);
+			_rdArea[2].start = new Vec3D(864, 848, 0);
+			_rdArea[2].dimension = new Vec3D(64, 80, 0);
+			_rdArea[3].start = new Vec3D(640, 896, 0);
+			_rdArea[3].dimension = new Vec3D(624, 454, 0);
 		} catch (Exception e) {
 			_ext.trace(e.toString());
 		}
 	}
 
 	public Vec3D RadomPosition() {
-		_ext.trace("Randoming tank position");
+		_ext.trace("Randoming position");
 		int area = RoomExtension.rd.nextInt(4);
 		Vec3D startPos = _rdArea[area].start;
 		Vec3D dimension = _rdArea[area].dimension;
@@ -139,23 +142,98 @@ public class Game implements Runnable {
 
 	// bullet
 	public void AddBullet(User sender) {
-		_bulletManager.AddBullet(sender,_tankManager.GetTanks());
+		_bulletManager.AddBullet(sender, _tankManager.GetTanks());
 	}
-	public void RemoveBullet(MMOItem bullet)
-	{
+
+	public void RemoveBullet(Bullet bullet) {
 		_bulletManager.Remove(bullet, _mmoApi);
 	}
+
 	// tank
-	public Map<Integer,Tank> GetTanks()
-	{
+	public Map<Integer, Tank> GetTanks() {
 		return _tankManager.GetTanks();
 	}
-	public void RemoveTank(User user)
-	{
-		_tankManager.RemoveTank(user,_readys);
+
+	public void RemoveTank(User user) {
+		_tankManager.RemoveTank(user, _readys);
 	}
-	public void AddTank(User user)
-	{
+
+	public void AddTank(User user) {
 		_tankManager.AddTank(user);
+	}
+
+	public void CheckCollision() {
+		this.CheckBulletVsUser();
+		this.CheckItemVsUser();
+	}
+
+	protected void CheckItemVsUser() {
+		Map<Integer, Tank> tanks = _tankManager.GetTanks();
+		Map<Integer, Item> items = _itemManager.GetItems();
+		Rectangle tank = new Rectangle();
+		Rectangle item = new Rectangle();
+		for (Tank t : tanks.values()) {
+			if (t.IsAlive()) 
+			{
+				for (Item i : items.values()) 
+				{
+					// get tank properties
+					tank.x = (int) t.GetX() - 16;
+					tank.y = (int) t.GetY() - 16;
+					tank.width = (int) t.GetWidth();
+					tank.height = (int) t.GetHeight();
+					// get item properties
+					item.x = (int)i.GetX();
+					item.y = (int)i.GetY();
+					item.width =(int)i.GetWidth();
+					item.height = (int)i.GetHeight();
+					boolean result = _collision.AABB(tank, item);
+					if(result)
+					{
+						_ext.trace("check item collision success");
+						_itemManager.Remove(i,_mmoApi);
+						t.ReceiveItem(_tankManager.GetKeyByValue(t), i, _ext);
+					}
+				}
+			}
+		}
+	}
+
+	protected void CheckBulletVsUser() {
+		Map<Integer, Tank> tanks = _tankManager.GetTanks();
+		Map<Integer, Bullet> bullets = _bulletManager.GetBullets();
+		Rectangle tank = new Rectangle();
+		Rectangle bullet = new Rectangle();
+		for (Tank t : tanks.values()) {
+			if (t.IsAlive())
+				for (Bullet b : bullets.values()) {
+					if (b.GetOnwer() != _tankManager.GetKeyByValue(t)) {
+						// get tank properties
+						tank.x = (int) t.GetX() - 16;
+						tank.y = (int) t.GetY() - 16;
+						tank.width = (int) t.GetWidth();
+						tank.height = (int) t.GetHeight();
+						// get bullet properties
+						bullet.x = (int) b.GetX();
+						bullet.y = (int) b.GetY();
+						bullet.width = (int) b.GetWidth();
+						bullet.height = (int) b.GetHeight();
+						boolean result = _collision.AABB(tank, bullet);
+						if (result) {
+							// tank swap to death state and remove bullet
+							_ext.trace("Check");
+							if (t.GetHodingItem() != RoomExtension.ITEM_TYPE_ARMOR) {
+								_ext.trace("Don't hoding armor , hoding item is " + t.GetHodingItem());
+								_tankManager.IncreaseScore(_tankManager.GetKeyByValue(t), b.GetOnwer());
+							} else {
+								_ext.trace("Reset hoding item");
+								t.ResetHodingItem(_ext, _tankManager.GetKeyByValue(t));
+							}
+							_bulletManager.Remove(b, _mmoApi);
+
+						}
+					}
+				}
+		}
 	}
 }

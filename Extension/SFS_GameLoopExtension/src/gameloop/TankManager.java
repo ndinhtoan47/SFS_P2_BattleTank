@@ -39,15 +39,18 @@ public class TankManager
 		}
 	}
 	public void UpdateTanksState(float deltaTime) {
-		for (Tank t : _tanks.values()) {
+		for (Tank t : _tanks.values()) 
+		{
 			// check is playing
-			if (t.IsActive()) {
+			if (t.IsActive())
+			{
 				// check state (alive or death)
-				if (!t.IsAlive()) {
-					_ext.trace("Had user death");
+				if (!t.IsAlive())
+				{
 					t.UpdateDeathDuration(deltaTime);
-					if (t.GetDeathRemainDuration() <= 0) {
-						int key = GetTankKeyFromMap(_tanks, t);
+					if (t.GetDeathRemainDuration() <= 0) 
+					{
+						int key = GetKeyByValue(t);
 						if (key != -1) {
 							t.ReGeneration();
 							User user = _ext.getParentRoom().getUserById(key);
@@ -56,11 +59,13 @@ public class TankManager
 							UserVariable x = new SFSUserVariable("x", (int) (regenerationPos.intX()));
 							UserVariable y = new SFSUserVariable("y", (int) (regenerationPos.intY()));
 							t.SetProperties((float)regenerationPos.intX(), (float)regenerationPos.intY());
-							_ext.getApi().setUserVariables(user, Arrays.asList(alive, x, y), true, true);
+							_ext.getApi().setUserVariables(user, Arrays.asList(alive, x, y), true, false);
+							_ext.getMMOApi().setUserPosition(user,regenerationPos , _ext.getParentRoom());
 							_ext.trace("Regeneration user with id is " + key);
 						}
 					}
 				}
+				t.HandleItem(deltaTime);
 			}
 		}
 	}
@@ -68,16 +73,29 @@ public class TankManager
 	{
 		this.UpdateTanksState(deltaTime);
 	}
-	// helper
-	private int GetTankKeyFromMap(Map<Integer, Tank> map, Tank value) {
-			int result = -1;
-			for (int k : map.keySet()) {
-				if (map.get(k) == value) {
-					result = k;
-					_ext.trace("found tank with user id is " + result);
-					break;
-				}
+	public int GetKeyByValue(Tank value)
+	{
+		int key = -1;
+		for(int b:_tanks.keySet())
+		{
+			if(_tanks.get(b) == value) 
+			{
+				key = b;
+				break;
 			}
-			return result;
 		}
+		return key;
+	}
+
+	public void IncreaseScore(int deadMan,int killer)
+	{
+		Tank deadManTank = (_tanks.containsKey(deadMan))?_tanks.get(deadMan):null;
+		Tank killerTank = (_tanks.containsKey(killer))?_tanks.get(killer):null;
+		if(deadManTank != null && killerTank != null)
+		{
+			deadManTank.Death(_ext, deadMan);
+			killerTank.Kill(_ext, killer);
+		}
+	}
+	
 }

@@ -18,7 +18,7 @@ public class RoomExtension extends SFSExtension
 	public static final int STATE_PLAYING = 2;
 	public static final double PI = Math.PI;
 	public static final int SPEED_BULLET = 150;
-	public static final int SPEED_TANK = 150;
+	public static final int SPEED_TANK = 140;
 	public static final float DEATH_DURATION = 5.0f;
 	
 	public static final int ITEM_TYPE_BULLET = 12;
@@ -48,7 +48,7 @@ public class RoomExtension extends SFSExtension
 		this.addRequestHandler("fire", RequestFire.class);
 		this.addRequestHandler("ready", RequestReady.class);
 		this.addRequestHandler("play", RequestPlay.class);
-		this.addRequestHandler("death", RequestTest.class);
+		this.addRequestHandler("item", RequestTest.class);
 		
 		// Get a reference to the SmartFoxServer instance
 		game = new Game(this);

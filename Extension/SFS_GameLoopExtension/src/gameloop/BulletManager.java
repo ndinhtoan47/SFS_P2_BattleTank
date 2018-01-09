@@ -17,18 +17,18 @@ import com.smartfoxserver.v2.mmo.Vec3D;
 
 public class BulletManager {
 	private RoomExtension _ext;
-	private Map<Integer, GameObject> _bullets;
+	private Map<Integer, Bullet> _bullets;
 
 	public BulletManager(RoomExtension ext) {
 		_ext = ext;
-		_bullets = new HashMap<Integer, GameObject>();
+		_bullets = new HashMap<Integer, Bullet>();
 	}
 
-	public Map<Integer, GameObject> GetBullets() {
+	public Map<Integer, Bullet> GetBullets() {
 		return _bullets;
 	}
 
-	protected void Add(MMOItem item, int onwer , int rotation) {
+	protected void Add(MMOItem item, int onwer, int rotation) {
 		if (item != null && !_bullets.containsKey(item.getId())) {
 			List<IMMOItemVariable> vars = item.getVariables();
 			List<String> varsName = new ArrayList<String>();
@@ -42,16 +42,21 @@ public class BulletManager {
 			if (varsName.contains("y"))
 				y = (float) item.getVariable("y").getIntValue();
 			_bullets.put(item.getId(), new Bullet((float) x, (float) y, rotation, onwer));
-			_ext.trace("Added bullet with id is " + item.getId() + " x = " + x + " y = " + y + " w = 10" +" h = 10"
+			_ext.trace("Added bullet with id is " + item.getId() + " x = " + x + " y = " + y + " w = 10" + " h = 10"
 					+ " r = " + rotation);
 		}
 	}
 
-	public void Remove(MMOItem item, SFSMMOApi api) {
-		if (item != null && _bullets.containsKey(item.getId())) {
-			_bullets.remove(item.getId());
-			api.removeMMOItem(item);
-			_ext.trace("Remove bullet with id " + item.getId());
+	public void Remove(Bullet item, SFSMMOApi api) {
+		MMORoom room = (MMORoom) _ext.getParentRoom();
+		int itemId = GetKeyByValue(item);
+		if (itemId != -1 && room.containsMMOItem(itemId)) {
+			MMOItem bullet = (MMOItem) room.getMMOItemById(itemId);
+			if (bullet != null) {
+				_bullets.remove(itemId);
+				api.removeMMOItem(bullet);
+				_ext.trace("Remove bullet with id " + itemId);
+			}
 		}
 	}
 
@@ -80,7 +85,7 @@ public class BulletManager {
 				float y = b.GetY();
 				int r = (int) b.GetR();
 				if (x <= 0 || x >= 1008 || y <= 0 || y >= 1008) {
-					this.Remove(bullet, api);
+					this.Remove(_bullets.get(k), api);
 					_ext.trace("Removed bullet with id is " + k);
 				} else {
 					if (r == 0 || r == 180)
@@ -115,11 +120,11 @@ public class BulletManager {
 				y -= 5;
 			}
 			if ((int) r == 180) {
-				x -= 20;
+				x -= 36;
 				y -= 5;
 			}
 			if ((int) r == -90) {
-				y -= 20;
+				y -= 36;
 				x -= 5;
 			}
 			if ((int) r == 90) {
@@ -137,8 +142,19 @@ public class BulletManager {
 			SFSMMOApi api = (SFSMMOApi) _ext.getMMOApi();
 			MMORoom targetRoom = (MMORoom) _ext.getParentRoom();
 			api.setMMOItemPosition(bullet, new Vec3D((int) x, (int) y, 0), targetRoom);
-			this.Add(bullet, sender.getId(),r);
+			this.Add(bullet, sender.getId(), r);
 		} else
 			_ext.trace("Tank of sender is null !");
+	}
+
+	public int GetKeyByValue(Bullet value) {
+		int key = -1;
+		for (int b : _bullets.keySet()) {
+			if (_bullets.get(b) == value) {
+				key = b;
+				break;
+			}
+		}
+		return key;
 	}
 }

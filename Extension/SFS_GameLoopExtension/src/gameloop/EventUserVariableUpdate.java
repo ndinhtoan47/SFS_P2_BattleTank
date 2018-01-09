@@ -34,18 +34,6 @@ public class EventUserVariableUpdate extends BaseServerEventHandler {
 				for (UserVariable var : variables)
 					varMap.put(var.getName(), var);
 
-				// if (varMap.containsKey("x") && varMap.containsKey("y") &&
-				// varMap.containsKey("rotation")) {
-				// Vec3D pos = new Vec3D(varMap.get("x").getIntValue(),
-				// varMap.get("y").getIntValue(), 0);
-				// mmoApi.setUserPosition(sender, pos, ext.getParentRoom());
-				// game.SetTankProperties(sender, varMap.get("x").getIntValue(),
-				// varMap.get("y").getIntValue(),
-				// varMap.get("rotation").getIntValue());
-				// //trace(sender.getName() + "user variable update " +
-				// "Position :" + pos);
-				// }
-
 				Tank tankOfSender = game.GetTankById(sender.getId());
 				if (tankOfSender != null) {
 					if (varMap.containsKey("rotation")) 
