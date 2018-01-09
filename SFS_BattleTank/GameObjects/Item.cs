@@ -72,7 +72,7 @@ namespace SFS_BattleTank.GameObjects
         }
         public override void Behavior(string cmd)
         {
-            if (cmd == Consts.BHVR_ITEM_COUNT_DOWN)
+            if (cmd == Consts.COUNT_DOWN)
             {
                 _countDown = true;
             }

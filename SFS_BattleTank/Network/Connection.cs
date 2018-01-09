@@ -128,7 +128,49 @@ namespace SFS_BattleTank.Network
         }
         public void JoinRoom(string roomName = "The Lobby", string password = "")
         {
-            _sfs.Send(new JoinRoomRequest(roomName, password));
+            List<Room> allRoom = _sfs.GetRoomListFromGroup("default");
+            foreach(Room room in allRoom)
+            {
+                if(room.Name == roomName)
+                {
+                    _sfs.Send(new JoinRoomRequest(roomName, password));
+                    return;
+                }
+            }
+            this.CreateRoom(this.GetRoomSettings(roomName));
+        }
+        public void CreateRoom(MMORoomSettings settings)
+        {
+            if(settings != null && _sfs != null)
+            {
+                _sfs.Send(new CreateRoomRequest(settings, true));
+            }
+        }
+        public MMORoomSettings GetRoomSettings(string name)
+        {
+            MMORoomSettings settings = new MMORoomSettings(name);
+            settings.IsGame = true;
+            settings.MaxUsers = 8;
+            settings.Name = name;
+            settings.AllowOwnerOnlyInvitation = true;
+            settings.DefaultAOI = new Vec3D((int)800, (int)600, 0);
+            settings.GroupId = "default";
+            settings.MapLimits = new MapLimits(new Vec3D((int)0, (int)0, (int)0), new Vec3D((int)1008, (int)1008, (int)0));
+            settings.ProximityListUpdateMillis = 33;
+
+            RoomPermissions permissions = new RoomPermissions();
+            permissions.AllowNameChange = true;
+            permissions.AllowPublicMessages = true;
+            settings.Permissions = permissions;
+
+            RoomEvents events = new RoomEvents();
+            events.AllowUserExit = true;
+            events.AllowUserEnter = true;
+            events.AllowUserCountChange = true;
+            events.AllowUserVariablesUpdate = true;
+            settings.Events = events;
+            settings.Extension = new RoomExtension("Java", "gameloop.RoomExtension");
+            return settings;
         }
         public void SetPrimary(int value)
         {

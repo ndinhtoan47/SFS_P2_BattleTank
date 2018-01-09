@@ -17,7 +17,7 @@ namespace SFS_BattleTank.UI
         private int _row;
         public NamePlateManager()
         {
-            _namePlates = new Dictionary<int, NamePlate>();            
+            _namePlates = new Dictionary<int, NamePlate>();
         }
 
         public void Init()
@@ -31,13 +31,13 @@ namespace SFS_BattleTank.UI
         }
         public void Add(User user, bool isOnwer)
         {
-            if(user != null && !_namePlates.ContainsKey(user.Id))
+            if (user != null && !_namePlates.ContainsKey(user.Id))
             {
                 _namePlates.Add(user.Id, new NamePlate(Vector2.Zero, Rectangle.Empty, user.Name, isOnwer));
                 InitUser(user);
             }
         }
-        public void Remove(User user,bool isOnwer)
+        public void Remove(User user, bool isOnwer)
         {
             if (user != null && _namePlates.ContainsKey(user.Id))
             {
@@ -46,7 +46,7 @@ namespace SFS_BattleTank.UI
         }
         public void InitUser(User user)
         {
-            if(user != null && _namePlates.ContainsKey(user.Id))
+            if (user != null && _namePlates.ContainsKey(user.Id))
             {
                 _namePlates[user.Id].LoadContents(_contents);
                 _namePlates[user.Id].SetBoundingBox(new Rectangle(0, 0, (int)(_namePlates[user.Id].GetSprite().Width * 0.25f), (int)(_namePlates[user.Id].GetSprite().Height * 0.25f)));
@@ -56,13 +56,20 @@ namespace SFS_BattleTank.UI
                 if (_col % 2 == 0) _row++;
                 if (_col == 1) _col = 2;
                 else _col = 1;
-                
+
             }
         }
         public void Draw(SpriteBatch sp)
         {
             foreach (NamePlate np in _namePlates.Values)
                 np.Draw(sp);
+        }
+        public void SetReady(int user, bool value)
+        {
+            if (_namePlates.ContainsKey(user))
+            {
+                _namePlates[user].SetReady(value);
+            }
         }
     }
 }

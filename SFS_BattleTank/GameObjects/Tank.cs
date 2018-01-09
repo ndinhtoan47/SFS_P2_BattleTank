@@ -18,6 +18,16 @@ namespace SFS_BattleTank.GameObjects
         protected int _death;
         protected int _kill;
 
+        protected float _delayNextFrame;
+        protected float _totalNextFrame;
+        protected int _maxFrame;
+        protected int _curFrame;
+        // handle item
+        protected float _itemEffectTime;
+        protected int _hodingItem;
+        protected Color _color;
+        protected int _isAffectByItem;
+
         public Tank(int id, float x, float y)
             : base(x, y, Consts.ES_TANK)
         {
@@ -27,6 +37,13 @@ namespace SFS_BattleTank.GameObjects
             _alive = true;
             _death = 0;
             _kill = 0;
+            _delayNextFrame = 0.3f;
+            _totalNextFrame = 0.0f;
+            _maxFrame = 8;
+            _hodingItem = -1;
+            _isAffectByItem = -1;
+            _itemEffectTime = 0;
+            _color = new Color(255, 255, 255, 255);
         }
 
         public override bool Init()
@@ -44,11 +61,11 @@ namespace SFS_BattleTank.GameObjects
             {
                 sp.Draw(
                     texture: _sprite,
-                    sourceRectangle: new Rectangle(_rectOffSet.X,_rectOffSet.Y,32,32),
+                    sourceRectangle: new Rectangle(_rectOffSet.X + _curFrame * 32, _rectOffSet.Y, 32, 32),
                     rotation: MathHelper.ToRadians(_rotation),
                     origin: _center,
                     destinationRectangle: new Rectangle((int)_position.X, (int)_position.Y, (int)_rectOffSet.Width, (int)_rectOffSet.Height),
-                    color: Color.White);
+                    color: _color);
             }
             base.Draw(sp);
         }
@@ -62,6 +79,7 @@ namespace SFS_BattleTank.GameObjects
         }
         public override void Update(float deltaTime)
         {
+            this.HandleItemHoding(deltaTime);
             base.Update(deltaTime);
         }
         public override Rectangle GetBoundingBox()
@@ -71,18 +89,44 @@ namespace SFS_BattleTank.GameObjects
         }
 
         public bool IsAlive() { return _alive; }
-        public void Death() 
+        public void Death()
         {
             Rectangle boudingBox = this.GetBoundingBox();
             boudingBox.X = (int)_position.X;
             boudingBox.Y = (int)_position.Y;
-            PlayScene._parManager.Add(Consts.TYPE_PAR_EXPLOSION,boudingBox);
+            PlayScene._parManager.Add(Consts.TYPE_PAR_EXPLOSION, boudingBox);
             _alive = false;
         }
         public void ReGeneration() { _alive = true; }
         public int GetDeath() { return _death; }
         public int GetKill() { return _kill; }
-
+        public int GetHodingItem() { return _hodingItem; }
+        public int GetIsAffectByItem() { return _isAffectByItem; }
+        public void SetHodingItem(int itemType, bool isMe)
+        {
+            _hodingItem = itemType;
+            if (!isMe)
+                _isAffectByItem = itemType;
+            if (itemType == Consts.ES_ITEM_ISVISIABLE)
+            {
+                if (isMe)
+                    _color = new Color(150, 150, 150, 150);
+                else
+                    _color = new Color(0, 0, 0, 0);
+                _itemEffectTime = 5.0f;
+                return;
+            }
+            if (itemType == Consts.ES_ITEM_ARMOR)
+            {
+                _itemEffectTime = 10.0f;
+                return;
+            }
+            if (itemType == Consts.ES_ITEM_FREZZE)
+            {
+                _itemEffectTime = 3.0f;
+                return;
+            }
+        }
         public void SetKill(int kill)
         {
             _kill = kill;
@@ -90,6 +134,39 @@ namespace SFS_BattleTank.GameObjects
         public void SetDeath(int death)
         {
             _death = death;
+        }
+        public void Move(float deltaTime)
+        {
+            Animation(deltaTime);
+        }
+        // animation
+        private void Animation(float deltaTime)
+        {
+            _totalNextFrame += deltaTime;
+            if (_totalNextFrame >= _delayNextFrame)
+            {
+                _curFrame = (_curFrame + 1) % _maxFrame;
+                _totalNextFrame = 0.0f;
+            }
+        }
+        private void HandleItemHoding(float deltaTime)
+        {
+            if (_hodingItem != -1)
+            {
+                if (_itemEffectTime <= 0)
+                {
+                    if (_hodingItem == Consts.ES_ITEM_ISVISIABLE)
+                    {
+                        _color = new Color(255, 255, 255, 255);
+                        return;
+                    }
+                    _hodingItem = -1;
+                    _itemEffectTime = 0;
+                    _isAffectByItem = -1;
+                    return;
+                }
+                _itemEffectTime -= deltaTime;
+            }
         }
     }
 }

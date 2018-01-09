@@ -19,7 +19,7 @@ namespace SFS_BattleTank.Constants
         public static readonly string SCENE_LOGIN = "loginScene";
         public static readonly string SCENE_MENU = "menuScene";
         public static readonly string SCENE_ROOM = "roomScene";
-        // client proterties
+        // client proterties's name
         public static readonly string X = "x";
         public static readonly string Y = "y";
         public static readonly string ROTATION = "rotation";
@@ -32,7 +32,11 @@ namespace SFS_BattleTank.Constants
         public static readonly string CAN_PLAY = "canplay";
         public static readonly string TYPE = "type";
         public static readonly string DURATION = "duration";
-
+        public static readonly string COUNT_DOWN = "countdown";
+        public static readonly string ID_ARRAY = "idarray";
+        public static readonly string READY_ARRAY = "readyarray";
+        public static readonly string TYPE_ITEM = "item";
+       // public static readonly string EFFECT_TIME = "effectTime";
         // data properties
         // essental
         public static readonly int ES_TANK = 11;
@@ -100,7 +104,7 @@ namespace SFS_BattleTank.Constants
         public static readonly string ITS_FREEZE = @"item\freeze";
         // behavior
         public static readonly string BHVR = "behavior";
-        public static readonly string BHVR_ITEM_COUNT_DOWN = "countdown";
+       
         // response
        
 

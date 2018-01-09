@@ -12,11 +12,12 @@ namespace SFS_BattleTank.GameObjCtrl
     public class ItemController : Controller
     {
         protected Dictionary<int, GameObject> _items;
-
+        protected MMORoom _room;
         public ItemController(ContentManager contents)
             : base(contents)
         {
             _items = new Dictionary<int, GameObject>();
+            _room = (MMORoom)_network.GetCurretRoom();
         }
 
         public override void Update(float deltaTime)
@@ -25,27 +26,45 @@ namespace SFS_BattleTank.GameObjCtrl
             {
                 obj.Update(deltaTime);
             }
+            List<IMMOItem> items = _room.GetMMOItems();
+            if (items.Count > 0)
+                foreach (IMMOItem item in items)
+                {
+                    this.UpdateData(null, null, item);
+                }
         }
         public override void UpdateData(User user, List<string> changedVars, IMMOItem item)
         {
-            if(item !=null && _items.ContainsKey(item.Id))
+            if (item != null && _items.ContainsKey(item.Id))
             {
-                double remainDuration = 0;
-                if (item.ContainsVariable(Consts.DURATION)) remainDuration = item.GetVariable(Consts.DURATION).GetDoubleValue();
-                remainDuration /= 1000.0f; // convert to second
-           
-                if (remainDuration <= 3) _items[item.Id].Behavior(Consts.BHVR_ITEM_COUNT_DOWN);
+                if (item.ContainsVariable(Consts.TYPE))
+                {
+                    int type = item.GetVariable(Consts.TYPE).GetIntValue();
+                    if (type == Consts.ES_ITEM_FREZZE ||
+                        type == Consts.ES_ITEM_ARMOR ||
+                        type == Consts.ES_ITEM_ISVISIABLE)
+                    {
+                        if (item.ContainsVariable(Consts.COUNT_DOWN))
+                        {
+                            bool isCountDown = item.GetVariable(Consts.COUNT_DOWN).GetBoolValue();
+                            if (isCountDown)
+
+                                _items[item.Id].Behavior(Consts.COUNT_DOWN);
+                        }
+                    }
+
+                }
             }
             base.UpdateData(user, changedVars, item);
         }
-        public override void Add(User user,IMMOItem item)
+        public override void Add(User user, IMMOItem item)
         {
             if (item != null && !_items.ContainsKey(item.Id))
             {
                 // check type var contain inside item or not
                 if (item.ContainsVariable(Consts.TYPE))
                 {   // check type is bullet
-                    int type = item.GetVariable(Consts.TYPE).GetIntValue() ;
+                    int type = item.GetVariable(Consts.TYPE).GetIntValue();
                     if (type == Consts.ES_ITEM_ARMOR || type == Consts.ES_ITEM_ISVISIABLE || type == Consts.ES_ITEM_FREZZE)
                         if (item.ContainsVariable(Consts.X) && item.ContainsVariable(Consts.Y))
                         {

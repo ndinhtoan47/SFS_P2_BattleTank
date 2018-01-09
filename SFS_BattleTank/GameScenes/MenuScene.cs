@@ -155,7 +155,7 @@ namespace SFS_BattleTank.GameScenes
         }
         protected void CusBattleButtonBehavior()
         {
-            _network.JoinRoom();
+            _network.JoinRoom("Battle Tank");
         }
         protected void ExitButtonBehavior()
         {

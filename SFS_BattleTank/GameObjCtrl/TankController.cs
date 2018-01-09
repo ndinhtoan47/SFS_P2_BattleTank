@@ -27,7 +27,7 @@ namespace SFS_BattleTank.GameObjCtrl
         protected int _lastXDir;
         protected int _lastYDir;
         protected int _lastRotation;
-
+        protected float _deltaTime;
         public TankController(ContentManager contents)
             : base(contents)
         {
@@ -45,9 +45,8 @@ namespace SFS_BattleTank.GameObjCtrl
             {
                 if (_tanks.ContainsKey(user.Id)) return;
                 if (user.ContainsVariable(Consts.X) &&
-                    user.ContainsVariable(Consts.X) &&
-                    user.ContainsVariable(Consts.ROTATION) &&
-                    user.ContainsVariable(Consts.ALIVE))
+                    user.ContainsVariable(Consts.Y) &&
+                    user.ContainsVariable(Consts.ROTATION))
                 {
                     _tanks.Add(user.Id, new Tank(user.Id,
                         (float)user.GetVariable(Consts.X).GetIntValue(),
@@ -80,7 +79,8 @@ namespace SFS_BattleTank.GameObjCtrl
                         changedVars.Contains(Consts.ROTATION) ||
                         changedVars.Contains(Consts.ALIVE) ||
                         changedVars.Contains(Consts.KILL) ||
-                        changedVars.Contains(Consts.DEATH))
+                        changedVars.Contains(Consts.DEATH) ||
+                        changedVars.Contains(Consts.TYPE_ITEM))
                     {
                         Tank tank = (Tank)_tanks[user.Id];
                         if (changedVars.Contains(Consts.X) ||
@@ -91,6 +91,7 @@ namespace SFS_BattleTank.GameObjCtrl
                             float y = (float)user.GetVariable(Consts.Y).GetIntValue();
                             int r = (int)user.GetVariable(Consts.ROTATION).GetIntValue();
                             tank.SetVariable(x, y, r);
+                            tank.Move(_deltaTime);
                         }
                         if (changedVars.Contains(Consts.ALIVE)) // state changed
                         {
@@ -117,6 +118,12 @@ namespace SFS_BattleTank.GameObjCtrl
                                 PlayScene._deathCount.SetInfo(death.ToString());
                             }
                         }
+                        // receive item
+                        if (changedVars.Contains(Consts.TYPE_ITEM))
+                        {
+                            int itemType = user.GetVariable(Consts.TYPE_ITEM).GetIntValue();
+                            tank.SetHodingItem(itemType,user.IsItMe);
+                        }
                     }
                 }
             }
@@ -129,20 +136,33 @@ namespace SFS_BattleTank.GameObjCtrl
         }
         public override void Update(float deltaTime)
         {
+            foreach (GameObject tank in _tanks.Values)
+            {
+                tank.Update(deltaTime);
+            }
             if (_tanks.ContainsKey(_mySelf))
             {
                 Tank me = (Tank)_tanks[_mySelf];
-                if (me.IsAlive())
+                if (me.GetIsAffectByItem() != Consts.ES_ITEM_FREZZE)
                 {
-                    int rotation;
-                    Keys dir = this.GetDirection(out rotation);
-                    if (dir != Keys.None)
-                        this.Move(deltaTime, rotation);
-                    if (CheckFire(deltaTime))
+                    if (me.IsAlive())
                     {
-                        Fire();
+                        int rotation;
+                        Keys dir = this.GetDirection(out rotation);
+                        if (dir != Keys.None)
+                            this.Move(deltaTime, rotation);
+                        if (CheckFire(deltaTime))
+                        {
+                            Fire();
+                        }
                     }
                 }
+                _deltaTime = deltaTime;
+            }
+            if (Input.IsKeyDown(Keys.I))
+            {
+                SFSObject data = new SFSObject();
+                _network.GetInstance().Send(new ExtensionRequest("item", data, _network.GetCurretRoom()));
             }
             base.Update(deltaTime);
         }
@@ -205,7 +225,8 @@ namespace SFS_BattleTank.GameObjCtrl
         {
             if (_tanks.Count <= 0 || !_tanks.ContainsKey(_mySelf)) return;
             SmartFox sfs = _network.GetInstance();
-
+            Tank me = (Tank)_tanks[_mySelf];
+            me.Move(deltaTime);
             // get velocity
             //float vx, vy;
             //vx = vy = 0;

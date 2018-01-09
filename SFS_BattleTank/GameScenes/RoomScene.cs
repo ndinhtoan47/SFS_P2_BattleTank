@@ -17,6 +17,7 @@ using Sfs2X.Entities.Data;
 using Sfs2X.Entities.Variables;
 using Sfs2X.Requests;
 using Sfs2X.Requests.MMO;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 namespace SFS_BattleTank.GameScenes
@@ -190,33 +191,63 @@ namespace SFS_BattleTank.GameScenes
             string cmd = (string)e.Params["cmd"];
             SFSObject data = (SFSObject)e.Params["params"];
             User user = (User)e.Params["user"];
-            if (cmd == Consts.CMD_IS_PRIMARY)
+            try
             {
-                _network.SetPrimary((int)data.GetInt(Consts.ROOM_ONWER));
-                _isEnablePlayButton = (_network.IsPrimary() == _sfs.MySelf.Id) ? true : false;
-                Debug.WriteLine("Is primary :" + _isEnablePlayButton);
-                if (!_isEnablePlayButton)
+                if (cmd == Consts.CMD_IS_PRIMARY)
                 {
-                    _playButton.CMD(Consts.UI_CMD_DISABLE);
-                }
-                else _readyButton.CMD(Consts.UI_CMD_DISABLE);
-                return;
-            }
-            if (cmd == Consts.CMD_USER_READY)
-            {
-                return;
-            }
-            if (cmd == Consts.CMD_CAN_PLAY)
-            {
-                if (_network.IsPrimary() == _sfs.MySelf.Id)
-                {
-                    if (data.ContainsKey(Consts.MESSAGE))
+                    _network.SetPrimary((int)data.GetShort(Consts.ROOM_ONWER));
+                    _isEnablePlayButton = (_network.IsPrimary() == _sfs.MySelf.Id) ? true : false;
+                    if (!_isEnablePlayButton)
+                        _playButton.CMD(Consts.UI_CMD_DISABLE);
+                    else _readyButton.CMD(Consts.UI_CMD_DISABLE);
+                    //////////////// dis play ready state ////////////////
+                    if (data.ContainsKey(Consts.READY_ARRAY) && data.ContainsKey(Consts.ID_ARRAY))
                     {
-                        Debug.WriteLine(data.GetUtfString(Consts.MESSAGE));
+                        short[] id = data.GetShortArray(Consts.ID_ARRAY);
+                        bool[] ready = data.GetBoolArray(Consts.READY_ARRAY);
+                        for (int i = 0; i < id.Length; i++)
+                        {
+                            User userReady = _network.GetCurretRoom().GetUserById((int)id[i]);
+                            if (userReady != null)
+                            {
+                                bool isOwner = (_network.IsPrimary() == userReady.Id) ? true : false;
+                                _namePlates.Add(userReady, isOwner);
+                                _namePlates.SetReady((int)id[i], ready[i]);
+                            }
+                        }
                     }
+                    Debug.WriteLine("Is primary :" + _isEnablePlayButton);
+                    return;
                 }
-                bool canPlay = data.GetBool(Consts.CAN_PLAY);
-                if (canPlay) Game1.sceneManager.GotoScene(Consts.SCENE_PLAY);
+                if (cmd == Consts.CMD_USER_READY)
+                {
+                    if (data.ContainsKey(Consts.CAN_PLAY))
+                    {
+                        if (_network.IsPrimary() == _sfs.MySelf.Id)
+                        {
+                            if (data.ContainsKey(Consts.MESSAGE))
+                            {
+                                Debug.WriteLine(data.GetUtfString(Consts.MESSAGE));
+                            }
+                        }
+                        bool canPlay = data.GetBool(Consts.CAN_PLAY);
+                        if (canPlay) Game1.sceneManager.GotoScene(Consts.SCENE_PLAY);
+                        return;
+                    }
+                    if (data.ContainsKey(Consts.ID_ARRAY) && data.ContainsKey(Consts.READY_ARRAY))
+                    {
+                        short[] id = data.GetShortArray(Consts.ID_ARRAY);
+                        bool[] isReady = data.GetBoolArray(Consts.READY_ARRAY);
+                        for (int i = 0; i < id.Length; i++)
+                        {
+                            _namePlates.SetReady((int)id[i], isReady[i]);
+                        }
+                    }
+                    return;
+                }
+            }catch(Exception exp)
+            {
+                Debug.WriteLine(exp.ToString());
             }
         }
         private void OnUserVariable(BaseEvent e)
