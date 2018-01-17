@@ -6,6 +6,8 @@ import java.util.Map;
 
 import com.smartfoxserver.v2.api.SFSMMOApi;
 import com.smartfoxserver.v2.entities.User;
+import com.smartfoxserver.v2.entities.data.ISFSObject;
+import com.smartfoxserver.v2.entities.data.SFSObject;
 import com.smartfoxserver.v2.exceptions.ExceptionMessageComposer;
 import com.smartfoxserver.v2.mmo.Vec3D;
 
@@ -28,6 +30,7 @@ public class Game implements Runnable {
 	private int _primary;
 	private SFSMMOApi _mmoApi;
 	private Area[] _rdArea;
+	private float _roundTime;
 
 	// bullet test
 	private BulletManager _bulletManager;
@@ -38,7 +41,8 @@ public class Game implements Runnable {
 	// collision test
 	private CollisionDetection _collision;
 
-	public Game(RoomExtension ext) {
+	public Game(RoomExtension ext) 
+	{
 		_ext = ext;
 		_readys = new HashMap<Integer, Boolean>();
 		_deltaTime = 0;
@@ -49,6 +53,16 @@ public class Game implements Runnable {
 		_tankManager = new TankManager(ext);
 		_mmoApi = (SFSMMOApi) ext.getMMOApi();
 		_collision = new CollisionDetection();
+		_roundTime = 0;
+		if(_ext.getParentRoom().containsVariable("time"))
+		{
+			_roundTime = (float)_ext.getParentRoom().getVariable("time").getIntValue();
+			_ext.trace("round time = " + _roundTime);
+		}
+		else
+		{
+			_ext.trace("don't contain variable time");
+		}
 		InitRdArea();
 	}
 
@@ -57,13 +71,15 @@ public class Game implements Runnable {
 		try {
 			_deltaTime = System.currentTimeMillis() - _lastTime;
 			_lastTime = System.currentTimeMillis();
-			if (_ext.GetGameState() == RoomExtension.STATE_PLAYING) {
+			if (_ext.GetGameState() == RoomExtension.STATE_PLAYING) 
+			{
 				float deltaTime = (float) _deltaTime / 1000.0f;
 				_bulletManager.Update(deltaTime);
 				_tankManager.Update(deltaTime);
 				_itemManager.Update(deltaTime);
 
-				CheckCollision();
+				this.CheckCollision();
+				this.UpdateRoomState(deltaTime);
 			}
 		} catch (Exception e) {
 			// In case of exceptions this try-catch prevents the task to stop
@@ -115,7 +131,6 @@ public class Game implements Runnable {
 	}
 
 	public Vec3D RadomPosition() {
-		_ext.trace("Randoming position");
 		int area = RoomExtension.rd.nextInt(4);
 		Vec3D startPos = _rdArea[area].start;
 		Vec3D dimension = _rdArea[area].dimension;
@@ -165,6 +180,7 @@ public class Game implements Runnable {
 	public void CheckCollision() {
 		this.CheckBulletVsUser();
 		this.CheckItemVsUser();
+		this.CheckBulletVsBullet();
 	}
 
 	protected void CheckItemVsUser() {
@@ -173,25 +189,21 @@ public class Game implements Runnable {
 		Rectangle tank = new Rectangle();
 		Rectangle item = new Rectangle();
 		for (Tank t : tanks.values()) {
-			if (t.IsAlive()) 
-			{
-				for (Item i : items.values()) 
-				{
+			if (t.IsAlive()) {
+				for (Item i : items.values()) {
 					// get tank properties
 					tank.x = (int) t.GetX() - 16;
 					tank.y = (int) t.GetY() - 16;
 					tank.width = (int) t.GetWidth();
 					tank.height = (int) t.GetHeight();
 					// get item properties
-					item.x = (int)i.GetX();
-					item.y = (int)i.GetY();
-					item.width =(int)i.GetWidth();
-					item.height = (int)i.GetHeight();
+					item.x = (int) i.GetX();
+					item.y = (int) i.GetY();
+					item.width = (int) i.GetWidth();
+					item.height = (int) i.GetHeight();
 					boolean result = _collision.AABB(tank, item);
-					if(result)
-					{
-						_ext.trace("check item collision success");
-						_itemManager.Remove(i,_mmoApi);
+					if (result) {
+						_itemManager.Remove(i, _mmoApi);
 						t.ReceiveItem(_tankManager.GetKeyByValue(t), i, _ext);
 					}
 				}
@@ -235,5 +247,50 @@ public class Game implements Runnable {
 					}
 				}
 		}
+	}
+
+	protected void CheckBulletVsBullet() {
+		Map<Integer, Bullet> bullets1 = _bulletManager.GetBullets();
+		Map<Integer, Bullet> bullets2 = _bulletManager.GetBullets();
+
+		Rectangle bullet1 = new Rectangle();
+		Rectangle bullet2 = new Rectangle();
+		for (Bullet b1 : bullets1.values()) {
+			for (Bullet b2 : bullets2.values()) {
+				if (b2 != b1) {
+					// get bullet 1 properties
+					bullet1.x = (int) b1.GetX();
+					bullet1.y = (int) b1.GetY();
+					bullet1.width = (int) b1.GetWidth();
+					bullet1.height = (int) b1.GetHeight();
+					// get bullet 2 properties
+					bullet2.x = (int) b2.GetX();
+					bullet2.y = (int) b2.GetY();
+					bullet2.width = (int) b2.GetWidth();
+					bullet2.height = (int) b2.GetHeight();
+					boolean result = _collision.AABB(bullet1, bullet2);
+					if (result) 
+					{
+						_bulletManager.Remove(b1, _mmoApi);
+						_bulletManager.Remove(b2, _mmoApi);
+					}
+				}
+			}
+		}
+	}
+	
+	protected void UpdateRoomState(float deltaTime)
+	{	
+		if(_roundTime <= 0 && _ext.GetGameState() != RoomExtension.STATE_WAIT)
+		{	_roundTime = 0;
+			_ext.SetGameState(RoomExtension.STATE_WAIT);
+			_ext.trace("set room vars");
+			ISFSObject data = new SFSObject();
+			data.putBool("value", false);
+			_ext.send("gameisplaying", data, _ext.getParentRoom().getUserList());
+			return;
+		}
+		else
+			_roundTime -= deltaTime;
 	}
 }

@@ -14,10 +14,10 @@ public class Item extends GameObject
 			_effectTime = 5.0f;
 			break;
 		case RoomExtension.ITEM_TYPE_ARMOR:
-			_effectTime = 10.0f;
+			_effectTime = 20.0f;
 			break;
 		case RoomExtension.ITEM_TYPE_FREZZE:
-			_effectTime = 3.0f;
+			_effectTime = 5.0f;
 			break;
 		}
 		_seftDestruct = false;

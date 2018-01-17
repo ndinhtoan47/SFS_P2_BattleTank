@@ -43,10 +43,12 @@ public class RequestPlay extends BaseClientRequestHandler
 		// check can play
 		if(readiedCount >= 2)
 		{
+			trace("current game state before set play : " + mainExt.GetGameState());
 			mainExt.SetGameState((int)RoomExtension.STATE_PLAYING);
 			RoomVariable state = new SFSRoomVariable("state",(int)RoomExtension.STATE_PLAYING);
 			room.setVariables(Arrays.asList(state));
-			trace("set room variable state playing !");			
+			trace("set room variable state playing !");	
+			trace("current game state after set play : " + mainExt.GetGameState());
 			canPlay = true;
 		}
 		else

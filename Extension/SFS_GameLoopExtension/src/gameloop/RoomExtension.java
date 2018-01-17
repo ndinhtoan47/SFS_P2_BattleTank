@@ -48,17 +48,17 @@ public class RoomExtension extends SFSExtension
 		this.addRequestHandler("fire", RequestFire.class);
 		this.addRequestHandler("ready", RequestReady.class);
 		this.addRequestHandler("play", RequestPlay.class);
-		this.addRequestHandler("item", RequestTest.class);
+		//this.addRequestHandler("item", RequestTest.class);
 		
 		// Get a reference to the SmartFoxServer instance
-		game = new Game(this);
+		
 		sfs = SmartFoxServer.getInstance();
 		gameState = STATE_WAIT;
 		
 		room = (MMORoom)this.getParentRoom();
-		RoomVariable state = new SFSRoomVariable("state",(int)STATE_WAIT);
-		room.setVariables(Arrays.asList(state));
-		
+		RoomVariable roundTime = new SFSRoomVariable("time",(int)5); // second
+		room.setVariables(Arrays.asList(roundTime));
+		game = new Game(this);
 		gameTask = sfs.getTaskScheduler().scheduleAtFixedRate(game, 0, 10, TimeUnit.MILLISECONDS);
 	}
 	@Override
@@ -77,6 +77,7 @@ public class RoomExtension extends SFSExtension
 	public void SetGameState(int state)
 	{
 		gameState = state;
+		this.trace("current game state = " + gameState);
 	}
 	
 	public static double ConvertToRadian(double value)
