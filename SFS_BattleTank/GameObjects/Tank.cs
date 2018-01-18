@@ -12,22 +12,30 @@ namespace SFS_BattleTank.GameObjects
     {
         protected Texture2D _sprite;
         protected const string TANK_PATH = "tanks";
+        protected const string TANK_SHIELD = "shield";
         protected Rectangle _rectOffSet;
         protected Vector2 _center;
         protected bool _alive;
         protected int _death;
         protected int _kill;
-
+        // tank animation manager
         protected float _delayNextFrame;
         protected float _totalNextFrame;
         protected int _maxFrame;
         protected int _curFrame;
+        // shield animaton manager
+        protected float _delayShield;
+        protected float _totalShield;
+        protected int _maxShield;
+        protected int _curShield;
         // handle item
         protected float _itemEffectTime;
         protected int _hodingItem;
         protected Color _color;
         protected int _isAffectByItem;
-
+        // item effect
+        protected Texture2D _shield;
+        protected bool _drawShield;
         public Tank(int id, float x, float y)
             : base(x, y, Consts.ES_TANK)
         {
@@ -37,13 +45,22 @@ namespace SFS_BattleTank.GameObjects
             _alive = true;
             _death = 0;
             _kill = 0;
+            // tank animation
             _delayNextFrame = 0.3f;
             _totalNextFrame = 0.0f;
             _maxFrame = 8;
+            _curFrame = 0;
+            // shield animation
+            _delayShield = 0.1f;
+            _totalShield = 0.0f;
+            _maxShield = 10;
+            _curShield = 0;
+
             _hodingItem = -1;
             _isAffectByItem = -1;
             _itemEffectTime = 0;
             _color = new Color(255, 255, 255, 255);
+            _drawShield = false;
         }
 
         public override bool Init()
@@ -53,6 +70,7 @@ namespace SFS_BattleTank.GameObjects
         public override void LoadContents(ContentManager contents)
         {
             _sprite = contents.Load<Texture2D>(TANK_PATH);
+            _shield = contents.Load<Texture2D>(TANK_SHIELD);
             base.LoadContents(contents);
         }
         public override void Draw(SpriteBatch sp)
@@ -66,6 +84,12 @@ namespace SFS_BattleTank.GameObjects
                     origin: _center,
                     destinationRectangle: new Rectangle((int)_position.X, (int)_position.Y, (int)_rectOffSet.Width, (int)_rectOffSet.Height),
                     color: _color);
+                if (_drawShield)
+                    sp.Draw(texture: _shield,
+                        sourceRectangle: new Rectangle(80 * _curShield, 0, 80, 70),
+                        destinationRectangle: new Rectangle((int)_position.X, (int)_position.Y, 35, 35),
+                        origin: new Vector2(40, 35),
+                        color: new Color(120, 120, 120, 120));
             }
             base.Draw(sp);
         }
@@ -80,6 +104,8 @@ namespace SFS_BattleTank.GameObjects
         public override void Update(float deltaTime)
         {
             this.HandleItemHoding(deltaTime);
+            if (_drawShield)
+                this.ShieldAnimation(deltaTime);
             base.Update(deltaTime);
         }
         public override Rectangle GetBoundingBox()
@@ -104,9 +130,20 @@ namespace SFS_BattleTank.GameObjects
         public int GetIsAffectByItem() { return _isAffectByItem; }
         public void SetHodingItem(int itemType, bool isMe)
         {
-            _hodingItem = itemType;
+            if(itemType == -1)
+            {
+                ResetItemAffect();
+                return;
+            }
             if (!isMe)
+            {
                 _isAffectByItem = itemType;
+                _drawShield = false;
+            }
+            else
+            {
+                _hodingItem = itemType;
+            }
             if (itemType == Consts.ES_ITEM_ISVISIABLE)
             {
                 if (isMe)
@@ -118,12 +155,13 @@ namespace SFS_BattleTank.GameObjects
             }
             if (itemType == Consts.ES_ITEM_ARMOR)
             {
-                _itemEffectTime = 10.0f;
+                _itemEffectTime = 20.0f;
+                _drawShield = true;
                 return;
             }
             if (itemType == Consts.ES_ITEM_FREZZE)
             {
-                _itemEffectTime = 3.0f;
+                _itemEffectTime = 5.0f;
                 return;
             }
         }
@@ -149,24 +187,36 @@ namespace SFS_BattleTank.GameObjects
                 _totalNextFrame = 0.0f;
             }
         }
+        private void ShieldAnimation(float deltaTime)
+        {
+            if (_totalShield >= _delayShield)
+            {
+                _curShield = (_curShield + 1) % _maxShield;
+                _totalShield = 0.0f;
+            }
+            else _totalShield += deltaTime;
+        }
+        // handle item
         private void HandleItemHoding(float deltaTime)
         {
-            if (_hodingItem != -1)
+            if (_itemEffectTime != -1)
             {
                 if (_itemEffectTime <= 0)
                 {
-                    if (_hodingItem == Consts.ES_ITEM_ISVISIABLE)
-                    {
-                        _color = new Color(255, 255, 255, 255);
-                        return;
-                    }
-                    _hodingItem = -1;
-                    _itemEffectTime = 0;
-                    _isAffectByItem = -1;
+                    ResetItemAffect();
                     return;
                 }
                 _itemEffectTime -= deltaTime;
             }
+        }
+        private void ResetItemAffect()
+        {
+            _color = new Color(255, 255, 255, 255); // reset isvisiable
+            _drawShield = false; // reset isvisiable
+
+            _hodingItem = -1;
+            _itemEffectTime = 0;
+            _isAffectByItem = -1;
         }
     }
 }

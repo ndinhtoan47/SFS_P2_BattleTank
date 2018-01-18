@@ -40,26 +40,71 @@ public class EventUserVariableUpdate extends BaseServerEventHandler {
 						varMap.put(var.getName(), var);
 
 					Tank tankOfSender = game.GetTankById(sender.getId());
-					if (tankOfSender != null) {
+					if (tankOfSender != null) 
+					{
 						if (varMap.containsKey("rotation")) {
 							float deltaTime = (float) (game.GetDeltaTime() / 1000.0f);
 							int rotation = varMap.get("rotation").getIntValue();
 							List<UserVariable> newVars = new ArrayList<UserVariable>();
 							int x = (int) (tankOfSender.GetX());
 							int y = (int) (tankOfSender.GetY());
-							if (rotation == 0 || rotation == 180) {
+							if (rotation == 0 || rotation == 180)
+							{
 								tankOfSender.X_AxisMove(rotation, deltaTime,true);
 								x = (int) (tankOfSender.GetX());
 								newVars.add(new SFSUserVariable("x", (int) x));
-							} else {
+							} else
+							{
 								tankOfSender.Y_AxisMove(rotation, deltaTime,true);
 								y = (int) (tankOfSender.GetY());
 								newVars.add(new SFSUserVariable("y", (int) y));
+							}
+//							if(game.CheckCollisionWithQuadTree(tankOfSender))
+//							{
+//								if(rotation == 0 || rotation == 180)
+//								{
+//									if(rotation == 0) 
+//										tankOfSender.X_AxisMove(180, deltaTime, true);
+//									else 
+//										tankOfSender.X_AxisMove(0, deltaTime, true);
+//									x = (int) (tankOfSender.GetX());
+//									newVars.add(new SFSUserVariable("x", (int) x));
+//									ext.trace("X collsion");
+//								}
+//								else
+//								{
+//									if(rotation == 90) 
+//										tankOfSender.Y_AxisMove(-90, deltaTime, true);
+//									else 
+//										tankOfSender.Y_AxisMove(90, deltaTime, true);
+//									y = (int) (tankOfSender.GetY());
+//									newVars.add(new SFSUserVariable("y", (int) y));
+//									ext.trace("Y collsion");
+//								}
+//							}
+							if(game.CheckCollisionTankWithTitle(tankOfSender))
+							{
+								if (rotation == 0 || rotation == 180)
+								{
+									if(rotation == 0)
+									tankOfSender.X_AxisMove(180, deltaTime,false);
+									else tankOfSender.X_AxisMove(0, deltaTime,false);
+									x = (int) (tankOfSender.GetX());
+									newVars.add(new SFSUserVariable("x", (int) x));
+								} else
+								{
+									if(rotation == 90)
+									tankOfSender.Y_AxisMove(-90, deltaTime,false);
+									else tankOfSender.Y_AxisMove(90, deltaTime,false);
+									y = (int) (tankOfSender.GetY());
+									newVars.add(new SFSUserVariable("y", (int) y));
+								}
 							}
 							ext.getApi().setUserVariables(sender, newVars, true, false);
 							mmoApi.setUserPosition(sender, new Vec3D((int) x, (int) y, 0), ext.getParentRoom());
 						}
 					}
+					
 				}
 			}
 

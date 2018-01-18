@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.smartfoxserver.v2.SmartFoxServer;
 import com.smartfoxserver.v2.core.SFSEventType;
+import com.smartfoxserver.v2.entities.SFSRoomRemoveMode;
 import com.smartfoxserver.v2.entities.variables.RoomVariable;
 import com.smartfoxserver.v2.entities.variables.SFSRoomVariable;
 import com.smartfoxserver.v2.extensions.SFSExtension;
@@ -56,7 +57,8 @@ public class RoomExtension extends SFSExtension
 		gameState = STATE_WAIT;
 		
 		room = (MMORoom)this.getParentRoom();
-		RoomVariable roundTime = new SFSRoomVariable("time",(int)5); // second
+		RoomVariable roundTime = new SFSRoomVariable("time",(int)120); // second
+		room.setAutoRemoveMode(SFSRoomRemoveMode.WHEN_EMPTY);
 		room.setVariables(Arrays.asList(roundTime));
 		game = new Game(this);
 		gameTask = sfs.getTaskScheduler().scheduleAtFixedRate(game, 0, 10, TimeUnit.MILLISECONDS);

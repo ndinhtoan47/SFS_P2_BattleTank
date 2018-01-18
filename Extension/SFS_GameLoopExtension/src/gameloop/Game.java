@@ -1,7 +1,9 @@
 package gameloop;
 
 import java.awt.Rectangle;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.smartfoxserver.v2.api.SFSMMOApi;
@@ -40,9 +42,11 @@ public class Game implements Runnable {
 	private TankManager _tankManager;
 	// collision test
 	private CollisionDetection _collision;
+	// Test
+	MapManager _map;
+	QuadTree _quadTree;
 
-	public Game(RoomExtension ext) 
-	{
+	public Game(RoomExtension ext) {
 		_ext = ext;
 		_readys = new HashMap<Integer, Boolean>();
 		_deltaTime = 0;
@@ -54,16 +58,18 @@ public class Game implements Runnable {
 		_mmoApi = (SFSMMOApi) ext.getMMOApi();
 		_collision = new CollisionDetection();
 		_roundTime = 0;
-		if(_ext.getParentRoom().containsVariable("time"))
-		{
-			_roundTime = (float)_ext.getParentRoom().getVariable("time").getIntValue();
+		if (_ext.getParentRoom().containsVariable("time")) {
+			_roundTime = (float) _ext.getParentRoom().getVariable("time").getIntValue();
 			_ext.trace("round time = " + _roundTime);
-		}
-		else
-		{
+		} else {
 			_ext.trace("don't contain variable time");
 		}
 		InitRdArea();
+
+		// test
+		_map = new MapManager(_ext);
+		_map.inl();
+		_quadTree = new QuadTree(0, new Rectangle(0, 0, 1008, 1008));
 	}
 
 	@Override
@@ -71,8 +77,7 @@ public class Game implements Runnable {
 		try {
 			_deltaTime = System.currentTimeMillis() - _lastTime;
 			_lastTime = System.currentTimeMillis();
-			if (_ext.GetGameState() == RoomExtension.STATE_PLAYING) 
-			{
+			if (_ext.GetGameState() == RoomExtension.STATE_PLAYING) {
 				float deltaTime = (float) _deltaTime / 1000.0f;
 				_bulletManager.Update(deltaTime);
 				_tankManager.Update(deltaTime);
@@ -80,6 +85,7 @@ public class Game implements Runnable {
 
 				this.CheckCollision();
 				this.UpdateRoomState(deltaTime);
+				// this.CheckCollisionWithQuadTree();
 			}
 		} catch (Exception e) {
 			// In case of exceptions this try-catch prevents the task to stop
@@ -114,17 +120,17 @@ public class Game implements Runnable {
 
 	public void InitRdArea() {
 		try {
-			_rdArea = new Area[4];
-			for (int i = 0; i < 4; i++)
+			_rdArea = new Area[3];
+			for (int i = 0; i < 3; i++)
 				_rdArea[i] = new Area();
-			_rdArea[0].start = new Vec3D(80, 80, 0);
-			_rdArea[0].dimension = new Vec3D(416, 384, 0);
-			_rdArea[1].start = new Vec3D(48, 384, 0);
-			_rdArea[1].dimension = new Vec3D(400, 320, 0);
-			_rdArea[2].start = new Vec3D(864, 848, 0);
-			_rdArea[2].dimension = new Vec3D(64, 80, 0);
-			_rdArea[3].start = new Vec3D(640, 896, 0);
-			_rdArea[3].dimension = new Vec3D(624, 454, 0);
+			_rdArea[0].start = new Vec3D(48, 48, 0);
+			_rdArea[0].dimension = new Vec3D(452, 452, 0);
+			_rdArea[1].start = new Vec3D(700, 48, 0);
+			_rdArea[1].dimension = new Vec3D(260, 452, 0);
+			_rdArea[2].start = new Vec3D(48, 650, 0);
+			_rdArea[2].dimension = new Vec3D(452, 310, 0);
+			// _rdArea[3].start = new Vec3D(640, 896, 0);
+			// _rdArea[3].dimension = new Vec3D(624, 454, 0);
 		} catch (Exception e) {
 			_ext.trace(e.toString());
 		}
@@ -269,8 +275,7 @@ public class Game implements Runnable {
 					bullet2.width = (int) b2.GetWidth();
 					bullet2.height = (int) b2.GetHeight();
 					boolean result = _collision.AABB(bullet1, bullet2);
-					if (result) 
-					{
+					if (result) {
 						_bulletManager.Remove(b1, _mmoApi);
 						_bulletManager.Remove(b2, _mmoApi);
 					}
@@ -278,19 +283,99 @@ public class Game implements Runnable {
 			}
 		}
 	}
-	
-	protected void UpdateRoomState(float deltaTime)
-	{	
-		if(_roundTime <= 0 && _ext.GetGameState() != RoomExtension.STATE_WAIT)
-		{	_roundTime = 0;
+
+	protected void UpdateRoomState(float deltaTime) {
+		if (_roundTime <= 0 && _ext.GetGameState() != RoomExtension.STATE_WAIT) {
+			_roundTime = 0;
 			_ext.SetGameState(RoomExtension.STATE_WAIT);
 			_ext.trace("set room vars");
 			ISFSObject data = new SFSObject();
 			data.putBool("value", false);
 			_ext.send("gameisplaying", data, _ext.getParentRoom().getUserList());
 			return;
-		}
-		else
+		} else
 			_roundTime -= deltaTime;
+	}
+
+	public boolean CheckCollisionTankWithTitle(GameObject tank) 
+	{
+		List<CollisionTitle> titles = _map.GetLayout().getCollisionListTiles();
+		for (GameObject t : titles)
+		{
+			Rectangle tRect = new Rectangle();
+			Rectangle tankRect = new Rectangle();
+
+			// get title properties
+			tRect.x = (int) t.GetX();
+			tRect.y = (int) t.GetY();
+			tRect.width = (int) t.GetWidth();
+			tRect.height = (int) t.GetHeight();
+			// get tank properties
+			tankRect.x = (int) tank.GetX();
+			tankRect.y = (int) tank.GetY();
+			tankRect.width = (int) tank.GetWidth();
+			tankRect.height = (int) tank.GetHeight();
+			if (_collision.AABB(tRect, tankRect)) 
+			{
+				_ext.trace("collision");
+				return true;
+
+			}			
+		}
+		return false;
+	}
+
+	public boolean CheckCollisionWithQuadTree(GameObject tank) {
+		_quadTree.clear();
+
+		// Map<Integer,Tank> tanks = _tankManager.GetTanks();
+		List<CollisionTitle> titles = _map.GetLayout().getCollisionListTiles();
+
+		List<GameObject> all = new ArrayList<GameObject>();
+		// for(GameObject tank:tanks.values())
+		// all.add((GameObject)tank);
+		all.add(tank);
+		for (GameObject title : titles)
+			all.add((GameObject) title);
+
+		List<GameObject> collisionObj = new ArrayList<GameObject>();
+
+		for (GameObject obj : all)
+			_quadTree.insert(obj);
+		// for(GameObject obj:all)
+		// {
+		collisionObj.clear();
+		// _quadTree.retrieve(collisionObj, obj);
+		_quadTree.retrieve(collisionObj, tank);
+		for (GameObject obj1 : collisionObj) {
+			if (obj1 != tank) {
+				for (GameObject obj2 : collisionObj) {
+					if (obj2.GetType() == RoomExtension.ES_TILE) {
+						Rectangle obj1Rect = new Rectangle();
+						Rectangle obj2Rect = new Rectangle();
+
+						// get tank properties
+						obj1Rect.x = (int) obj1.GetX();
+						obj1Rect.y = (int) obj1.GetY();
+						obj1Rect.width = (int) obj1.GetWidth();
+						obj1Rect.height = (int) obj1.GetHeight();
+						// get title properties
+						obj2Rect.x = (int) obj2.GetX();
+						obj2Rect.y = (int) obj2.GetY();
+						obj2Rect.width = (int) obj2.GetWidth();
+						obj2Rect.height = (int) obj2.GetHeight();
+						if (_collision.AABB(obj1Rect, obj2Rect)) {
+							_ext.trace("title collsion with tank " + obj2.GetX() + " " + obj2.GetY());
+							_ext.trace("Collision object count " + collisionObj.size());
+							return true;
+
+						}
+
+					}
+				}
+			}
+		}
+		return false;
+		// }
 	}
 }

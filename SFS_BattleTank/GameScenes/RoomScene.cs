@@ -44,13 +44,7 @@ namespace SFS_BattleTank.GameScenes
         public RoomScene(ContentManager contents)
             : base(Consts.SCENE_ROOM, contents)
         {
-            _sBg = new SBackground();
-            _usersInsideRoom = new List<User>();
-            _names = new List<string>();
-            _isEnablePlayButton = false;
-
-            // test
-            _namePlates = new NamePlateManager();
+           
 
         }
         public override bool Init()
@@ -64,6 +58,11 @@ namespace SFS_BattleTank.GameScenes
             _playButton = new Button("", new Vector2(0, 0), new Rectangle(0, 0, 100, 100), 2.0f);
 
             //
+            _sBg = new SBackground();
+            _usersInsideRoom = new List<User>();
+            _names = new List<string>();
+            _isEnablePlayButton = false;
+            _namePlates = new NamePlateManager();
             _namePlates.Init();
             return base.Init();
         }
@@ -198,8 +197,14 @@ namespace SFS_BattleTank.GameScenes
                     _network.SetPrimary((int)data.GetShort(Consts.ROOM_ONWER));
                     _isEnablePlayButton = (_network.IsPrimary() == _sfs.MySelf.Id) ? true : false;
                     if (!_isEnablePlayButton)
+                    {
                         _playButton.CMD(Consts.UI_CMD_DISABLE);
-                    else _readyButton.CMD(Consts.UI_CMD_DISABLE);
+                    }
+                    else
+                    {
+                        _readyButton.CMD(Consts.UI_CMD_DISABLE);
+                        return;
+                    }
                     //////////////// dis play ready state ////////////////
                     if (data.ContainsKey(Consts.READY_ARRAY) && data.ContainsKey(Consts.ID_ARRAY))
                     {

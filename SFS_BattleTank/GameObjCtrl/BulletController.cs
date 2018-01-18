@@ -20,15 +20,13 @@ namespace SFS_BattleTank.GameObjCtrl
     {
         protected Dictionary<int, GameObject> _bullets;
 
-        protected const string SOUND_FIRE = @"sounds\s_fire";
-        protected SEffect _s_fire;
+        
+        
         protected MMORoom _room;
         public BulletController(ContentManager contents)
             : base(contents)
         {
             _bullets = new Dictionary<int, GameObject>();
-            _s_fire = new SEffect();
-            _s_fire.LoadContents(contents, SOUND_FIRE);
             _room = (MMORoom)_network.GetCurretRoom();
         }
 
@@ -45,8 +43,7 @@ namespace SFS_BattleTank.GameObjCtrl
                             _bullets.Add(item.Id, new Bullet((float)item.GetVariable(Consts.X).GetIntValue(),
                                                                 (float)item.GetVariable(Consts.Y).GetIntValue(),
                                                                 (ulong)item.Id));
-                            _bullets[item.Id].LoadContents(_contents);
-                            _s_fire.Play();
+                            _bullets[item.Id].LoadContents(_contents);                           
                             Debug.WriteLine("Added bullet " + item.Id);
                         }
                 }

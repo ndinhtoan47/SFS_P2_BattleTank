@@ -48,11 +48,9 @@ namespace SFS_BattleTank.GameObjCtrl
                         {
                             bool isCountDown = item.GetVariable(Consts.COUNT_DOWN).GetBoolValue();
                             if (isCountDown)
-
                                 _items[item.Id].Behavior(Consts.COUNT_DOWN);
                         }
                     }
-
                 }
             }
             base.UpdateData(user, changedVars, item);
@@ -72,7 +70,6 @@ namespace SFS_BattleTank.GameObjCtrl
                                                                 (float)item.GetVariable(Consts.Y).GetIntValue(),
                                                                 type));
                             _items[item.Id].LoadContents(_contents);
-                            Debug.WriteLine("Added item bounus " + item.Id);
                         }
                 }
             }

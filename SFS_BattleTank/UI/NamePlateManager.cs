@@ -36,6 +36,7 @@ namespace SFS_BattleTank.UI
                 _namePlates.Add(user.Id, new NamePlate(Vector2.Zero, Rectangle.Empty, user.Name, isOnwer));
                 InitUser(user);
             }
+            else if (user != null) _namePlates[user.Id].LoadContents(_contents);
         }
         public void Remove(User user, bool isOnwer)
         {

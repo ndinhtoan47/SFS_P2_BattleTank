@@ -155,6 +155,24 @@ namespace SFS_BattleTank.UI
             {
                 int a;
                 a = (int)(255 * 0.75f);
+                _bgColor = new Color((int)_bgColor.R, (int)_bgColor.G, (int)_bgColor.B, (int)a);
+            }
+            else
+                _bgColor = new Color((int)_bgColor.R, (int)_bgColor.G, (int)_bgColor.B, 255);
+
+            if (!_hoverBlockPlay && _hoverCanPlay)
+            {
+                // play sound
+                _hoverEffect.Play(0.2f);
+                _hoverBlockPlay = true;
+            }
+        }
+        public void Hover(bool isInside)
+        {
+            if (isInside)
+            {
+                int a;
+                a = (int)(255 * 0.75f);
                 _bgColor = new Color(_bgColor.R, _bgColor.G, _bgColor.B, a);
             }
             else

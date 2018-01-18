@@ -122,7 +122,12 @@ namespace SFS_BattleTank.GameObjCtrl
                         if (changedVars.Contains(Consts.TYPE_ITEM))
                         {
                             int itemType = user.GetVariable(Consts.TYPE_ITEM).GetIntValue();
-                            tank.SetHodingItem(itemType,user.IsItMe);
+                            tank.SetHodingItem(itemType, user.IsItMe); // use for armor and isvisiable
+                            if (itemType == Consts.ES_ITEM_FREZZE)
+                            {
+                                Tank me = (Tank)_tanks[_mySelf];
+                                me.SetHodingItem(itemType, user.IsItMe);
+                            }
                         }
                     }
                 }
@@ -136,34 +141,39 @@ namespace SFS_BattleTank.GameObjCtrl
         }
         public override void Update(float deltaTime)
         {
-            foreach (GameObject tank in _tanks.Values)
+            if (PlayScene.GameIsPlay())
             {
-                tank.Update(deltaTime);
-            }
-            if (_tanks.ContainsKey(_mySelf))
-            {
-                Tank me = (Tank)_tanks[_mySelf];
-                if (me.GetIsAffectByItem() != Consts.ES_ITEM_FREZZE)
+                foreach (GameObject tank in _tanks.Values)
+                    tank.Update(deltaTime);
+                if (_tanks.ContainsKey(_mySelf))
                 {
-                    if (me.IsAlive())
+                    Tank me = (Tank)_tanks[_mySelf];
+                    if (me.GetIsAffectByItem() != Consts.ES_ITEM_FREZZE)
                     {
-                        int rotation;
-                        Keys dir = this.GetDirection(out rotation);
-                        if (dir != Keys.None)
-                            this.Move(deltaTime, rotation);
-                        if (CheckFire(deltaTime))
+                        if (me.IsAlive())
                         {
-                            Fire();
+                            int rotation;
+                            Keys dir = this.GetDirection(out rotation);
+                            if (dir != Keys.None)
+                                this.Move(deltaTime, rotation);
+                            if (CheckFire(deltaTime))
+                            {
+                                Fire();
+                            }
                         }
                     }
+                    else
+                    {
+                        Debug.WriteLine("Is affect by freeze item");
+                    }
+                    _deltaTime = deltaTime;
                 }
-                _deltaTime = deltaTime;
             }
-            if (Input.IsKeyDown(Keys.I))
-            {
-                SFSObject data = new SFSObject();
-                _network.GetInstance().Send(new ExtensionRequest("item", data, _network.GetCurretRoom()));
-            }
+            //if (Input.IsKeyDown(Keys.I))
+            //{
+            //    SFSObject data = new SFSObject();
+            //    _network.GetInstance().Send(new ExtensionRequest("item", data, _network.GetCurretRoom()));
+            //}
             base.Update(deltaTime);
         }
         public override Dictionary<int, GameObject> GetAllGameObject()
@@ -175,7 +185,6 @@ namespace SFS_BattleTank.GameObjCtrl
             _mySelf = GetMySefl();
             base.Init();
         }
-
         public Keys GetDirection(out int rotation)
         {
             KeyboardState state = Keyboard.GetState();
@@ -226,36 +235,11 @@ namespace SFS_BattleTank.GameObjCtrl
             if (_tanks.Count <= 0 || !_tanks.ContainsKey(_mySelf)) return;
             SmartFox sfs = _network.GetInstance();
             Tank me = (Tank)_tanks[_mySelf];
-            me.Move(deltaTime);
-            // get velocity
-            //float vx, vy;
-            //vx = vy = 0;
-            //if (xDir != 0) vx = xDir * deltaTime * TANK_SPEED;
-            //if (yDir != 0) vy = yDir * deltaTime * TANK_SPEED;
-            // calculate current position
-            //Vector2 curPosition = _tanks[_mySelf].GetPosition();
-            //curPosition.X += vx;
-            //curPosition.Y += vy;
-            //int rotation = 0;
-            // set mysefl rotation
-            //if (xDir != 0)
-            //{
-            //    if (xDir == 1)
-            //        rotation = 0;
-            //    else rotation = 180;
-            //}
-            //if (yDir != 0)
-            //{
-            //    if (yDir == 1)
-            //        rotation = 90;
-            //    else rotation = -90;
-            //}
+            me.Move(deltaTime);          
             // send new update to server    
             if (_network.GetInstance().IsConnected)
             {
                 List<UserVariable> vars = new List<UserVariable>();
-                //vars.Add(new SFSUserVariable(Consts.X, (double)curPosition.X));
-                //vars.Add(new SFSUserVariable(Consts.Y, (double)curPosition.Y));
                 vars.Add(new SFSUserVariable(Consts.ROTATION, (int)rotation));
                 sfs.Send(new SetUserVariablesRequest(vars));
             }

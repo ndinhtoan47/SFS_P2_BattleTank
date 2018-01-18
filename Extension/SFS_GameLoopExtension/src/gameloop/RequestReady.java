@@ -11,25 +11,23 @@ import com.smartfoxserver.v2.entities.data.SFSObject;
 import com.smartfoxserver.v2.entities.variables.SFSUserVariable;
 import com.smartfoxserver.v2.entities.variables.UserVariable;
 import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
-import com.smartfoxserver.v2.mmo.MMORoom;
 import com.smartfoxserver.v2.mmo.Vec3D;
 
 public class RequestReady extends BaseClientRequestHandler {
 
 	@Override
 	public void handleClientRequest(User sender, ISFSObject params) {
-		trace(sender.getId() + "ReadyRequestHandler");
+		trace(sender.getId() + " ReadyRequestHandler");
 		RoomExtension mainExt = (RoomExtension) this.getParentExtension();
 		Game game = mainExt.GetGameInstance();
-		game.Ready(sender);
-		Map<Integer, Tank> tanks = game.GetTanks();
-		MMORoom room = (MMORoom) mainExt.getParentRoom();
-		trace("Game state now : " + room.getVariable("state"));
+		game.Ready(sender);		
 		ISFSObject outData = new SFSObject();
 		outData.putShortArray("idarray", Arrays.asList((short)sender.getId()));
 		outData.putBoolArray("readyarray", Arrays.asList(game.GetReadys().get(sender.getId())));
 		
-		if (room.getVariable("state").getIntValue() == RoomExtension.STATE_PLAYING) {
+		if (mainExt.GetGameState() == RoomExtension.STATE_PLAYING) 
+		{
+			Map<Integer, Tank> tanks = game.GetTanks();
 			if (tanks.containsKey(sender.getId()))
 			{
 				tanks.get(sender.getId()).Active();

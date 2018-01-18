@@ -55,5 +55,8 @@
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/item/armor.png</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/item/freeze.png</File>
     <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/item/isvisible.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/shield.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/d.png</File>
+    <File>D:/02.Monogame/SFS_BattleTank/SFS_BattleTank/Content/number.png</File>
   </SourceFiles>
 </SourceFileCollection>

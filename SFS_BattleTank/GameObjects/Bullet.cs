@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using SFS_BattleTank.Bases;
 using SFS_BattleTank.Constants;
+using SFS_BattleTank.Sounds;
 
 namespace SFS_BattleTank.GameObjects
 {
@@ -13,6 +14,8 @@ namespace SFS_BattleTank.GameObjects
         protected const string BULLET_PATH = "gameBullet";
         protected Rectangle _desRect;
         protected Vector2 _origin;
+        protected SEffect _s_fire;
+        protected const string SOUND_FIRE = @"sounds\s_fire";
 
         public Bullet(float x, float y,ulong id)
             : base(x, y, Consts.ES_BULLET)
@@ -20,6 +23,7 @@ namespace SFS_BattleTank.GameObjects
             _desRect = new Rectangle(0,0,10,10);
             _origin = new Vector2(5, 5);
             _id = id;
+            _s_fire = new SEffect();
         }
 
         public override bool Init()
@@ -29,6 +33,8 @@ namespace SFS_BattleTank.GameObjects
         public override void LoadContents(ContentManager contents)
         {
             _sprite = contents.Load<Texture2D>(BULLET_PATH);
+            _s_fire.LoadContents(contents, SOUND_FIRE);
+            _s_fire.Play();
             base.LoadContents(contents);
         }
         public override void Draw(SpriteBatch sp)

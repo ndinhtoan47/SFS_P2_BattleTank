@@ -78,3 +78,6 @@ D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\icon\
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\item\armor.xnb
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\item\freeze.xnb
 D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\item\isvisible.xnb
+D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\shield.xnb
+D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\d.xnb
+D:\02.Monogame\SFS_BattleTank\SFS_BattleTank\bin\Windows\x86\Debug\Content\number.xnb

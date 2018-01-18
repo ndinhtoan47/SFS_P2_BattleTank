@@ -149,7 +149,8 @@ namespace SFS_BattleTank.Network
         public MMORoomSettings GetRoomSettings(string name)
         {
             MMORoomSettings settings = new MMORoomSettings(name);
-            settings.IsGame = true;
+            
+            settings.IsGame = false;
             settings.MaxUsers = 8;
             settings.Name = name;
             settings.AllowOwnerOnlyInvitation = true;
@@ -168,8 +169,10 @@ namespace SFS_BattleTank.Network
             events.AllowUserEnter = true;
             events.AllowUserCountChange = true;
             events.AllowUserVariablesUpdate = true;
+            
             settings.Events = events;
-            settings.Extension = new RoomExtension("Java", "gameloop.RoomExtension");
+            settings.Extension = new RoomExtension("Java", "gameloop.RoomExtension");       
+           
             return settings;
         }
         public void SetPrimary(int value)
